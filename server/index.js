@@ -15,7 +15,7 @@ app.get('/api/maps', async (req, res) => {
         const params = {
           key: process.env.G_MAPS_API_KEY,
           libraries: 'maps',
-          v: 'beta',
+          v: 'weekly',
         };
     
         const response = await axios.get(url, { params });
