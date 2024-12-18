@@ -1,29 +1,35 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import {
+    APIProvider,
+    Map,
+    AdvancedMarker,
+    Pin,
+    InfoWindow,
+} from '@vis.gl/react-google-maps'
+
+"use client"
 
 const MapsComponent: React.FC = () => {
-    useEffect(() => {
-        // Kun komponentti on ladattu, luodaan kartta
-        const loadMap = () => {
-          if (window.google && window.google.maps) {
-            const map = new window.google.maps.Map(document.getElementById("map") as HTMLElement, {
-              center: { lat: 37.4220656, lng: -122.0840897 },
-              zoom: 10,
-            });
-          } else {
-            console.error('Google Maps API ei ole ladattu.');
-          }
-        };
-    
-        loadMap();
-      }, []);
-    
-      return (
-        <div>
-          <h2>Google Maps</h2>
-          <div id="map" style={{ height: "400px", width: "100%" }}></div>
+
+  const position = { lat: 60.10, lng: 24.55}
+  console.log(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
+
+  return (
+    <div>
+      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+        <div style={{ height: "100vh" }}>
+          <Map zoom={12} center={position}>
+            <AdvancedMarker position={position}>
+              <Pin />
+            </AdvancedMarker>
+          </Map>
+
         </div>
-      );
+        
+      </APIProvider>
+    </div>
+  );
 }
 
 export default MapsComponent
