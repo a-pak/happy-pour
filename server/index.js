@@ -1,30 +1,55 @@
 require('dotenv').config()
 const express = require('express')
+const cors = require('cors')
 const axios = require('axios')
 const app = express()
 const PORT = 3000
 
+app.use(cors())
+
+let bars =  [
+        {
+        "id": 1,
+        "name": "Pub Helsinki",
+        "coordinates": { "lat": 60.1695, "lng": 24.9354 },
+        "address": "Mannerheimintie 10, 00100 Helsinki",
+        "beerPrice": 6.5,
+        "winePrice": 12,
+        "coffeePrice": 4,
+        "entryFee": 5,
+        "cloakroomFee": 3
+        },
+        {
+        "id": 2,
+        "name": "Kaisla",
+        "coordinates": { "lat": 60.1722, "lng": 24.9444 },
+        "address": "Vilhonkatu 4, 00100 Helsinki",
+        "beerPrice": 7.5,
+        "winePrice": 13,
+        "coffeePrice": 4.5,
+        "entryFee": 0,
+        "cloakroomFee": 2
+        },
+        {
+        "id": 3,
+        "name": "Teerenpeli Kamppi",
+        "coordinates": { "lat": 60.1699, "lng": 24.9305 },
+        "address": "Olavinkatu 2, 00100 Helsinki",
+        "beerPrice": 7,
+        "winePrice": 14,
+        "coffeePrice": 3.5,
+        "entryFee": 0,
+        "cloakroomFee": 2
+        }
+    ]
 
 app.get('/', (req, res) => {
     res.send('react app')
 })
 
-app.get('/api/maps', async (req, res) => {
-    try {
-        const url = `https://maps.googleapis.com/maps/api/js`;
-        const params = {
-          key: process.env.G_MAPS_API_KEY,
-          libraries: 'maps',
-          v: 'weekly',
-        };
-    
-        const response = await axios.get(url, { params });
-        res.send(response.data);
-        console.log('Maps requrest sent to client.')
-    } catch (error) {
-        console.error('Error fetching Google Maps API:', error.message);
-        res.status(500).send('Error fetching Google Maps API');
-    }
+app.get('/api/bars', async (req, res) => {
+    console.log('Request from the client')
+    res.json(bars)
 })
 
 
