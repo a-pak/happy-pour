@@ -35,7 +35,7 @@ const AppBarComponent: React.FC = () => {
     setOpenBarList(open)
   } 
 
-  const [drink, setDrink] = useState('Draft Beer (0,5 l)')
+  const [drink, setDrink] = useState('b0,5')
   const handleChange = (event: SelectChangeEvent) => {
     setDrink(event.target.value);
   };
