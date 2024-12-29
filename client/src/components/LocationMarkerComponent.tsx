@@ -7,7 +7,7 @@ interface Coordinates {
     lng: number;
 }
 
-    interface Bar {
+interface Bar {
     id: number;
     name: string;
     coordinates: Coordinates;

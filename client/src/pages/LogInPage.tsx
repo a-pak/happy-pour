@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const LogInComponent = () => {
+export const LogInPage = () => {
   return (
     <div>LogInComponent</div>
   )
