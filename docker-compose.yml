@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  backend:
+    image: openjdk:23-jdk-slim
+    container_name: spring-boot-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Expose backend on port 8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/your_database
+      SPRING_DATASOURCE_USERNAME: your_username
+      SPRING_DATASOURCE_PASSWORD: your_password
+    depends_on:
+      - database
+
+  database:
+    image: postgres:15
+    container_name: postgres-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: your_database
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: react-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
