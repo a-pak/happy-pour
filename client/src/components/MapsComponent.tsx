@@ -1,12 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import {
-    APIProvider,
-    Map,
-    AdvancedMarker,
-    Pin,
-    InfoWindow,
-    ColorScheme
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  Pin,
+  InfoWindow,
+  ColorScheme
 } from '@vis.gl/react-google-maps'
 import barsService from '../services/bars'
 import { LocationMarkerComponent } from './LocationMarkerComponent';
@@ -33,11 +33,11 @@ interface Bar {
 
 const MapsComponent: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [bars, setBars] = useState<Bar[] | null >(null);
+  const [bars, setBars] = useState<Bar[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const position = { lat:60.192059, lng: 24.945841}
+  const position = { lat: 60.192059, lng: 24.945841 }
 
-//////////Asks the location of the user
+  //////////Asks the location of the user
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -55,7 +55,7 @@ const MapsComponent: React.FC = () => {
     }
   }, []);
 
-///////////////GET all bars from database
+  ///////////////GET all bars from database
   useEffect(() => {
     barsService
       .getAll()
@@ -72,26 +72,26 @@ const MapsComponent: React.FC = () => {
   return (
     <div>
       {error ? (<p>{error}</p>)
-      : !userLocation ? ( <p>Loading User Location...</p>)
-      : (
-        <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-        <div style={{ height: `calc(100vh - 56px)` }}>
-          <Map 
-            mapId={import.meta.env.VITE_MAP_ID_API}
-            defaultZoom={12} 
-            defaultCenter={ position }
-            zoomControl={true}
-            gestureHandling='greedy'
-            colorScheme='DARK'
-          >
-            <LocationMarkerComponent bars={bars}/>
+        : !userLocation ? (<p>Loading User Location...</p>)
+          : (
+            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+              <div style={{ height: `calc(100vh - 56px)` }}>
+                <Map
+                  mapId={import.meta.env.VITE_MAP_ID_API}
+                  defaultZoom={12}
+                  defaultCenter={position}
+                  zoomControl={true}
+                  gestureHandling='greedy'
+                  colorScheme='DARK'
+                >
+                  <LocationMarkerComponent bars={bars} />
 
-          </Map>
+                </Map>
 
-        </div>
-        
-      </APIProvider>
-        )
+              </div>
+
+            </APIProvider>
+          )
       }
     </div>
   );
