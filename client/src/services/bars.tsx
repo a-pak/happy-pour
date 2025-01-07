@@ -6,8 +6,8 @@ interface Bar {
     name: string;
     coordinates: { lat: number; lng: number };
     address: string;
-    beerPrice: number;
-    winePrice: number;
+    beer05Price: number;
+    wine075Price: number;
     coffeePrice: number;
     entryFee: number;
     cloakroomFee: number;
@@ -18,6 +18,12 @@ const getAll = async (): Promise<Bar[]> => {
     return response.data
 }
 
+const create = async (newBar: Bar): Promise<Bar> => {
+    const response = await axios.post<Bar>(baseUrl, newBar)
+    return response.data
+}
+
 export default {
     getAll,
+    create,
 }

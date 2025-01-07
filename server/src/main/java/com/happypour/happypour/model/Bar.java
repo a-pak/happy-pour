@@ -1,11 +1,7 @@
 package com.happypour.happypour.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -15,9 +11,11 @@ import org.springframework.data.annotation.Id;
 public class Bar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
+
     private String name;
+
+    @Embedded
     private Coordinates coordinates;
     private String address;
     private double beer05Price;
@@ -33,6 +31,7 @@ public class Bar {
     }
 }
 
+@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

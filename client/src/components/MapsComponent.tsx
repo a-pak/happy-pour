@@ -9,7 +9,7 @@ import {
   ColorScheme
 } from '@vis.gl/react-google-maps'
 import barsService from '../services/bars'
-import { LocationMarkerComponent } from './LocationMarkerComponent';
+import { LocationMarkerComponent } from './LocationMarkerComponent'
 
 interface Coordinates {
   lat: number;

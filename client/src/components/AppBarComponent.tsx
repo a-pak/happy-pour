@@ -43,7 +43,6 @@ const AppBarComponent: React.FC = () => {
 
 
   return (
-    <ThemeProvider theme={theme}>
     <AppBar position="sticky" color='secondary'>
       <Toolbar>
         {isMobile && (
@@ -106,7 +105,6 @@ const AppBarComponent: React.FC = () => {
       </Toolbar>
       
     </AppBar>
-    </ThemeProvider>
   );
 };
 

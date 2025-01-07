@@ -12,8 +12,8 @@ interface Bar {
     name: string;
     coordinates: Coordinates;
     address: string;
-    beerPrice: number;
-    winePrice: number;
+    beer05Price: number;
+    wine075Price: number;
     coffeePrice: number;
     entryFee: number;
     cloakroomFee: number;
@@ -56,9 +56,9 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                                     <strong>{bar.name}</strong>
                                     <p>{bar.address}</p>
                                     <p>
-                                        Beer: ${bar.beerPrice} | Wine: ${bar.winePrice} | Coffee: ${bar.coffeePrice}
+                                        Beer: {bar.beer05Price} € | Wine: {bar.wine075Price} € | Coffee: {bar.coffeePrice} €
                                     </p>
-                                    <p>Entry Fee: ${bar.entryFee} | Cloakroom Fee: ${bar.cloakroomFee}</p>
+                                    <p>Entry Fee: {bar.entryFee} € | Cloakroom Fee: {bar.cloakroomFee} €</p>
                                 </div>
                         </InfoWindow>
                     )}

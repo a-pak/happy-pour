@@ -9,27 +9,30 @@ import BarListPage from './pages/BarListPage'
 import LandingPage from './pages/LandingPage'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import SubmitPage from './pages/SubmitPage'
+import { ThemeProvider } from '@emotion/react'
+import theme from './Theme'
 
 function App() {
 
   return (
     <>
-
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LayoutComponent />}>
-            <Route index element={<LandingPage />} />
-            <Route path="/bars" element={<BarListPage />} />
-            <Route path="/login" element={<LogInPage />} />
-            
-            <Route element={<ProtectedRoutes />}>
-              <Route path='submit' element={<SubmitPage />} />
-            
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LayoutComponent />}>
+              <Route index element={<LandingPage />} />
+              <Route path="/bars" element={<BarListPage />} />
+              <Route path="/login" element={<LogInPage />} />
+              <Route path='/submit' element={<SubmitPage />} />
+              
+              <Route element={<ProtectedRoutes />}>
+                <Route path='/submit' element={<SubmitPage />} />
+              
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </>
   )
 }

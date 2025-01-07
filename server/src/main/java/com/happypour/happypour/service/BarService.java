@@ -17,5 +17,10 @@ public class BarService {
 
     public void setBar(Bar bar) {
         this.bars.add(bar);
+        System.out.println("baariiiit: " +
+                bars.stream()
+                        .map(Bar::getName) // Tulostetaan vain nimet
+                        .toList()          // Muutetaan takaisin listaksi
+        );
     }
 }
