@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography } from '@mui/material';
+import { TextField, Button, Grid, Typography, IconButton } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import barsService from '../services/bars';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from 'react-router-dom';
 
 interface Coordinates {
   lat: number;
@@ -107,14 +109,25 @@ const SubmitPage: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
-        Add a New Bar
-      </Typography>
+
 
       {error && <Typography color="error">{error}</Typography>}
 
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
+
+          <Grid item xs={2}>
+            <Link to="/" >
+              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary' }}>
+                <ArrowBackIcon fontSize="inherit" />
+              </IconButton>
+            </Link>
+          </Grid>
+          <Grid item xs={8}>
+            <Typography variant="h4" gutterBottom>
+              Add or Update
+            </Typography>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
