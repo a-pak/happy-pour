@@ -16,7 +16,8 @@ public class Bar {
     private String name;
 
     @Embedded
-    private Coordinates coordinates;
+    private double coordLong;
+    private double coordLat;
     private String address;
     private double beer05Price;
     private double wine075Price;
@@ -24,18 +25,10 @@ public class Bar {
     private double entryFee;
     private double cloakRoomFee;
 
-    public Bar(String name, Coordinates coordinates, String address) {
+    public Bar(String name, double coordLat, double coordLong, String address) {
         this.name = name;
-        this.coordinates = coordinates;
+        this.coordLong = coordLong;
+        this.coordLat = coordLat;
         this.address = address;
     }
-}
-
-@Embeddable
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class Coordinates {
-    private double lat;
-    private double lng;
 }

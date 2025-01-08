@@ -18,11 +18,11 @@ public class BarController {
     @GetMapping
     public List<Bar> getBars() {
         return barService.getAllBars();
-    };
+    }
 
     @PostMapping
     public Bar addBar(@RequestBody Bar newBar) {
-        System.out.println("baariiiii: " + newBar);
+        System.out.println("BAARIIII: \n " + newBar);
         barService.setBar(newBar);
         return newBar;
     }
