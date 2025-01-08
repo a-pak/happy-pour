@@ -22,7 +22,7 @@ public class BarController {
 
     @PostMapping
     public Bar addBar(@RequestBody Bar newBar) {
-        System.out.println("BAARIIII: \n " + newBar);
+        System.out.println("!! addBar called: \n " + newBar);
         barService.setBar(newBar);
         return newBar;
     }

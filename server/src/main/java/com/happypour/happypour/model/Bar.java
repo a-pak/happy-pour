@@ -4,38 +4,41 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table
+@Table(name = "bar", schema = "public") // specify schema if necessary
 public class Bar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="name")
     private String name;
 
-    @Column(precision = 9)
+    @Column(name="coordlong", precision = 9)
     private double coordLong;
-    @Column(precision = 8)
+
+    @Column(name="coordlat", precision = 8)
     private double coordLat;
-    @Column
+
+    @Column(name="address")
     private String address;
-    @Column(precision = 5)
+
+    @Column(name="beer05price", precision = 5)
     private double beer05Price;
-    @Column(precision = 5)
+
+    @Column(name="wine075price", precision = 5)
     private double wine075Price;
-    @Column(precision = 5)
+
+    @Column(name="coffeeprice", precision = 5)
     private double coffeePrice;
-    @Column(precision = 5)
+
+    @Column(name="entryfee", precision = 5)
     private double entryFee;
-    @Column(precision = 5)
+
+    @Column(name="cloakroomfee", precision = 5)
     private double cloakRoomFee;
 
-    public Bar(String name, double coordLat, double coordLong, String address) {
-        this.name = name;
-        this.coordLong = coordLong;
-        this.coordLat = coordLat;
-        this.address = address;
-    }
 }
+
