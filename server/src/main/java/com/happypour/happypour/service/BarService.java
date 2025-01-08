@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class BarService {
-    //private List<Bar> bars = new ArrayList<>();
 
     @Autowired
     private BarRepository barRepository;
@@ -24,24 +23,8 @@ public class BarService {
     }
 
     public void setBar(Bar bar) {
-        System.out.println(bar.toString());
-        System.out.println("!!!!!!!!!!!!!!!!!!!! Set bar called! \n");
+        System.out.println("BarService: Adding bar: " + bar.toString());
         bar.setId(null);
         barRepository.save(bar);
     }
-
-    // public List<Bar> getAllBars() {
-    //     return bars;
-    // }
-
-
-
-    // public void setBar(Bar bar) {
-    //     this.bars.add(bar);
-    //     System.out.println("baariiiit: " +
-    //             bars.stream()
-    //                     .map(Bar::getName) // Tulostetaan vain nimet
-    //                     .toList()          // Muutetaan takaisin listaksi
-    //     );
-    // }
 }
