@@ -1,23 +1,8 @@
 import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import React, { useState } from 'react'
 import theme from '../Theme';
+import Bar from '../model/IbarInterface';
 
-interface Coordinates {
-    lat: number;
-    lng: number;
-}
-
-interface Bar {
-    id: number;
-    name: string;
-    coordinates: Coordinates;
-    address: string;
-    beer05Price: number;
-    wine075Price: number;
-    coffeePrice: number;
-    entryFee: number;
-    cloakroomFee: number;
-}
 
 interface LocationMarkerProps {
     bars: Bar[] | null;
@@ -34,7 +19,7 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                     <React.Fragment key={bar.id}>
                     <AdvancedMarker 
                         key={bar.id} 
-                        position={bar.coordinates}
+                        position={{lat: bar.coordLat, lng: bar.coordLong}}
                         onClick={() => setOpenInfoWindowId(bar.id)} 
                         title={'Tittelituure'}
                         >
@@ -42,7 +27,7 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                     </AdvancedMarker>
                     {openInfoWindowId === bar.id && (
                         <InfoWindow
-                            position={bar.coordinates}
+                            position={{lat: bar.coordLat, lng: bar.coordLong}}
                             maxWidth={200}
                             onCloseClick={() => setOpenInfoWindowId(null)} 
                             >

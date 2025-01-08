@@ -10,23 +10,7 @@ import {
 } from '@vis.gl/react-google-maps'
 import barsService from '../services/bars'
 import { LocationMarkerComponent } from './LocationMarkerComponent'
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface Bar {
-  id: number;
-  name: string;
-  coordinates: Coordinates;
-  address: string;
-  beerPrice: number;
-  winePrice: number;
-  coffeePrice: number;
-  entryFee: number;
-  cloakroomFee: number;
-}
+import Bar from '../model/IbarInterface';
 
 
 "use client"

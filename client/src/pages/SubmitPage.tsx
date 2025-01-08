@@ -5,23 +5,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import barsService from '../services/bars';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link } from 'react-router-dom';
+import MapsComponent from '../components/MapsComponent';
+import Bar from '../model/IbarInterface';
 
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface Bar {
-  id: number;
-  name: string;
-  coordinates: Coordinates;
-  address: string;
-  beer05Price: number;
-  wine075Price: number;
-  coffeePrice: number;
-  entryFee: number;
-  cloakroomFee: number;
-}
 
 const SubmitPage: React.FC = () => {
   const [bars, setBars] = useState<Bar[] | null>(null);
@@ -71,10 +57,8 @@ const SubmitPage: React.FC = () => {
       id: Math.random(), // Väliaikainen ID (backend-generoi lopullisen ID:n)
       name: newBar.name,
       address: newBar.address,
-      coordinates: {
-        lat: parseFloat(newBar.lat),
-        lng: parseFloat(newBar.lng),
-      },
+      coordLat: parseFloat(newBar.lat),
+      coordLong: parseFloat(newBar.lng),
       beer05Price: parseFloat(newBar.beer05Price),
       wine075Price: parseFloat(newBar.wine075Price),
       coffeePrice: parseFloat(newBar.coffeePrice),
@@ -118,16 +102,21 @@ const SubmitPage: React.FC = () => {
 
           <Grid item xs={2}>
             <Link to="/" >
-              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary' }}>
+              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'-10px', top:'-8px'}} >
                 <ArrowBackIcon fontSize="inherit" />
               </IconButton>
             </Link>
           </Grid>
           <Grid item xs={8}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h5" gutterBottom>
               Add or Update
             </Typography>
           </Grid>
+          {/* <Grid item xs={12}>
+            <Typography variant="subtitle1">Select Location on Map:</Typography>
+            <MapsComponent />
+          </Grid> */}
+          
           <Grid item xs={12}>
             <TextField
               fullWidth
