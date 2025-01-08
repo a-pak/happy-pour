@@ -15,14 +15,21 @@ public class Bar {
 
     private String name;
 
-    @Embedded
+    @Column(precision = 9)
     private double coordLong;
+    @Column(precision = 8)
     private double coordLat;
+    @Column
     private String address;
+    @Column(precision = 5)
     private double beer05Price;
+    @Column(precision = 5)
     private double wine075Price;
+    @Column(precision = 5)
     private double coffeePrice;
+    @Column(precision = 5)
     private double entryFee;
+    @Column(precision = 5)
     private double cloakRoomFee;
 
     public Bar(String name, double coordLat, double coordLong, String address) {
