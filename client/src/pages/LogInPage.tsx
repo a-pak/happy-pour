@@ -1,7 +1,10 @@
 import React from 'react'
+import {LoginComponent} from "../components/LoginComponent";
 
 export const LogInPage = () => {
   return (
-    <div>LogInComponent</div>
+    <div id="wrapper">
+      <LoginComponent/>
+    </div>
   )
 }
