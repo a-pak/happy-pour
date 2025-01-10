@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography, IconButton } from '@mui/material';
+import { TextField, Button,  Typography, IconButton, Box } from '@mui/material';
+import Grid from '@mui/material/Grid'
 import Autocomplete from '@mui/material/Autocomplete';
 import barsService from '../services/bars';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -98,9 +99,10 @@ const SubmitPage: React.FC = () => {
       {error && <Typography color="error">{error}</Typography>}
 
       <form onSubmit={handleSubmit}>
+        <Box sx={{flexGrow: 1}}>
         <Grid container spacing={1}>
 
-          <Grid item xs={2}>
+          <Grid xs={2}>
             <Link to="/" >
               <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'-10px', top:'-8px'}} >
                 <ArrowBackIcon fontSize="inherit" />
@@ -230,6 +232,7 @@ const SubmitPage: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
+        </Box>
       </form>
     </div>
   );

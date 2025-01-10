@@ -18,3 +18,8 @@
 body {
   margin: 0;
 }
+
+.leaflet-container {
+  height: calc(100vh - 56px);
+  width: 100%;  
+}

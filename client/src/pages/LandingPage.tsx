@@ -14,15 +14,16 @@ const LandingPage = () => {
     return (
         <>
             <ThemeProvider theme={theme}>
+            <Fab 
+                color="secondary" 
+                aria-label="add"
+                onClick={() => setDrawerOpen(true)}
+                style={{ position: 'absolute', bottom: 50, right: 30, zIndex: 1000 }}
+            >
+                <AddIcon />
+            </Fab>
             <MapsComponent/>
-                <Fab 
-                    color="secondary" 
-                    aria-label="add"
-                    onClick={() => setDrawerOpen(true)}
-                    style={{ position: 'absolute', bottom: 25, right: 60, zIndex: 10 }}
-                >
-                    <AddIcon />
-                </Fab>
+
             
 
             <SwipeableDrawer
