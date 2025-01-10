@@ -23,3 +23,9 @@ body {
   height: calc(100vh - 56px);
   width: 100%;  
 }
+
+.popupCustom .leaflet-popup-tip,
+.popupCustom .leaflet-popup-content-wrapper {
+    background: #602424;
+    color: #065d83;
+}
