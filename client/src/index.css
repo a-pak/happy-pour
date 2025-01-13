@@ -24,8 +24,6 @@ body {
   width: 100%;  
 }
 
-.popupCustom .leaflet-popup-tip,
-.popupCustom .leaflet-popup-content-wrapper {
-    background: #602424;
-    color: #065d83;
+.custom-popup .leaflet-popup-content-wrapper {
+  border: 0px solid #1F1F1F; /* Vaihda tämä teemasi pääväriksi */
 }
