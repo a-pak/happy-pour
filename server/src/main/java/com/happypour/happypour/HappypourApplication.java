@@ -28,6 +28,7 @@ public class HappypourApplication{
             repository.save(new Bar(null, "The Kallio Pub", 24.9484, 60.1799, "Pasilantie 2", 6.00, 8.00, 3.50, 8.00, 3.00));
             repository.save(new Bar(null, "Riverside Bar", 24.9334, 60.1649, "Itämerenkatu 3", 5.80, 7.50, 4.00, 12.00, 3.00));
 
+
             // Tulosta kaikki baarit
             repository.findAll().forEach(bar -> System.out.println(bar));
         };
