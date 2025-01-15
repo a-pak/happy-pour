@@ -37,12 +37,14 @@ public class UserService {
     }
 
     // Authenticates user with email and password
-    public boolean authenticate(String email, String password) {
+    public boolean authenticate(String email, String rawPassword) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isPresent()) {
+            System.out.println("UserService: Optional user is present!");
             User user = optionalUser.get();
-            return passwordEncoder.matches(user.getPassword(), passwordEncoder.encode(password));
+            return passwordEncoder.matches(rawPassword, user.getPassword());
         }
+        System.out.println("Optional user is not present!");
         return false;
     }
 

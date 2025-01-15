@@ -1,5 +1,5 @@
 package com.happypour.happypour.security;
-import com.happypour.happypour.model.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -51,9 +51,9 @@ public class JWTUtil {
     }
 
     // Method to validate a JWT token (example: check if the token is correctly signed)
-    public boolean validateToken(String token, User user) {
-        String userName = extractUsername(token);
-        return (userName.equals(user.getUsername()));
+    public boolean validateToken(String token, String username) {
+        String extractUsername = extractUsername(token);
+        return (extractUsername.equals(username));
     }
 
     // Method to extract the username (subject) from the JWT Token
