@@ -1,13 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
-let theme = createTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#1F1F1F',
     },
     secondary: {
-      main: '#4c3862',
-      light: '#494758'
+      main: '#322c60',
+      light: '#7c6cf1',
+      dark: "{{linear-gradient(#c69afb,#4233b3)}}"
     },
     info: {
       main: '#fcf8ff'
@@ -22,10 +23,10 @@ let theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiInputBase-root': {
-            color: '#ffffff', // Tekstin väri sisällä
+            color: '#ffffff', // Text color
           },
           '& .MuiInputLabel-root': {
-            color: '#ffffff', // Labelin väri
+            color: '#ffffff', // Label Color
           },
         },
       },
@@ -33,14 +34,14 @@ let theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          color: '#ffffff', // Typografian väri
+          color: '#ffffff', // Typography
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          color: '#ffffff', // Painikkeen tekstin väri
+          color: '#ffffff', // Button Text Color
         },
       },
     },
@@ -48,13 +49,13 @@ let theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#ffffff', // Ulkoreunan väri
+            borderColor: '#ffffff', // Outer border
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#ffffff', // Ulkoreunan hover-tilan väri
+            borderColor: '#ffffff', // Outer border: hover
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#ffffff', // Ulkoreunan väri fokusoituna
+            borderColor: '#ffffff', // Outer border: focused
           },
         },
       },

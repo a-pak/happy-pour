@@ -24,6 +24,6 @@ body {
   width: 100%;  
 }
 
-.custom-popup .leaflet-popup-content-wrapper {
-  border: 0px solid #1F1F1F; /* Vaihda tämä teemasi pääväriksi */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background-color: #7c6cf1
 }

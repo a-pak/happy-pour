@@ -2,20 +2,12 @@
 import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import { MenuComponent } from './MenuComponent';
-import { ThemeProvider } from '@emotion/react';
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import theme from '../Theme'
 import { Box, FormControl, InputLabel } from '@mui/material';
@@ -25,15 +17,15 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const AppBarComponent: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [openBarList, setOpenBarList] = useState(false);
+  // const [openBarList, setOpenBarList] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const menuItems = ['Log In', 'About', 'Contact'];
   const toggleDrawer = (open: boolean) => () => {
     setOpenDrawer(open);
   };
-  const toggleBarList = (open: boolean) => () => {
-    setOpenBarList(open)
-  } 
+  // const toggleBarList = (open: boolean) => () => {
+  //   setOpenBarList(open)
+  // } 
 
   const [drink, setDrink] = useState('b0,5')
   const handleChange = (event: SelectChangeEvent) => {

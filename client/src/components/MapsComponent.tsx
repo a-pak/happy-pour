@@ -3,31 +3,26 @@ import { useState, useEffect } from 'react'
 import barsService from '../services/bars'
 import { LocationMarkerComponent } from './LocationMarkerComponent'
 import Bar from '../model/IbarInterface';
-import { MapContainer, TileLayer } from 'react-leaflet';
-
-"use client"
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import locationService from '../services/location'
+import L from 'leaflet'
 
 const MapsComponent: React.FC = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);  
   const [bars, setBars] = useState<Bar[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const position = { lat: 60.192059, lng: 24.945841 }
 
-  //////////Asks the location of the user
+  ////////// Asks the location of the user using locationService
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);        },
-        (err) => {
-          setError('Problem getting the location. Allow the broser to use your location.');
-          console.error(err);
-        }
-      );
-    } else {
-      setError('Problem getting the location.');
-    }
+    locationService
+      .getUserLocation()
+      .then((location) => {
+        setUserLocation(location);
+      })
+      .catch((err: string) => {
+        setError(err);
+        console.error(err);
+      });
   }, []);
 
   ///////////////GET all bars from database
@@ -46,24 +41,32 @@ const MapsComponent: React.FC = () => {
 
   return (
     <div>
-      {error ? (<p>{error}</p>)
-        : !userLocation ? (<p>Loading User Location...</p>)
-          : (
-              <div id='map' style={{ height: `calc(100vh - 56px)` }}>
-              <MapContainer 
-                center={userLocation || [60.192059, 24.945841]}                
-                zoom={13} 
-                className="leaflet-container"
+        
+            <div id='map' style={{ height: `calc(100vh - 56px)` }}>
+            <MapContainer 
+              center={userLocation || [60.192059, 24.945841]}                
+              zoom={13} 
+              className="leaflet-container"
+            >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {userLocation && (
+              <Marker zIndexOffset={1000} position={userLocation} icon={L.icon({
+                iconUrl: "/user.png",
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+              })}
               >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <LocationMarkerComponent bars={bars} />
-            </MapContainer>
-              </div>
-          )
-      }
+              </Marker>
+            )}
+            {error ? (<p>{error}</p>)
+              :<LocationMarkerComponent bars={bars} />
+            }
+          </MapContainer>
+          </div>
+
     </div>
   );
 }

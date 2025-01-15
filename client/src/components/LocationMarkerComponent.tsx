@@ -24,6 +24,7 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                                         backgroundColor: theme.palette.secondary.light,
                                         color: theme.palette.common.white,
                                         padding: '10px',
+                                        marginTop: '20px',
                                         borderRadius: '8px',
                                         fontFamily: 'Arial, sans-serif',
                                         textAlign: 'center',

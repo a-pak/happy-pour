@@ -2,11 +2,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { TextField, Button,  Typography, IconButton, Box } from '@mui/material';
 import Grid from '@mui/material/Grid'
-import Autocomplete from '@mui/material/Autocomplete';
 import barsService from '../services/bars';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link } from 'react-router-dom';
-import MapsComponent from '../components/MapsComponent';
 import Bar from '../model/IbarInterface';
 
 
@@ -74,6 +72,7 @@ const SubmitPage: React.FC = () => {
         console.log('Bar added successfully');
         setBars((prevBars) => (prevBars ? [...prevBars, barToSubmit] : [barToSubmit]));
         setBarNames((prevNames) => (prevNames ? [...prevNames, barToSubmit.name] : [barToSubmit.name]));
+        console.log(bars, barNames)
         // Tyhjennä lomake
         setNewBar({
           name: '',

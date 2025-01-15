@@ -1,8 +1,6 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
-import AppBarComponent from './components/AppBarComponent'
-import MapsComponent from './components/MapsComponent'
 import LayoutComponent from './components/LayoutComponent'
 import { LogInPage } from './pages/LogInPage'
 import BarListPage from './pages/BarListPage'
