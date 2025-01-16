@@ -1,7 +1,6 @@
 package com.happypour.happypour.security;
 
 import com.happypour.happypour.security.filter.JwtAuthenticationFilter;
-import com.happypour.happypour.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,7 +21,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("api/auth/register", "api/auth/login")
+                        .requestMatchers("api/auth/**")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

@@ -41,17 +41,23 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody RegisterRequest registerRequest) {
         String email = registerRequest.getEmail();
         String username = registerRequest.getUsername();
+        String password = registerRequest.getPassword();
+        
         if (userService.userExistsByEmail(email)) {
             return ResponseEntity.status(409).body("User email is already in use!");
 
         } else if (userService.userExistsByUsername(username)) {
             return ResponseEntity.status(409).body("Username is already in use!");
 
+        } else if (email == null || username == null || password == null) {
+            return ResponseEntity.status(400).body("A valid user needs an email, username and password.");
+        
         } else {
-
             if( !userService.registerUser(registerRequest) ) {
                 return ResponseEntity.status(500).body("Unexpected error while writing user to database.");
+            
             };
+            
             return ResponseEntity.status(201).body("User added to database!");
         }
 
