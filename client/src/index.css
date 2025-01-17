@@ -18,3 +18,12 @@
 body {
   margin: 0;
 }
+
+.leaflet-container {
+  height: calc(100vh - 56px);
+  width: 100%;  
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background-color: #7c6cf1
+}

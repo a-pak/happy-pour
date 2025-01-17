@@ -1,42 +1,28 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import {
-  APIProvider,
-  Map,
-  AdvancedMarker,
-  Pin,
-  InfoWindow,
-  ColorScheme
-} from '@vis.gl/react-google-maps'
 import barsService from '../services/bars'
 import { LocationMarkerComponent } from './LocationMarkerComponent'
 import Bar from '../model/IbarInterface';
-
-
-"use client"
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import locationService from '../services/location'
+import L from 'leaflet'
 
 const MapsComponent: React.FC = () => {
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);  
   const [bars, setBars] = useState<Bar[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const position = { lat: 60.192059, lng: 24.945841 }
 
-  //////////Asks the location of the user
+  ////////// Asks the location of the user using locationService
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-        },
-        (err) => {
-          setError('Problem getting the location. Allow the broser to use your location.');
-          console.error(err);
-        }
-      );
-    } else {
-      setError('Problem getting the location.');
-    }
+    locationService
+      .getUserLocation()
+      .then((location) => {
+        setUserLocation(location);
+      })
+      .catch((err: string) => {
+        setError(err);
+        console.error(err);
+      });
   }, []);
 
   ///////////////GET all bars from database
@@ -55,28 +41,32 @@ const MapsComponent: React.FC = () => {
 
   return (
     <div>
-      {error ? (<p>{error}</p>)
-        : !userLocation ? (<p>Loading User Location...</p>)
-          : (
-            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-              <div style={{ height: `calc(100vh - 56px)` }}>
-                <Map
-                  mapId={import.meta.env.VITE_MAP_ID_API}
-                  defaultZoom={12}
-                  defaultCenter={position}
-                  zoomControl={true}
-                  gestureHandling='greedy'
-                  colorScheme='DARK'
-                >
-                  <LocationMarkerComponent bars={bars} />
+        
+            <div id='map' style={{ height: `calc(100vh - 56px)` }}>
+            <MapContainer 
+              center={userLocation || [60.192059, 24.945841]}                
+              zoom={13} 
+              className="leaflet-container"
+            >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {userLocation && (
+              <Marker zIndexOffset={1000} position={userLocation} icon={L.icon({
+                iconUrl: "/user.png",
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+              })}
+              >
+              </Marker>
+            )}
+            {error ? (<p>{error}</p>)
+              :<LocationMarkerComponent bars={bars} />
+            }
+          </MapContainer>
+          </div>
 
-                </Map>
-
-              </div>
-
-            </APIProvider>
-          )
-      }
     </div>
   );
 }

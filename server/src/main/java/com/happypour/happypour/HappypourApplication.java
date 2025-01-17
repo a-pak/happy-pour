@@ -33,5 +33,4 @@ public class HappypourApplication{
             repository.findAll().forEach(bar -> System.out.println(bar));
         };
     }
-
 }

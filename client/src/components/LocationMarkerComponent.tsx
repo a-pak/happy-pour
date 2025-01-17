@@ -1,55 +1,62 @@
-import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
-import React, { useState } from 'react'
+import React from 'react';
 import theme from '../Theme';
 import Bar from '../model/IbarInterface';
-
+import { Marker, Popup } from 'react-leaflet';
+import { ThemeProvider } from '@emotion/react';
+import { Typography, Box } from '@mui/material';
 
 interface LocationMarkerProps {
     bars: Bar[] | null;
 }
 
 export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars }) => {
-
-    const [openInfoWindowId, setOpenInfoWindowId] = useState<number | null>(null)
-
     return (
-        <div>
-            {bars && bars.map((bar) => {
-                return(
-                    <React.Fragment key={bar.id}>
-                    <AdvancedMarker 
-                        key={bar.id} 
-                        position={{lat: bar.coordLat, lng: bar.coordLong}}
-                        onClick={() => setOpenInfoWindowId(bar.id)} 
-                        title={'Tittelituure'}
-                        >
-                        <Pin background={""}/>
-                    </AdvancedMarker>
-                    {openInfoWindowId === bar.id && (
-                        <InfoWindow
-                            position={{lat: bar.coordLat, lng: bar.coordLong}}
-                            maxWidth={200}
-                            onCloseClick={() => setOpenInfoWindowId(null)} 
+        <>
+            {bars &&
+                bars.map((bar) => (
+                    <ThemeProvider theme={theme} key={bar.id}>
+                        <Marker position={[bar.coordLat, bar.coordLong]}>
+                            <Popup 
+                                className="custom-popup"
                             >
-                                <div
-                                    style={{
-                                        backgroundColor: 'grey',
+                                <Box
+                                    sx={{
+                                        backgroundColor: theme.palette.secondary.light,
+                                        color: theme.palette.common.white,
                                         padding: '10px',
+                                        marginTop: '20px',
                                         borderRadius: '8px',
+                                        fontFamily: 'Arial, sans-serif',
+                                        textAlign: 'center',
+                                        minWidth: '200px',
                                     }}
                                 >
-                                    <strong>{bar.name}</strong>
-                                    <p>{bar.address}</p>
-                                    <p>
-                                        Beer: {bar.beer05Price} € | Wine: {bar.wine075Price} € | Coffee: {bar.coffeePrice} €
-                                    </p>
-                                    <p>Entry Fee: {bar.entryFee} € | Cloakroom Fee: {bar.cloakroomFee} €</p>
-                                </div>
-                        </InfoWindow>
-                    )}
-                    </React.Fragment>
-                )
-            })}
-        </div>
-    )
-}
+                                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+                                        {bar.name}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ marginBottom: '10px' }}>
+                                        {bar.address}
+                                    </Typography>
+                                    <Box sx={{ textAlign: 'left', marginBottom: '10px' }}>
+                                        <Typography variant="body2">
+                                            <strong>Prices:</strong>
+                                        </Typography>
+                                        <Typography variant="body2">🍺 Beer (0.5L): {bar.beer05Price} €</Typography>
+                                        <Typography variant="body2">🍷 Wine (0.75L): {bar.wine075Price} €</Typography>
+                                        <Typography variant="body2">☕ Coffee: {bar.coffeePrice} €</Typography>
+                                    </Box>
+                                    <Box sx={{ textAlign: 'left' }}>
+                                        <Typography variant="body2">
+                                            <strong>Fees:</strong>
+                                        </Typography>
+                                        <Typography variant="body2">🎟 Entry: {bar.entryFee} €</Typography>
+                                        <Typography variant="body2">🧥 Cloakroom: {bar.cloakroomFee} €</Typography>
+                                    </Box>
+                                </Box>
+                            </Popup>
+                        </Marker>
+                    </ThemeProvider>
+                ))}
+        </>
+    );
+};

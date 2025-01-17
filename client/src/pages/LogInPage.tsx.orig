@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import React from 'react'
 import {LoginComponent} from "../components/LoginComponent";
+=======
+>>>>>>> master
 
 export const LogInPage = () => {
   return (

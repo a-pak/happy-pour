@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { TextField, Button, Grid, Typography, IconButton } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
+import { TextField, Button,  Typography, IconButton, Box } from '@mui/material';
+import Grid from '@mui/material/Grid'
 import barsService from '../services/bars';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link } from 'react-router-dom';
-import MapsComponent from '../components/MapsComponent';
 import Bar from '../model/IbarInterface';
 
 
@@ -73,6 +72,7 @@ const SubmitPage: React.FC = () => {
         console.log('Bar added successfully');
         setBars((prevBars) => (prevBars ? [...prevBars, barToSubmit] : [barToSubmit]));
         setBarNames((prevNames) => (prevNames ? [...prevNames, barToSubmit.name] : [barToSubmit.name]));
+        console.log(bars, barNames)
         // Tyhjennä lomake
         setNewBar({
           name: '',
@@ -98,9 +98,10 @@ const SubmitPage: React.FC = () => {
       {error && <Typography color="error">{error}</Typography>}
 
       <form onSubmit={handleSubmit}>
+        <Box sx={{flexGrow: 1}}>
         <Grid container spacing={1}>
 
-          <Grid item xs={2}>
+          <Grid xs={2}>
             <Link to="/" >
               <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'-10px', top:'-8px'}} >
                 <ArrowBackIcon fontSize="inherit" />
@@ -230,6 +231,7 @@ const SubmitPage: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
+        </Box>
       </form>
     </div>
   );
