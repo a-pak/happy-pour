@@ -17,15 +17,24 @@ import java.util.function.Function;
 
 @Component
 public class JWTUtil {
-    private String secretKey; // <--- String variable for secret key?
-
-    // Constructor generates key and assigns it to secretKey
-    public JWTUtil() {
-        this.secretKey = generateKey();
+    private static final String secretKey = generateKey();
+    private static JWTUtil instance = null;
+    
+    // Singleton constructor
+    private JWTUtil() {
+        System.out.println("\n\nSecret key: " + secretKey + "\n\n");
     }
 
-    // Generate a key with HmacSHA256 algorithm
-    private String generateKey() {
+    public static JWTUtil getInstance() {
+        if(instance == null) {
+            instance = new JWTUtil();
+        }
+
+        return instance;     
+    }
+
+    // Generate a key with HmacSHA256 algorithm and return as string
+    private static String generateKey() {
         SecretKey sk = null;
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
@@ -40,7 +49,7 @@ public class JWTUtil {
 
     // Get local secretkey in SecretKey form
     private SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(this.secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -59,30 +68,29 @@ public class JWTUtil {
                 .compact();
     }
 
-    // Method to validate a JWT token (example: check if the token is correctly
-    // signed)
     public boolean validateToken(String token, String username) {
-        System.out.println("[--JWT UTIL--] VALIDATE TOKEN \n");
+        try {
+            Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
+            return true;
 
-        String extractUsername = extractUsername(token);
-        System.out.println("[--JWT UTIL--] Extracted username from token: " + extractUsername);
-        return (extractUsername.equals(username));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Method to extract the username (subject) from the JWT Token
     public String extractUsername(String token) {
-        System.out.println("[--JWT UTIL--] Extract username\n");
         Claims claims = extractAllClaims(token);
-        System.out.println("[--JWT UTIL--] AFTER EXTRACT CLAIMS\n");
         return claims.getSubject(); // Get the username (subject) from the claims
     }
 
     // Method to extract all claims from the JWT token (used internally)
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey()) // Set the same secret key used to sign the JWT
+        return Jwts
+                .parser()
+                .verifyWith(getKey()) // <--- RUNS INTO io.jsonwebtoken.UnsupportedJwtException
                 .build()
-                .parseSignedClaims(token) // Parse the token and extract claims
+                .parseSignedClaims(token)
                 .getPayload();
     }
 

@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         System.out.println("JWT filter: TOKEN = " + token);
 
         if (token != null) {
-            username = jwtUtil.extractUsername(token);
+            username = jwtUtil.extractUsername(token); // <--- RUNS INTO io.jsonwebtoken.UnsupportedJwtException
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             
