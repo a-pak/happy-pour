@@ -15,42 +15,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * JWTUTIL implements the singleton pattern.
+ * Its constructor is private and can be only accessed through the getInstance -method.
+ * getInstance will return an existing instance and will create one first, if it doesn't exist.
+ */
 @Component
 public class JWTUtil {
     private static final String secretKey = generateKey();
     private static JWTUtil instance = null;
-    
-    // Singleton constructor
-    private JWTUtil() {
-        System.out.println("\n\nSecret key: " + secretKey + "\n\n");
-    }
 
+    // Private Singleton no args constructor
+    private JWTUtil() {}
+
+    // Method returns the only instance of JWTUtil.
     public static JWTUtil getInstance() {
         if(instance == null) {
             instance = new JWTUtil();
         }
 
         return instance;     
-    }
-
-    // Generate a key with HmacSHA256 algorithm and return as string
-    private static String generateKey() {
-        SecretKey sk = null;
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            sk = keyGenerator.generateKey();
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Base64.getEncoder().encodeToString(sk.getEncoded());
-    }
-
-    // Get local secretkey in SecretKey form
-    private SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     // Generate JWT token
@@ -78,6 +62,26 @@ public class JWTUtil {
         }
     }
 
+    // Generate a key with HmacSHA256 algorithm and return as string
+    private static String generateKey() {
+        SecretKey sk;
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+            sk = keyGenerator.generateKey();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Base64.getEncoder().encodeToString(sk.getEncoded());
+    }
+
+    // Get local secretKey in SecretKey form
+    private SecretKey getKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
     // Method to extract the username (subject) from the JWT Token
     public String extractUsername(String token) {
         Claims claims = extractAllClaims(token);
@@ -88,23 +92,14 @@ public class JWTUtil {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .verifyWith(getKey()) // <--- RUNS INTO io.jsonwebtoken.UnsupportedJwtException
+                .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    // TODO: !!!!!!
-    private Date extractExpiration(String token) {
-        return null;
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimResolver.apply(claims);
-    }
-
+    // TODO: Extract expiration from a token, to see if it is still valid.
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        return false;
     }
 }
