@@ -4,6 +4,7 @@ import com.happypour.happypour.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,8 +21,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("api/auth/**")
-                        .permitAll()
+                        .requestMatchers("api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
