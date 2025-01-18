@@ -3,6 +3,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
 import LayoutComponent from './components/LayoutComponent'
 import { LogInPage } from './pages/LogInPage'
+import RegisterPage from './pages/RegisterPage'
 import BarListPage from './pages/BarListPage'
 import LandingPage from './pages/LandingPage'
 import ProtectedRoutes from './components/ProtectedRoutes'
@@ -21,6 +22,7 @@ function App() {
               <Route index element={<LandingPage />} />
               <Route path="/bars" element={<BarListPage />} />
               <Route path="/login" element={<LogInPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path='/submit' element={<SubmitPage />} />
               
               <Route element={<ProtectedRoutes />}>
