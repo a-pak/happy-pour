@@ -1,28 +1,61 @@
-import {Form} from "react-router-dom";
-import {Simulate} from "react-dom/test-utils";
+import { Simulate } from "react-dom/test-utils";
 import submit = Simulate.submit;
-import LoginService from "../services/login";
-/* Login form component for LoginPage.
-* */
-export const LoginComponent = () => {
+import { loginAPI } from "../services/auth.ts";
+import LoginPayload from "../model/ILoginPayloadInterface";
+import { useState } from "react";
+
+
+// Login form component for LoginPage
+const LoginComponent: React.FC = () => {
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const handleLogin = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        if (!email || !password) {
+            setErrorMessage('Username and password are required.');
+            return;
+        }
+
+        try {
+            // Prepare login payload
+            const loginData: LoginPayload = {
+                email,
+                password,
+            };
+            // Call the login API
+            await loginAPI(loginData);
+            history.go(2);
+
+        } catch (error) {
+
+        }
+    }
 
     return (
-        <form onSubmit={LoginService.login({formData.email.value, formData.password.value});}>
-            <div>
-                <label>
-                    Email:
-                    <input type="email" name="email" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Password:
-                    <input type="password" name="password" />
-                </label>
-            </div>
-            <div>
-                <input type="submit" value="Log in" />
-            </div>
-        </form>
+        <div className="login-container">
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+                <input
+                    type="text"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button type="submit">Login</button>
+            </form>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+        </div>
     );
-}
+};
+export default LoginComponent;
