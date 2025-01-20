@@ -32,16 +32,16 @@ const RegisterComponent = () => {
     }
 
     return (
-        <div className="wrapper">
+        <div className="wrapper margin-top">
 
             <h2>Create a new account</h2>
 
 
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
+            <form onSubmit={handleSubmit} className="form">
+                <div className="wrapper">
 
                     <input
-                        className="input"
+                        className="form-item"
                         type="text"
                         id="username"
                         placeholder="Enter username"
@@ -50,10 +50,10 @@ const RegisterComponent = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="wrapper">
 
                     <input
-                        className="input"
+                        className="form-item"
                         type="email"
                         id="email"
                         placeholder="Enter email"
@@ -62,10 +62,10 @@ const RegisterComponent = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="wrapper">
 
                     <input
-                        className="input"
+                        className="form-item"
                         type="password"
                         id="password"
                         value={password}
@@ -74,8 +74,9 @@ const RegisterComponent = () => {
                         required
                     />
                 </div>
-
-                <button className="input" type="submit">Register</button>
+                <div className="wrapper">
+                    <button className="form-item" type="submit">Register</button>
+                </div>
             </form>
         </div>
 

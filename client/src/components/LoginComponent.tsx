@@ -33,26 +33,32 @@ const LoginComponent: React.FC = () => {
     }
 
     return (
-        <div className="wrapper">
+        <div className="wrapper margin-top">
             <h2>Login</h2>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} className="form">
+                <div className="wrapper">
                 <input
-                    className="input"
+                    className="form-item"
                     type="text"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
+                </div>
+                <div className="wrapper">
                 <input
-                    className="input"
+                    className="form-item"
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button className=" input button" type="submit">Login</button>
+                </div>
+                <div className="wrapper">
+                <button className="form-item" type="submit">Login</button>
+                </div>
             </form>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>

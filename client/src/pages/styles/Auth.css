@@ -3,13 +3,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: 100%;
 }
-form {
-    display: flex;
-    flex-direction: column;
-}
-.form-group {
+.margin-top {
+    margin-top: 10%;
+} 
+.column {
     display: flex;
     flex-direction: column;
 }
@@ -17,12 +16,27 @@ label {
     display: flex;
     justify-content: center;
 }
-.input {
+.form {
+    width: 55%;
+}
+button {
+    background-color: #7c6cf1;
+    font-weight: bold;
+}
+.form-item {
+    width: 250px;
+    height: 45px;
     margin: 5px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    box-sizing: border-box;
+      
 }
 .margin-bottom {
     margin-bottom: 20%;
+}
+
+.DEBUG-RED {
+    border : 1px solid red;
 }
