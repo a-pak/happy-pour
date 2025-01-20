@@ -1,5 +1,3 @@
-import { Simulate } from "react-dom/test-utils";
-import submit = Simulate.submit;
 import { loginAPI } from "../services/auth.ts";
 import LoginPayload from "../model/ILoginPayloadInterface";
 import { useState } from "react";
@@ -27,18 +25,19 @@ const LoginComponent: React.FC = () => {
             };
             // Call the login API
             await loginAPI(loginData);
-            history.go(2);
 
         } catch (error) {
-
+            alert('Login failed. Please try again.');
+            console.error('Login failed:', error);
         }
     }
 
     return (
-        <div className="login-container">
+        <div className="wrapper">
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <input
+                    className="input"
                     type="text"
                     placeholder="Email"
                     value={email}
@@ -46,13 +45,14 @@ const LoginComponent: React.FC = () => {
                     required
                 />
                 <input
+                    className="input"
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
+                <button className=" input button" type="submit">Login</button>
             </form>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
