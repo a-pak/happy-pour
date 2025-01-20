@@ -15,20 +15,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    /*
+        Security config with login filter. Uncomment rows 26-27 to enable protection.
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
-                        .anyRequest().authenticated()
+                        // .requestMatchers("api/auth/**").permitAll()
+                        // .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
+                        .anyRequest().permitAll()
+                        //.anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(JWTUtil.getInstance()), UsernamePasswordAuthenticationFilter.class);
+                );
+                // .addFilterBefore(new JwtAuthenticationFilter(JWTUtil.getInstance()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
