@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     /*
-        Security config with login filter. Uncomment rows 26-27 to enable protection.
+        Security config with login filter. Uncomment rows to enable protection.
      */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

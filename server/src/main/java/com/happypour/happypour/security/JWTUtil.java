@@ -16,9 +16,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * JWTUTIL implements the singleton pattern.
+ * <h4>JWTUTIL implements the singleton pattern.</h4>
  * Its constructor is private and can be only accessed through the getInstance -method.
- * getInstance will return an existing instance and will create one first, if it doesn't exist.
+ * <br><br>
+ * Don't try to use or un-private the instructor!
+ * getInstance will return an existing instance or will create one, if it doesn't exist.
  */
 @Component
 public class JWTUtil {
@@ -28,7 +30,10 @@ public class JWTUtil {
     // Private Singleton no args constructor
     private JWTUtil() {}
 
-    // Method returns the only instance of JWTUtil.
+    /** Method returns the only instance of JWTUtil.
+     *
+     * @return Instance of JWTUTIL
+     */
     public static JWTUtil getInstance() {
         if(instance == null) {
             instance = new JWTUtil();
@@ -88,7 +93,14 @@ public class JWTUtil {
         return claims.getSubject(); // Get the username (subject) from the claims
     }
 
-    // Method to extract all claims from the JWT token (used internally)
+    /** Method to extract all claims from the JWT token (private, used internally)
+     *
+     *  @Note: If included method Jwts.verifyWith(key) is called after an HTTP request, the request will be denied with status 500(Internal server error).
+     *  Even if there is no JWT security filter configured.
+     *
+     * @param token JWT token as String
+     * @return claims from the token as io.jsonwebtoken.Claims.
+     */
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
