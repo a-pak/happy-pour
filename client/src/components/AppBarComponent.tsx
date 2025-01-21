@@ -9,23 +9,35 @@ import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { MenuComponent } from './MenuComponent';
 import SportsBarIcon from "@mui/icons-material/SportsBar";
+import MapIcon from '@mui/icons-material/Map';
 import theme from '../Theme'
 import { Box, FormControl, InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const AppBarComponent: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
-  // const [openBarList, setOpenBarList] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const menuItems = ['Log In', 'About', 'Contact'];
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  
+    if(location.pathname != '/') {
+      
+    }
+
   const toggleDrawer = (open: boolean) => () => {
     setOpenDrawer(open);
   };
-  // const toggleBarList = (open: boolean) => () => {
-  //   setOpenBarList(open)
-  // } 
+  const toggleBarList = () => {
+    navigate('/bars')
+  } 
+  const toggleLandingPage = () => {
+    navigate('/')
+  }
 
   const [drink, setDrink] = useState('b0,5')
   const handleChange = (event: SelectChangeEvent) => {
@@ -91,9 +103,14 @@ const AppBarComponent: React.FC = () => {
           </FormControl>
 
         </Box>
-        <IconButton color="inherit" aria-label="bars" onClick={toggleDrawer(true)}>
-          <SportsBarIcon />
-        </IconButton>
+        {location.pathname !== '/' 
+        ? <IconButton color="inherit" aria-label="bars" onClick={toggleLandingPage}>
+            <MapIcon />
+          </IconButton>
+        : <IconButton color="inherit" aria-label="bars" onClick={toggleBarList}>
+            <SportsBarIcon />
+          </IconButton>}
+
       </Toolbar>
       
     </AppBar>

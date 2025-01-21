@@ -4,11 +4,12 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#1F1F1F',
+      light: '#3F4045'
     },
     secondary: {
       main: '#322c60',
       light: '#7c6cf1',
-      dark: "{{linear-gradient(#c69afb,#4233b3)}}"
+      dark: "{linear-gradient(#c69afb,#4233b3)}",
     },
     info: {
       main: '#fcf8ff'

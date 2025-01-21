@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { TextField, Button,  Typography, IconButton, Box } from '@mui/material';
 import Grid from '@mui/material/Grid'
 import barsService from '../services/bars';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+import { Link, useLocation } from 'react-router-dom';
 import Bar from '../model/IbarInterface';
 
 
@@ -13,12 +13,18 @@ const SubmitPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [barNames, setBarNames] = useState<string[] | null>(null);
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const name = params.get('name')
+  const lat = params.get('lat') ? parseFloat(params.get('lat')!) : 0;
+  const lng = params.get('lng') ? parseFloat(params.get('lng')!) : 0;
+
   // Lomakkeen kenttien tilat
   const [newBar, setNewBar] = useState({
     name: '',
     address: '',
-    lat: '',
-    lng: '',
+    lat: lat,
+    lng: lng,
     beer05Price: '',
     wine075Price: '',
     coffeePrice: '',
@@ -53,11 +59,11 @@ const SubmitPage: React.FC = () => {
     e.preventDefault();
 
     const barToSubmit: Bar = {
-      id: Math.random(), // Väliaikainen ID (backend-generoi lopullisen ID:n)
+      id: Math.random(),
       name: newBar.name,
       address: newBar.address,
-      coordLat: parseFloat(newBar.lat),
-      coordLong: parseFloat(newBar.lng),
+      coordLat: newBar.lat,
+      coordLong: newBar.lng,
       beer05Price: parseFloat(newBar.beer05Price),
       wine075Price: parseFloat(newBar.wine075Price),
       coffeePrice: parseFloat(newBar.coffeePrice),
@@ -77,8 +83,8 @@ const SubmitPage: React.FC = () => {
         setNewBar({
           name: '',
           address: '',
-          lat: '',
-          lng: '',
+          lat: 0,
+          lng: 0,
           beer05Price: '',
           wine075Price: '',
           coffeePrice: '',
@@ -97,74 +103,51 @@ const SubmitPage: React.FC = () => {
 
       {error && <Typography color="error">{error}</Typography>}
 
+      
       <form onSubmit={handleSubmit}>
         <Box sx={{flexGrow: 1}}>
         <Grid container spacing={1}>
 
-          <Grid xs={2}>
-            <Link to="/" >
-              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'-10px', top:'-8px'}} >
-                <ArrowBackIcon fontSize="inherit" />
-              </IconButton>
-            </Link>
-          </Grid>
-          <Grid item xs={8}>
+
+          <Grid item xs={10}>
             <Typography variant="h5" gutterBottom>
               Add or Update
             </Typography>
           </Grid>
-          {/* <Grid item xs={12}>
-            <Typography variant="subtitle1">Select Location on Map:</Typography>
-            <MapsComponent />
-          </Grid> */}
-          
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Bar Name"
-              color='secondary'
-              name="name"
-              value={newBar.name}
-              onChange={handleInputChange}
-              required
-            />
+          <Grid xs={2}>
+            <Link to="/" >
+              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            </Link>
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Address"
-              name="address"
-              value={newBar.address}
-              onChange={handleInputChange}
-              required
-            />
-          </Grid>
+            <>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Bar Name"
+                  color='secondary'
+                  name="name"
+                  value={newBar.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Latitude"
-              name="lat"
-              type="number"
-              value={newBar.lat}
-              onChange={handleInputChange}
-              required
-            />
-          </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Address"
+                  name="address"
+                  value={newBar.address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Longitude"
-              name="lng"
-              type="number"
-              value={newBar.lng}
-              onChange={handleInputChange}
-              required
-            />
-          </Grid>
 
+            </>
           <Grid item xs={4}>
             <TextField
               fullWidth
@@ -173,7 +156,6 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.beer05Price}
               onChange={handleInputChange}
-              required
             />
           </Grid>
 
@@ -185,7 +167,7 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.wine075Price}
               onChange={handleInputChange}
-              required
+              
             />
           </Grid>
 
@@ -197,7 +179,6 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.coffeePrice}
               onChange={handleInputChange}
-              required
             />
           </Grid>
 
@@ -209,7 +190,6 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.entryFee}
               onChange={handleInputChange}
-              required
             />
           </Grid>
 
@@ -221,12 +201,12 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.cloakroomFee}
               onChange={handleInputChange}
-              
             />
           </Grid>
 
+          
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" color="secondary" fullWidth>
               Submit
             </Button>
           </Grid>

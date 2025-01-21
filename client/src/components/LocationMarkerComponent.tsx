@@ -3,13 +3,17 @@ import theme from '../Theme';
 import Bar from '../model/IbarInterface';
 import { Marker, Popup } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 interface LocationMarkerProps {
     bars: Bar[] | null;
 }
 
 export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars }) => {
+    
+
+
     return (
         <>
             {bars &&
@@ -52,6 +56,10 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                                         <Typography variant="body2">🎟 Entry: {bar.entryFee} €</Typography>
                                         <Typography variant="body2">🧥 Cloakroom: {bar.cloakroomFee} €</Typography>
                                     </Box>
+                                    <Link to={`/submit?name=${bar.name}&lat=${bar.coordLat}&lng=${bar.coordLong}`}>
+                                        <Button >Update Prices!</Button>
+                                    </Link>
+
                                 </Box>
                             </Popup>
                         </Marker>
