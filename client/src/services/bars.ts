@@ -13,7 +13,13 @@ const create = async (newBar: Bar): Promise<Bar> => {
     return response.data
 }
 
+const update = async (updatedBar: Bar): Promise<Bar> => {
+    const response = await axios.put<Bar>(baseUrl, updatedBar)
+    return response.data
+}
+
 export default {
     getAll,
     create,
+    update
 }

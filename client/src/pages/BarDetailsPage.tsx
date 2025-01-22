@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Box, Paper, List, ListItem, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import barsService from '../services/bars';
+import barsService from '../services/bars.ts';
 import Bar from '../model/IbarInterface';
 
 const BarDetailsPage: React.FC = () => {

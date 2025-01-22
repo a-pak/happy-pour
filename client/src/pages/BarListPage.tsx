@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Select, MenuItem, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import barsService from '../services/bars'; // Oletus palvelu baaridatalle
+import barsService from '../services/bars.ts'; // Oletus palvelu baaridatalle
 import Bar from '../model/IbarInterface'; // Baari-interface
 import { useTheme } from '@mui/material/styles'; // Hook teemavärien käyttämiseen
 
