@@ -6,6 +6,8 @@ import com.happypour.happypour.repository.BarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.beans.BeanUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,5 +28,14 @@ public class BarService {
         System.out.println("BarService: Adding bar: " + bar.toString());
         bar.setId(null);
         barRepository.save(bar);
+    }
+
+    public Bar updateBar(Long id, Bar updatedBar) {
+        return barRepository.findById(id)
+                .map(existingBar -> {
+                    BeanUtils.copyProperties(updatedBar, existingBar, "id");
+                    return barRepository.save(existingBar);
+                })
+                .orElse(null);
     }
 }
