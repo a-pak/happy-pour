@@ -3,6 +3,7 @@ package com.happypour.happypour.controller;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,5 +26,17 @@ public class BarController {
         System.out.println("!! addBar called: \n " + newBar);
         barService.setBar(newBar);
         return newBar;
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Bar> updateBar(
+            @PathVariable Long id,
+            @RequestBody Bar updatedBar) {
+        Bar bar = barService.updateBar(id, updatedBar);
+
+        if (bar == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(bar);
     }
 }
