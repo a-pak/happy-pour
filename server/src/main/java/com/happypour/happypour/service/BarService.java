@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BarService {
@@ -22,6 +23,11 @@ public class BarService {
         bars.forEach(bar -> System.out.println(bar.toString()));
 
         return bars;
+    }
+    public Bar getById(Long id) {
+        Optional<Bar> optionalBar = barRepository.findById(id);
+        return optionalBar.orElse(null);
+
     }
 
     public void setBar(Bar bar) {

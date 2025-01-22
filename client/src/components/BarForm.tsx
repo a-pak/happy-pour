@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Bar from '../model/IbarInterface.ts'
+import {defaultBar} from '../model/IbarInterface.ts'
+import BarService from '../services/bars.ts'
 
-interface BarFormProps {
-    initialBar: Bar;
-    onSubmit: (updatedBar: Bar) => void;
+interface SubmitFormProps {
+    initialBarId?: number;
+    lng?: number;
+    lat?: number;
 }
+const BarForm: React.FC<SubmitFormProps> = ({ lng, lat, initialBarId }) => {
+    const isUpdate : boolean = initialBarId !== undefined;
+    const [bar, setBar] = useState<Bar>(defaultBar);
 
-const BarForm: React.FC<BarFormProps> = ({ initialBar, onSubmit }) => {
-    const [bar, setBar] = useState<Bar>(initialBar);
+    useEffect(() => {
+         if(initialBarId !== undefined) {
+            BarService.getById(initialBarId).then(
+                (bar) => {
+                    setBar(bar);
+                }
+            )
+        } else {
+            if(lng !== undefined && lat !== undefined) {
+                setBar({
+                    ...bar,
+                    coordLong: lng,
+                    coordLat: lat
+                });
+            }
+        }
+    });
 
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -17,7 +38,11 @@ const BarForm: React.FC<BarFormProps> = ({ initialBar, onSubmit }) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onSubmit(bar);
+        if(isUpdate) {
+            BarService.update(bar);
+        } else {
+            BarService.create(bar);
+        }
     };
 
     return (

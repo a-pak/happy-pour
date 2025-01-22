@@ -8,6 +8,11 @@ const getAll = async (): Promise<Bar[]> => {
     return response.data
 }
 
+const getById = async (id: number): Promise<Bar> => {
+    const response = await axios.get(baseUrl + '/get-by-id?id=' + id)
+    return response.data
+}
+
 const create = async (newBar: Bar): Promise<Bar> => {
     const response = await axios.post<Bar>(baseUrl, newBar)
     return response.data
@@ -20,6 +25,7 @@ const update = async (updatedBar: Bar): Promise<Bar> => {
 
 export default {
     getAll,
+    getById,
     create,
     update
 }
