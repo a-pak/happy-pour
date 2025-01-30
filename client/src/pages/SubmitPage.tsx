@@ -4,7 +4,7 @@ import { TextField, Button,  Typography, IconButton, Box } from '@mui/material';
 import Grid from '@mui/material/Grid'
 import barsService from '../services/bars';
 import CloseIcon from '@mui/icons-material/Close';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Bar from '../model/IbarInterface';
 
 
@@ -18,10 +18,11 @@ const SubmitPage: React.FC = () => {
   const name = params.get('name')
   const lat = params.get('lat') ? parseFloat(params.get('lat')!) : 0;
   const lng = params.get('lng') ? parseFloat(params.get('lng')!) : 0;
+  const navigate = useNavigate();
 
   // Lomakkeen kenttien tilat
   const [newBar, setNewBar] = useState({
-    name: '',
+    name: name || '',
     address: '',
     lat: lat,
     lng: lng,
@@ -91,6 +92,7 @@ const SubmitPage: React.FC = () => {
           entryFee: '',
           cloakroomFee: '',
         });
+        navigate('/')
       })
       .catch((err: string) => {
         setError(`Failed to add bar: ${err}`);
@@ -109,12 +111,12 @@ const SubmitPage: React.FC = () => {
         <Grid container spacing={1}>
 
 
-          <Grid item xs={9}>
+          <Grid item xs={10}>
             <Typography variant="h5" gutterBottom>
               Add or Update
             </Typography>
           </Grid>
-          <Grid item xs={3} marginRight={10}>
+          <Grid item xs={2}>
             <Link to="/" >
               <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} >
                 <CloseIcon fontSize="inherit" />
