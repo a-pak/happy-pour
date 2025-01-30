@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bars")
-@CrossOrigin(origins={"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins={"http://localhost:8080", "http://localhost:3000", "http://localhost:5173"})
 public class BarController {
 
     @Autowired
