@@ -3,7 +3,7 @@ services:
   backend:
     container_name: happy-pour-app
     build:
-      context: ./server
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"  # Expose backend on port 8080
