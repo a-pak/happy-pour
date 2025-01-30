@@ -1,5 +1,6 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:8080/api/bars';
+//const baseUrl = 'http://localhost:8080/api/bars';
+const baseUrl = 'https://happy-pour-be.onrender.com/api/bars';
 import Bar from '../model/IbarInterface';
 
 
