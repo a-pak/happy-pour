@@ -87,8 +87,8 @@ const BarListPage: React.FC = () => {
                   '&:hover': { backgroundColor: theme.palette.action.hover } 
                 }}
                 onClick={() => {
-                  //navigate(`/bar/${bar.id}`)
-                  console.log("navigating to bar details page in the future!")
+                  navigate(`/bar/${bar.id}`)
+                  //console.log("navigating to bar details page in the future!")
               }}
               >
                 <TableCell>{bar.name}</TableCell>

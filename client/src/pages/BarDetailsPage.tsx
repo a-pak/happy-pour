@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Typography, Box, Paper, List, ListItem, ListItemText, IconButton, Grid } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
 import barsService from '../services/bars';
 import Bar from '../model/IbarInterface';
+import theme from '../Theme';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,10 +26,21 @@ const BarDetailsPage: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2 }}>
-      <Paper sx={{ padding: 2 }}>
+      <Paper sx={{ padding: 2, backgroundColor:theme.palette.secondary.main }}>
+        <Grid container spacing={1}>
+        <Grid item xs={10}>
         <Typography variant="h4" gutterBottom>
           {bar.name}
         </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Link to="/bars" >
+          <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+          </Link> 
+        </Grid>
+        </Grid>
         <Typography variant="subtitle1" gutterBottom>
           Address: {bar.address}
         </Typography>

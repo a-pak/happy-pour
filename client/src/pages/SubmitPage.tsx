@@ -109,12 +109,12 @@ const SubmitPage: React.FC = () => {
         <Grid container spacing={1}>
 
 
-          <Grid item xs={10}>
+          <Grid item xs={9}>
             <Typography variant="h5" gutterBottom>
               Add or Update
             </Typography>
           </Grid>
-          <Grid xs={2}>
+          <Grid item xs={3} marginRight={10}>
             <Link to="/" >
               <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} >
                 <CloseIcon fontSize="inherit" />
