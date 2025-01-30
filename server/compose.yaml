@@ -1,9 +1,16 @@
-services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+  backend:
+    container_name: spring-boot-backend
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     ports:
-      - '5432'
+      - "8080:8080"  # Expose backend on port 8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_dev
+      SPRING_DATASOURCE_USERNAME: spring
+      SPRING_DATASOURCE_PASSWORD: happypour
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - database
+    networks:
+      - app-network
