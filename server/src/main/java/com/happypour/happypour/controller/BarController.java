@@ -28,6 +28,15 @@ public class BarController {
         return newBar;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Bar> getBar(@PathVariable Long id) {
+        Bar bar = barService.getBar(id);
+        if (bar == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(bar);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Bar> updateBar(
             @PathVariable Long id,
