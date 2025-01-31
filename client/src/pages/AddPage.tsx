@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSearchParams } from "react-router-dom";
-import BarForm from "../components/BarForm.tsx";
+import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 
 export const AddPage : React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -12,7 +12,7 @@ export const AddPage : React.FC = () => {
 
   return (
     <div>
-        <BarForm lat={lat} lng={long}/>
+        <SubmitFormComponent lat={lat} lng={long}/>
     </div>
   )
 }

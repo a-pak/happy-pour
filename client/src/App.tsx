@@ -24,10 +24,11 @@ function App() {
               <Route path="/bars" element={<BarListPage />} />
               <Route path="/login" element={<LogInPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path='/add' element={<AddPage />}/>
+
               <Route element={<ProtectedRoutes />}>
                 <Route path='/update/:barId' element={<UpdatePage />} />
                 <Route path='/submit/' element={<AddPage />} />
+
               </Route>
             </Route>
           </Routes>

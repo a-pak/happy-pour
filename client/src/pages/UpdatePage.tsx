@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BarForm from "../components/BarForm.tsx";
+import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import {useParams} from "react-router-dom";
 
 const UpdatePage: React.FC = () => {
@@ -7,11 +7,11 @@ const UpdatePage: React.FC = () => {
   function submitComponentRender() {
     if(barId !== undefined) {
       return (
-        <BarForm initialBarId={Number(barId)} /> // Why does this work?
+        <SubmitFormComponent initialBarId={Number(barId)} /> // Why does this work?
       )
     }
     return (
-        <BarForm initialBarId={undefined} />
+        <SubmitFormComponent initialBarId={undefined} />
     )
   }
 
