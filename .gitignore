@@ -39,3 +39,7 @@ testem.log
 .DS_Store
 Thumbs.db
 .env
+
+#Merge tool conflict outputs
+.orig
+.LOCAL
