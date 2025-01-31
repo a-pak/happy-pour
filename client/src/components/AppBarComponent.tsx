@@ -99,6 +99,7 @@ const AppBarComponent: React.FC = () => {
               >
                   <MenuItem value={'b0,5'}>Draft Beer (0,5 l)</MenuItem>
                   <MenuItem value={'w0,75'}>House Wine (0,75 l)</MenuItem>
+                  <MenuItem value={'coffee'}>Coffee</MenuItem>
               </Select>
           </FormControl>
 

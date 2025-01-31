@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+import React from 'react'
 import { useSearchParams } from "react-router-dom";
 import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 
@@ -8,6 +10,8 @@ export const AddPage : React.FC = () => {
 
   const lat = latParam ? parseFloat(latParam) : undefined;
   const long = lngParam ? parseFloat(lngParam) : undefined;
+=======
+>>>>>>> master
 
   return (
     <div>

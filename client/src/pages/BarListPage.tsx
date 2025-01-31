@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Select, MenuItem, Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import barsService from '../services/bars.ts'; // Oletus palvelu baaridatalle
 import Bar from '../model/IbarInterface'; // Baari-interface
 import { useTheme } from '@mui/material/styles'; // Hook teemavärien käyttämiseen
+import { SelectChangeEvent } from '@mui/material';
 
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<Bar[]>([]);
@@ -22,7 +23,7 @@ const BarListPage: React.FC = () => {
   }, []);
 
   // Käsittelee attribuutin valinnan muutoksen
-  const handleAttributeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleAttributeChange = (event: SelectChangeEvent<'beer05Price' | 'wine075Price' | 'coffeePrice'>) => {
     setSelectedAttribute(event.target.value as 'beer05Price' | 'wine075Price' | 'coffeePrice');
   };
 
@@ -35,13 +36,6 @@ const BarListPage: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2 }}>
-      {/* <Typography 
-        variant="h4" 
-        gutterBottom 
-        sx={{ color: theme.palette.primary.main }}
-      >
-        Bars List
-      </Typography>
 
       <Box 
         sx={{ 
@@ -51,20 +45,30 @@ const BarListPage: React.FC = () => {
           marginBottom: 2 
         }}
       >
-        <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>Sort by:</Typography>
+        <Typography variant="h6" >Sort by:</Typography>
         <Select 
           value={selectedAttribute} 
           onChange={handleAttributeChange} 
-          sx={{ 
-            color: theme.palette.primary.main, 
-            '& .MuiSelect-icon': { color: theme.palette.primary.main } 
-          }}
+          sx={{
+            width: 220,
+            '& .MuiOutlinedInput-root': {
+                border: 'none',
+                color: 'primary.main'
+            }}}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  bgcolor: "grey.900", 
+                  color: "white",
+                },
+              },
+            }}
         >
           <MenuItem value="beer05Price">Beer (0.5L)</MenuItem>
           <MenuItem value="wine075Price">Wine (0.75L)</MenuItem>
           <MenuItem value="coffeePrice">Coffee</MenuItem>
         </Select>
-      </Box> */}
+      </Box>
 
       <TableContainer component={Paper} sx={{ border: `none` }}>
         <Table>
@@ -87,8 +91,8 @@ const BarListPage: React.FC = () => {
                   '&:hover': { backgroundColor: theme.palette.action.hover } 
                 }}
                 onClick={() => {
-                  //navigate(`/bar/${bar.id}`)
-                  console.log("navigating to bar details page in the future!")
+                  navigate(`/bar/${bar.id}`)
+                  //console.log("navigating to bar details page in the future!")
               }}
               >
                 <TableCell>{bar.name}</TableCell>

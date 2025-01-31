@@ -5,6 +5,7 @@ import LayoutComponent from './components/LayoutComponent'
 import { LogInPage } from './pages/LogInPage'
 import RegisterPage from './pages/RegisterPage'
 import BarListPage from './pages/BarListPage'
+import BarDetailsPage from './pages/BarDetailsPage'
 import LandingPage from './pages/LandingPage'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import UpdatePage from './pages/UpdatePage.tsx'
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<LayoutComponent />}>
               <Route index element={<LandingPage />} />
               <Route path="/bars" element={<BarListPage />} />
+              <Route path="/bar/:id" element={<BarDetailsPage />} />
               <Route path="/login" element={<LogInPage />} />
               <Route path="/register" element={<RegisterPage />} />
 

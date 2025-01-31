@@ -30,6 +30,12 @@ public class BarService {
 
     }
 
+    public Bar getBar(Long id) {
+         Optional<Bar> bar = barRepository.findById(id);
+         System.out.println("Fetching bar: " + bar);
+         return bar.orElse(null);
+    }
+
     public void setBar(Bar bar) {
         System.out.println("BarService: Adding bar: " + bar.toString());
         bar.setId(null);

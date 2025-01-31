@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bars")
-@CrossOrigin(origins={"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins={"http://localhost:8080", "http://localhost:3000", "http://localhost:5173"})
 public class BarController {
 
     @Autowired
@@ -33,6 +33,15 @@ public class BarController {
         System.out.println("!! addBar called: \n " + newBar);
         barService.setBar(newBar);
         return newBar;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Bar> getBar(@PathVariable Long id) {
+        Bar bar = barService.getBar(id);
+        if (bar == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(bar);
     }
 
     @PutMapping("/{id}")
