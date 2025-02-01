@@ -43,7 +43,6 @@ Thumbs.db
 .env.production
 
 #Merge tool conflict outputs
-.orig
-.LOCAL
-.tsx.orig
-.tsx.LOCAL
+*.orig
+*.LOCAL
+
