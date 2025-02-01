@@ -1,13 +1,15 @@
 import * as React from 'react';
 import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import {useParams} from "react-router-dom";
+import { parse } from 'path';
 
 const UpdatePage: React.FC = () => {
-  const { barId } = useParams();
+  const { id } = useParams();
   function submitComponentRender() {
-    if(barId !== undefined) {
+    if(id !== undefined) {
+      const realId : number = parseInt(id);
       return (
-        <SubmitFormComponent initialBarId={Number(barId)} /> // Why does this work?
+        <SubmitFormComponent initialBarId={realId} />
       )
     }
     return (

@@ -76,7 +76,7 @@ const BarDetailsPage: React.FC = () => {
           </ListItem>
         </List>
 
-        <Link to={`/submit?name=${bar.name}&lat=${bar.coordLat}&lng=${bar.coordLong}`}>
+        <Link to={`/update/${bar.id}`}>
             <Button sx={{backgroundColor:theme.palette.secondary.light}}>Update Prices</Button>
         </Link>
         <Button onClick={() => removeBar()}>Delete Bar (please don't)</Button>

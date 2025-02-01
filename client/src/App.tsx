@@ -30,8 +30,9 @@ function App() {
 
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/about" element={<AboutUsPage />} />
+              
               <Route element={<ProtectedRoutes />}>
-                <Route path='/update/:barId' element={<UpdatePage />} />
+                <Route path='/update/:id' element={<UpdatePage />} />
                 <Route path='/submit/' element={<AddPage />} />
               </Route>
             </Route>
