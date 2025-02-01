@@ -12,10 +12,11 @@ import SubmitPage from './pages/SubmitPage'
 import { AddPage } from './pages/AddPage'
 import { UpdatePricePage } from './pages/UpdatePricePage'
 import { ThemeProvider } from '@emotion/react'
+import  { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
+import { AboutUsPage } from './pages/AboutUsPage'
 
 function App() {
-
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -30,9 +31,10 @@ function App() {
               <Route path='/submit' element={<SubmitPage />} />
               <Route path='/add' element={<AddPage />}/>
               <Route path='/update' element={<UpdatePricePage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/about" element={<AboutUsPage />} />
               <Route element={<ProtectedRoutes />}>
                 <Route path='/submit' element={<SubmitPage />} />
-              
               </Route>
             </Route>
           </Routes>

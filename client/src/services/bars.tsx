@@ -1,6 +1,6 @@
 import axios from 'axios'
-//const baseUrl = 'http://localhost:8080/api/bars';
-const baseUrl = 'https://happy-pour-be.onrender.com/api/bars';
+const baseUrl = 'http://localhost:8080/api/bars';
+//const baseUrl = 'https://happy-pour-be.onrender.com/api/bars';
 import Bar from '../model/IbarInterface';
 
 
@@ -19,8 +19,14 @@ const getById = async (id: Number): Promise<Bar> => {
     return response.data;
 }
 
+const removeById = async (id: Number) => {
+    const response = await axios.delete(`${baseUrl}/${id}`)
+    return response.data
+}
+
 export default {
     getAll,
     create,
-    getById
+    getById,
+    removeById
 }

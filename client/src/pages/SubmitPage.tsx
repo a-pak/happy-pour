@@ -117,11 +117,10 @@ const SubmitPage: React.FC = () => {
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Link to="/" >
-              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} >
+
+              <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} onClick={() => navigate(-1)} >
                 <CloseIcon fontSize="inherit" />
               </IconButton>
-            </Link>
           </Grid>
 
             <>
@@ -147,8 +146,6 @@ const SubmitPage: React.FC = () => {
                   required
                 />
               </Grid>
-
-
             </>
           <Grid item xs={4}>
             <TextField
@@ -169,7 +166,6 @@ const SubmitPage: React.FC = () => {
               type="number"
               value={newBar.wine075Price}
               onChange={handleInputChange}
-              
             />
           </Grid>
 
@@ -206,7 +202,6 @@ const SubmitPage: React.FC = () => {
             />
           </Grid>
 
-          
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="secondary" fullWidth>
               Submit
