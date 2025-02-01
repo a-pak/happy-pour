@@ -45,3 +45,5 @@ Thumbs.db
 #Merge tool conflict outputs
 .orig
 .LOCAL
+.tsx.orig
+.tsx.LOCAL
