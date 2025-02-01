@@ -39,6 +39,8 @@ testem.log
 .DS_Store
 Thumbs.db
 .env
+.development
+.production
 
 #Merge tool conflict outputs
 .orig
