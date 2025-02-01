@@ -1,9 +1,10 @@
 import axios from 'axios'
 import Bar from '../model/IbarInterface';
 
-const BASE_URL : string = import.meta.env.VITE_BARS_URL;
+const BASE_URL : string = import.meta.env.VITE_BASE_API_URL + "bars";
 
 const getAll = async (): Promise<Bar[]> => {
+    console.log(BASE_URL);
     const response = await axios.get(BASE_URL);
     return response.data;
 }
@@ -13,8 +14,8 @@ const create = async (newBar: Bar): Promise<Bar> => {
     return response.data;
 }
 
-const update = async (newBar: Bar): Promise<Bar> => {
-    const response = await axios.put<Bar>(BASE_URL, newBar);
+const update = async (id: Number, newBar: Bar): Promise<Bar> => {
+    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, newBar);
     return response.data;
 }
 
