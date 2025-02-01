@@ -57,9 +57,8 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                                         <Typography variant="body2">🧥 Cloakroom: {bar.cloakroomFee} €</Typography>
                                     </Box>
                                     <Link to={`/update/${bar.id}`}>
-                                        <Button >Update Prices!</Button>
+                                        <Button>More Details</Button>
                                     </Link>
-
                                 </Box>
                             </Popup>
                         </Marker>

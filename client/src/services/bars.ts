@@ -23,10 +23,15 @@ const getById = async (id: Number): Promise<Bar> => {
     const response = await axios.get(`${BASE_URL}/${id}`);
     return response.data;
 }
+const removeById = async (id: Number) => {
+    const response = await axios.delete(`${BASE_URL}/${id}`)
+    return response.data
+}
 
 export default {
     getAll,
     create,
     update,
-    getById
+    getById,
+    removeById
 }

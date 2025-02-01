@@ -11,10 +11,11 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 import UpdatePage from './pages/UpdatePage.tsx'
 import { AddPage } from './pages/AddPage'
 import { ThemeProvider } from '@emotion/react'
+import  { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
+import { AboutUsPage } from './pages/AboutUsPage'
 
 function App() {
-
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -27,10 +28,11 @@ function App() {
               <Route path="/login" element={<LogInPage />} />
               <Route path="/register" element={<RegisterPage />} />
 
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/about" element={<AboutUsPage />} />
               <Route element={<ProtectedRoutes />}>
                 <Route path='/update/:barId' element={<UpdatePage />} />
                 <Route path='/submit/' element={<AddPage />} />
-
               </Route>
             </Route>
           </Routes>

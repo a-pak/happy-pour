@@ -10,7 +10,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bars")
-@CrossOrigin(origins={"http://localhost:8080", "http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins={
+     "https://happy-pour-be.onrender.com",
+    "http://localhost:8080", 
+    "http://localhost:5173",
+    "http://localhost:3000", 
+})
 public class BarController {
 
     @Autowired
@@ -54,5 +59,10 @@ public class BarController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(bar);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> removeBar(@PathVariable Long id) {
+        return barService.removeBar(id);
     }
 }

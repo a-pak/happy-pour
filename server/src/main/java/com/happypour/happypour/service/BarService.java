@@ -4,6 +4,8 @@ import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.repository.BarRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
@@ -49,5 +51,15 @@ public class BarService {
                     return barRepository.save(existingBar);
                 })
                 .orElse(null);
+    }
+
+
+    public ResponseEntity<String> removeBar(Long id) {
+        if (!barRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        barRepository.deleteById(id);
+        return ResponseEntity.ok("Bar with ID " + id + " deleted.");
     }
 }

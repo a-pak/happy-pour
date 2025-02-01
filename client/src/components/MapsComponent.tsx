@@ -114,7 +114,12 @@ const MapsComponent: React.FC = () => {
           </Popup>
         )}
 
-        {error ? (<p>{error}</p>)
+        {error ? (
+          <>
+          <p>{error}</p>
+          <LocationMarkerComponent bars={bars} />
+          </>
+          )
           :<LocationMarkerComponent bars={bars} />
         }
       </MapContainer>
