@@ -4,7 +4,7 @@ import {defaultBar} from '../model/IbarInterface.ts'
 import BarService from '../services/bars.ts'
 import {Box, Button, Grid, IconButton, TextField, Typography} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import {Link, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 interface SubmitFormProps {
     initialBarId?: number;

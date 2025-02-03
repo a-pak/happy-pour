@@ -1,6 +1,6 @@
 import { Box, Grid, IconButton, Paper, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import theme from '../Theme';
 
 export const ContactPage = () => {

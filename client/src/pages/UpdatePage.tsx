@@ -1,7 +1,6 @@
 import * as React from 'react';
 import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import {useParams} from "react-router-dom";
-import { parse } from 'path';
 
 const UpdatePage: React.FC = () => {
   const { id } = useParams();
