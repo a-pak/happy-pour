@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import barsService from '../services/bars'
+import barsService from '../services/bars.ts'
 import { LocationMarkerComponent } from './LocationMarkerComponent'
 import Bar from '../model/IbarInterface';
 import { MapContainer, Popup, Marker, TileLayer, useMapEvents } from 'react-leaflet';
@@ -114,12 +114,16 @@ const MapsComponent: React.FC = () => {
           </Popup>
         )}
 
-        {error ? (<p>{error}</p>)
+        {error ? (
+          <>
+          <p>{error}</p>
+          <LocationMarkerComponent bars={bars} />
+          </>
+          )
           :<LocationMarkerComponent bars={bars} />
         }
       </MapContainer>
       </div>
-
     </div>
   );
 }

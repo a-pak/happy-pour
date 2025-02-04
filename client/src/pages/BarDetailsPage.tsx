@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import barsService from '../services/bars';
+import { Typography, Box, Paper, List, ListItem, ListItemText, IconButton, Grid, Button } from '@mui/material';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import barsService from '../services/bars.ts';
 import Bar from '../model/IbarInterface';
+import theme from '../Theme';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [bar, setBar] = useState<Bar | null>(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (id) {
@@ -21,12 +26,35 @@ const BarDetailsPage: React.FC = () => {
     return <Typography>Loading...</Typography>;
   }
 
+  const removeBar = () => {
+    if (window.confirm("Are you sure you want to delete this bar?")) {
+      if(id) {
+        barsService
+          .removeById(bar.id)
+          .then((res: String) => { 
+            console.log(res)
+            navigate('/')
+          })
+
+      }
+    }
+  } 
+
   return (
     <Box sx={{ padding: 2 }}>
-      <Paper sx={{ padding: 2 }}>
+      <Paper sx={{ padding: 2, backgroundColor:theme.palette.secondary.main }}>
+        <Grid container spacing={1}>
+        <Grid item xs={10}>
         <Typography variant="h4" gutterBottom>
           {bar.name}
         </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <IconButton  aria-label="delete" size="large" sx={{ color:'text.primary', position:'relative', left:'20px', }} onClick={() => navigate(-1)}>
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        </Grid>
+        </Grid>
         <Typography variant="subtitle1" gutterBottom>
           Address: {bar.address}
         </Typography>
@@ -47,6 +75,11 @@ const BarDetailsPage: React.FC = () => {
             <ListItemText primary="Cloakroom Fee" secondary={`${bar.cloakroomFee} €`} />
           </ListItem>
         </List>
+
+        <Link to={`/update/${bar.id}`}>
+            <Button sx={{backgroundColor:theme.palette.secondary.light}}>Update Prices</Button>
+        </Link>
+        <Button onClick={() => removeBar()}>Delete Bar (please don't)</Button>
       </Paper>
     </Box>
   );

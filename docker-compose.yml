@@ -1,16 +1,16 @@
-version: '3.9'
+version: latest
 
 services:
 
-  frontend:
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    container_name: react-frontend
-    ports:
-      - "3000:80"
-    networks:
-      - app-network
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: client/Dockerfile
+  #   container_name: react-frontend
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - app-network
 
   backend:
     container_name: spring-boot-backend
@@ -20,36 +20,36 @@ services:
     ports:
       - "8080:8080"  # Expose backend on port 8080
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_dev
-      SPRING_DATASOURCE_USERNAME: spring
-      SPRING_DATASOURCE_PASSWORD: happypour
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     networks:
       - app-network
 
-  database:
-    image: postgres:latest
-    container_name: postgres-database
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: happypour_dev
-      POSTGRES_USER: spring
-      POSTGRES_PASSWORD: happypour
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d happypour_dev -U spring"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
+  # database:
+  #   image: postgres:latest
+  #   container_name: postgres-database
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_DB: happypour_dev
+  #     POSTGRES_USER: spring
+  #     POSTGRES_PASSWORD: happypour
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -d happypour_dev -U spring"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - app-network
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
 
 networks:
   app-network:

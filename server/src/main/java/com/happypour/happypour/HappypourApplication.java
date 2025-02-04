@@ -21,7 +21,6 @@ public class HappypourApplication{
 		SpringApplication.run(HappypourApplication.class, args);
 	}
 
-	// Voit käyttää CommandLineRunnerin avulla testidatan lisäämistä
     @Bean
     public CommandLineRunner demo(BarRepository barRepository, UserRepository user) {
         return (args) -> {

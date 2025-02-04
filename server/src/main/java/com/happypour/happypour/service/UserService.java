@@ -3,16 +3,28 @@ package com.happypour.happypour.service;
 import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.repository.UserRepository;
+import com.happypour.happypour.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
+
+/**
+   NOTE: A JWTutil has been added as an autowired dependency.
+ */
+
+
+
+
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JWTUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService (){
@@ -66,5 +78,9 @@ public class UserService {
             return false;
         }
 
+    }
+
+    public boolean matchUser(String email, String token) {
+        return jwtUtil.extractUsername(token).equals(email);
     }
 }
