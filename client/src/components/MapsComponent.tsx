@@ -124,7 +124,6 @@ const MapsComponent: React.FC = () => {
         }
       </MapContainer>
       </div>
-
     </div>
   );
 }

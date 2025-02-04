@@ -20,7 +20,6 @@ const SubmitFormComponent: React.FC<SubmitFormProps> = ({ lng, lat, initialBarId
 
     useEffect(() => {
          if(initialBarId !== undefined) {
-             console.log("initialBarId ", initialBarId);
             BarService.getById(initialBarId).then(
                 (bar) => {
                     setBar(bar);
@@ -51,12 +50,13 @@ const SubmitFormComponent: React.FC<SubmitFormProps> = ({ lng, lat, initialBarId
         if(isUpdate) {
             BarService.update(Number(initialBarId), bar).then(() => {
                 navigate("/")}).catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     setError("Could not update bar. " + err + "")
             });
+            navigate("/")
         } else {
-            BarService.create(bar).catch((err) => {
-                console.log(err);
+            BarService.create(bar).then(() => navigate("/")).catch((err) => {
+                console.error(err);
                 setError("Could not create bar. " + err + "")
 
             });
@@ -154,12 +154,11 @@ const SubmitFormComponent: React.FC<SubmitFormProps> = ({ lng, lat, initialBarId
                 onChange={handleInputChange}
               />
             </Grid>
-  
             <Grid item xs={6}>
-              <TextField
+              <TextField 
                 fullWidth
                 label="Cloakroom Fee"
-                name="cloakRoomFee"
+                name="cloakroomFee"
                 type="number"
                 value={bar.cloakroomFee}
                 onChange={handleInputChange}

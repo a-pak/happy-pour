@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bars")
 @CrossOrigin(origins={
-     "https://happy-pour-be.onrender.com",
+    "https://happy-pour-be.onrender.com",
     "http://localhost:8080", 
     "http://localhost:5173",
     "http://localhost:3000", 
@@ -25,17 +25,9 @@ public class BarController {
     public List<Bar> getBars() {
         return barService.getAllBars();
     }
-    @GetMapping("/get-by-id")
-    public ResponseEntity<Bar> getById (@RequestParam long id) {
-        Bar bar = barService.getById(id);
-        if (bar != null){
-           return ResponseEntity.ok(bar);
-        }
-        return ResponseEntity.notFound().build();
-    }
     @PostMapping
-    public Bar addBar(@RequestBody Bar newBar) {
-        System.out.println("!! addBar called: \n " + newBar);
+    public Bar createBar(@RequestBody Bar newBar) {
+        System.out.println("!! addBar called: \n " + newBar.toString());
         barService.setBar(newBar);
         return newBar;
     }

@@ -21,5 +21,5 @@ export const defaultBar: Bar = {
     wine075Price: 0,
     coffeePrice: 0,
     entryFee: 0,
-    cloakroomFee: 0,
+    cloakroomFee: 0
 };

@@ -38,7 +38,7 @@ public class Bar {
     private double entryFee;
 
     @Column(name="cloakroomfee", precision = 5)
-    private double cloakRoomFee;
+    private double cloakroomFee;
 
 }
 
