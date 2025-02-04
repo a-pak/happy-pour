@@ -2,6 +2,10 @@ package com.happypour.happypour.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -25,20 +29,51 @@ public class Bar {
     @Column(name="address")
     private String address;
 
-    @Column(name="beer05price", precision = 5)
-    private double beer05Price;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy; // Assuming a User entity exists
 
-    @Column(name="wine075price", precision = 5)
-    private double wine075Price;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", nullable = false)
+    private User updatedBy; // Assuming a User entity exists
 
-    @Column(name="coffeeprice", precision = 5)
-    private double coffeePrice;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
-    @Column(name="entryfee", precision = 5)
-    private double entryFee;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 
-    @Column(name="cloakroomfee", precision = 5)
-    private double cloakRoomFee;
+//    @Column(name="beer05price", precision = 5)
+//    private double beer05Price;
+//
+//    @Column(name="wine075price", precision = 5)
+//    private double wine075Price;
+//
+//    @Column(name="coffeeprice", precision = 5)
+//    private double coffeePrice;
+//
+//    @Column(name="entryfee", precision = 5)
+//    private double entryFee;
+//
+//    @Column(name="cloakroomfee", precision = 5)
+//    private double cloakroomFee;
+
+//    @Column(name="beer05price", precision = 5)
+//    private double beer05Price;
+//
+//    @Column(name="wine075price", precision = 5)
+//    private double wine075Price;
+//
+//    @Column(name="coffeeprice", precision = 5)
+//    private double coffeePrice;
+//
+//    @Column(name="entryfee", precision = 5)
+//    private double entryFee;
+//
+//    @Column(name="cloakroomfee", precision = 5)
+//    private double cloakroomFee;
 
 }
 

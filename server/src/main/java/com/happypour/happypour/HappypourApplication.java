@@ -1,5 +1,7 @@
 package com.happypour.happypour;
 
+import com.happypour.happypour.model.User;
+import com.happypour.happypour.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,16 +23,20 @@ public class HappypourApplication{
 
 	// Voit käyttää CommandLineRunnerin avulla testidatan lisäämistä
     @Bean
-    public CommandLineRunner demo(BarRepository repository) {
+    public CommandLineRunner demo(BarRepository barRepository, UserRepository user) {
         return (args) -> {
-            // Lisää testidataa
-            repository.save(new Bar(null, "Bar Helsinki", 24.9384, 60.1699, "Mannerheimintie 1", 5.50, 7.20, 3.00, 10.00, 2.50));
-            repository.save(new Bar(null, "The Kallio Pub", 24.9484, 60.1799, "Pasilantie 2", 6.00, 8.00, 3.50, 8.00, 3.00));
-            repository.save(new Bar(null, "Riverside Bar", 24.9334, 60.1649, "Itämerenkatu 3", 5.80, 7.50, 4.00, 12.00, 3.00));
+            User user1 = new User(null, "admin", "salasana", "admin@example.com");
+            User user2 = new User(null, "moderator", "salasana", "moderator@example.com");
 
+            user.save(user1);
+            user.save(user2);
 
-            // Tulosta kaikki baarit
-            repository.findAll().forEach(bar -> System.out.println(bar));
+            barRepository.save(new Bar(null, "Bar Helsinki", 24.9384, 60.1699, "Mannerheimintie 1", user1, user2, null, null));
+            barRepository.save(new Bar(null, "Bar Tampere", 23.7610, 61.4978, "Hämeenkatu 10", user2, user1, null, null));
+            barRepository.save(new Bar(null, "Bar Turku", 22.2666, 60.4518, "Aurakatu 5", user1, user1, null, null));
+            barRepository.save(new Bar(null, "Bar Oulu", 25.4666, 65.0124, "Rotuaari 3", user2, user2, null, null));
+
+            barRepository.findAll().forEach(bar -> System.out.println(bar));
         };
     }
 }
