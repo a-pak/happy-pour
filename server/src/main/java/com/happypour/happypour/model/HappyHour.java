@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -26,10 +26,10 @@ public class HappyHour {
     private Bar bar;
 
     @Column(name = "start_time", nullable = false)
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Time endTime;
+    private LocalTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
