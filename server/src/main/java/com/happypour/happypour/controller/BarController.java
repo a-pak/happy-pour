@@ -1,5 +1,6 @@
 package com.happypour.happypour.controller;
 
+import com.happypour.happypour.dto.BarListRequest;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class BarController {
     private BarService barService;
 
     @GetMapping
-    public List<Bar> getBars() {
+    public List<BarListRequest> getBars() {
         return barService.getAllBars();
     }
     @PostMapping

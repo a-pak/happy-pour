@@ -5,7 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +30,18 @@ public class Bar {
 
     @Column(name="address")
     private String address;
+
+    @Column(name="open_from")
+    private LocalTime openFrom;
+
+    @Column(name="open_to")
+    private LocalTime openTo;
+
+    @Column(name="entryfee", precision = 5)
+    private double entryFee;
+
+    @Column(name="cloakroomfee", precision = 5)
+    private double cloakroomFee;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -59,21 +73,5 @@ public class Bar {
 //
 //    @Column(name="cloakroomfee", precision = 5)
 //    private double cloakroomFee;
-
-//    @Column(name="beer05price", precision = 5)
-//    private double beer05Price;
-//
-//    @Column(name="wine075price", precision = 5)
-//    private double wine075Price;
-//
-//    @Column(name="coffeeprice", precision = 5)
-//    private double coffeePrice;
-//
-//    @Column(name="entryfee", precision = 5)
-//    private double entryFee;
-//
-//    @Column(name="cloakroomfee", precision = 5)
-//    private double cloakroomFee;
-
 }
 

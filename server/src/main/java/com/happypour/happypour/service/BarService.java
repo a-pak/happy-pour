@@ -1,8 +1,16 @@
 package com.happypour.happypour.service;
 
+import com.happypour.happypour.dto.BarDetailsRequest;
+import com.happypour.happypour.dto.BarListRequest;
 import com.happypour.happypour.model.Bar;
+import com.happypour.happypour.model.Drink;
+import com.happypour.happypour.model.HappyHour;
+import com.happypour.happypour.model.HappyHourDrink;
 import com.happypour.happypour.repository.BarRepository;
 
+import com.happypour.happypour.repository.DrinkRepository;
+import com.happypour.happypour.repository.HappyHourDrinkRepository;
+import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +27,48 @@ public class BarService {
 
     @Autowired
     private BarRepository barRepository;
+    @Autowired
+    private DrinkRepository drinkRepository;
+    @Autowired
+    private HappyHourRepository happyHourRepository;
+    @Autowired
+    private HappyHourDrinkRepository happyHourDrinkRepository;
 
-    public List<Bar> getAllBars() {
+    public List<BarListRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
-        bars.forEach(bar -> System.out.println(bar.toString()));
+        List<HappyHour> happyHours = happyHourRepository.findAll();
+        List<Drink> drinks = drinkRepository.findAll();
+        List<HappyHourDrink> hhDrinks = happyHourDrinkRepository.findAll();
 
-        return bars;
+        List<BarListRequest> barListRequests = new ArrayList<>();
+
+        for (Bar bar : bars) {
+            BarListRequest dto = new BarListRequest();
+            dto.setBar(bar);
+// Check if HappyHour
+            Optional<HappyHour> happyHour = happyHours.stream()
+                    .filter(hh -> hh.getBar().getId().equals(bar.getId()))
+                    .findFirst();
+            happyHour.ifPresent(dto::setHappyHour);
+
+// Get Drinks if HappyHour
+            Optional<HappyHourDrink> hhDrink = happyHour.flatMap(hh -> hhDrinks.stream()
+                    .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
+                    .findFirst());
+            hhDrink.ifPresent(dto::setHhDrink);
+
+// Get Drinks without HappyHour
+            Optional<Drink> drink = drinks.stream()
+                    .filter(d -> d.getBar().getId().equals(bar.getId()))
+                    .findFirst();
+            drink.ifPresent(dto::setDrink);
+
+            barListRequests.add(dto);
+        }
+
+        return barListRequests;
     }
+
     public Bar getById(Long id) {
         Optional<Bar> optionalBar = barRepository.findById(id);
         return optionalBar.orElse(null);

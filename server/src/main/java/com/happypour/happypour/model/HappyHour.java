@@ -19,7 +19,7 @@ public class HappyHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "happy_hour_id")
-    private Integer happyHourId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "bar_id", nullable = false)
