@@ -79,12 +79,13 @@ public class BarService {
             List<Drink> drinks = new ArrayList<>(drinkRepository.findByBar(id));
             barDetailsRequest.setDrinks(drinks);
             
-            HappyHour hh = happyHourRepository.findByBar(id).get(0);
-            barDetailsRequest.setHappyHour(hh);
-            
-            if(hh != null) {
+            List<HappyHour> lh = happyHourRepository.findByBar(id);
+            if(!lh.isEmpty()) {
+                HappyHour hh = lh.get(0);
+                barDetailsRequest.setHappyHour(hh);
                 barDetailsRequest.setHappyHourDrinks(happyHourDrinkRepository.findByHappyHourId(hh.getId()));
             }
+
             return barDetailsRequest;
             
         } else {
