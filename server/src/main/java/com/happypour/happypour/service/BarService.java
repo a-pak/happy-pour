@@ -70,14 +70,13 @@ public class BarService {
 
     public BarDetailsRequest getById(Long id) {
         BarDetailsRequest barDetailsRequest;
-        List<Drink> drinks = new ArrayList<Drink>();
         Optional<Bar> optionalBar = barRepository.findById(id);
         
         if (optionalBar.isPresent()) {
             barDetailsRequest = new BarDetailsRequest();
             barDetailsRequest.setBar(optionalBar.get());
-            
-            drinkRepository.findByBar(id).forEach(drinks::add);
+
+            List<Drink> drinks = new ArrayList<>(drinkRepository.findByBar(id));
             barDetailsRequest.setDrinks(drinks);
             
             HappyHour hh = happyHourRepository.findByBar(id).get(0);

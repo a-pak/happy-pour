@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HappyHourDrinkRepository extends JpaRepository<HappyHourDrink, HappyHourDrinkId>{
 
-    @Query("SELECT hhd FROM HappyHourDrink hhd WHERE hhd.id.happyHour.id = ?1")
+    @Query("SELECT hhd FROM HappyHourDrink hhd WHERE hhd.id.happyHourId = ?1")
     public List<HappyHourDrink> findByHappyHourId(Long happyHourId);
 }

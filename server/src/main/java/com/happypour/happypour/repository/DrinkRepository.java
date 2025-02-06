@@ -14,6 +14,6 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>{
     @Query("SELECT d FROM Drink d WHERE d.name = ?1")
     public Drink findByName(String name);
     
-    @Query("SELECT d FROM Drink d WHERE d.bar = ?1")
+    @Query("SELECT d FROM Drink d WHERE d.bar.id = ?1")
     public List<Drink> findByBar(Long id);
 }
