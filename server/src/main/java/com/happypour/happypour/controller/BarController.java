@@ -1,5 +1,6 @@
 package com.happypour.happypour.controller;
 
+import com.happypour.happypour.dto.BarDetailsRequest;
 import com.happypour.happypour.dto.BarListRequest;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
@@ -34,8 +35,8 @@ public class BarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bar> getBar(@PathVariable Long id) {
-        Bar bar = barService.getBar(id);
+    public ResponseEntity<BarDetailsRequest> getBar(@PathVariable Long id) {
+        BarDetailsRequest bar = barService.getById(id);
         if (bar == null) {
             return ResponseEntity.notFound().build();
         }

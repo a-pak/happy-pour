@@ -12,7 +12,6 @@ import com.happypour.happypour.repository.DrinkRepository;
 import com.happypour.happypour.repository.HappyHourDrinkRepository;
 import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -45,19 +44,19 @@ public class BarService {
         for (Bar bar : bars) {
             BarListRequest dto = new BarListRequest();
             dto.setBar(bar);
-// Check if HappyHour
+            // Check if HappyHour
             Optional<HappyHour> happyHour = happyHours.stream()
                     .filter(hh -> hh.getBar().getId().equals(bar.getId()))
                     .findFirst();
             happyHour.ifPresent(dto::setHappyHour);
 
-// Get Drinks if HappyHour
+            // Get Drinks if HappyHour
             Optional<HappyHourDrink> hhDrink = happyHour.flatMap(hh -> hhDrinks.stream()
                     .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
                     .findFirst());
             hhDrink.ifPresent(dto::setHhDrink);
 
-// Get Drinks without HappyHour
+            // Get Drinks without HappyHour
             Optional<Drink> drink = drinks.stream()
                     .filter(d -> d.getBar().getId().equals(bar.getId()))
                     .findFirst();
@@ -69,16 +68,36 @@ public class BarService {
         return barListRequests;
     }
 
-    public Bar getById(Long id) {
+    public BarDetailsRequest getById(Long id) {
+        BarDetailsRequest barDetailsRequest;
+        List<Drink> drinks = new ArrayList<Drink>();
         Optional<Bar> optionalBar = barRepository.findById(id);
-        return optionalBar.orElse(null);
+        
+        if (optionalBar.isPresent()) {
+            barDetailsRequest = new BarDetailsRequest();
+            barDetailsRequest.setBar(optionalBar.get());
+            
+            drinkRepository.findByBar(id).forEach(drinks::add);
+            barDetailsRequest.setDrinks(drinks);
+            
+            HappyHour hh = happyHourRepository.findByBar(id).get(0);
+            barDetailsRequest.setHappyHour(hh);
+            
+            if(hh != null) {
+                barDetailsRequest.setHappyHourDrinks(happyHourDrinkRepository.findByHappyHourId(hh.getId()));
+            }
+            return barDetailsRequest;
+            
+        } else {
+            return null;
+        }
 
     }
 
     public Bar getBar(Long id) {
-         Optional<Bar> bar = barRepository.findById(id);
-         System.out.println("Fetching bar: " + bar);
-         return bar.orElse(null);
+        Optional<Bar> bar = barRepository.findById(id);
+        System.out.println("Fetching bar: " + bar);
+        return bar.orElse(null);
     }
 
     public void setBar(Bar bar) {

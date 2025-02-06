@@ -1,4 +1,10 @@
 package com.happypour.happypour.dto;
+import java.util.List;
+
+import com.happypour.happypour.model.Bar;
+import com.happypour.happypour.model.Drink;
+import com.happypour.happypour.model.HappyHour;
+import com.happypour.happypour.model.HappyHourDrink;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,13 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BarDetailsRequest {
-    private String name;
-    private String address;
-    private double coordLat;
-    private double coordLong;
-    private double beer05Price;
-    private double wine075Price;
-    private double coffeePrice;
-    private double entryFee;
-    private double cloakroomFee;
+    private Bar bar;
+    private HappyHour happyHour;
+    private List<HappyHourDrink> happyHourDrinks;
+    private List<Drink> drinks;
 }

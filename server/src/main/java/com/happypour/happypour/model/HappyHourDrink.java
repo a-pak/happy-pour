@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
@@ -16,6 +15,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "happy_hour_drink", schema = "public")
 public class HappyHourDrink {
+    
     @EmbeddedId
     private HappyHourDrinkId id;
 
