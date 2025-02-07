@@ -2,10 +2,7 @@ package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.BarDetailsRequest;
 import com.happypour.happypour.dto.BarListRequest;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.Drink;
-import com.happypour.happypour.model.HappyHour;
-import com.happypour.happypour.model.HappyHourDrink;
+import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
 import com.happypour.happypour.repository.DrinkRepository;
@@ -32,6 +29,10 @@ public class BarService {
     private HappyHourRepository happyHourRepository;
     @Autowired
     private HappyHourDrinkRepository happyHourDrinkRepository;
+
+    @Autowired
+    DrinkService ds;
+    HappyHourDrinkService hhds;
 
     public List<BarListRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
@@ -94,16 +95,29 @@ public class BarService {
 
     }
 
-    public Bar getBar(Long id) {
-        Optional<Bar> bar = barRepository.findById(id);
-        System.out.println("Fetching bar: " + bar);
-        return bar.orElse(null);
-    }
+//    public Bar getBar(Long id) {
+//        Optional<Bar> bar = barRepository.findById(id);
+//        System.out.println("Fetching bar: " + bar);
+//        return bar.orElse(null);
+//    }
 
-    public void setBar(Bar bar) {
+    public void setBar(Bar bar, List<Drink> drinks, HappyHour happyHour, List<HappyHourDrink> happyHourDrinks) {
         System.out.println("BarService: Adding bar: " + bar.toString());
         bar.setId(null);
-        barRepository.save(bar);
+        Bar savedBar = barRepository.save(bar);
+
+        if (happyHour != null) {
+            happyHour.setBar(savedBar);
+            happyHourRepository.save(happyHour);
+        }
+
+        if (drinks != null && !drinks.isEmpty()) {
+            ds.setBar(drinks, savedBar);
+        }
+
+        if (happyHourDrinks != null && !happyHourDrinks.isEmpty()) {
+            hhds.setDrink(happyHourDrinks, bar);
+        }
     }
 
     public Bar updateBar(Long id, Bar updatedBar) {
