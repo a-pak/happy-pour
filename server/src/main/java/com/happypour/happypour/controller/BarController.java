@@ -28,10 +28,15 @@ public class BarController {
         return barService.getAllBars();
     }
     @PostMapping
-    public Bar createBar(@RequestBody Bar newBar) {
-        System.out.println("!! addBar called: \n " + newBar.toString());
-        barService.setBar(newBar);
-        return newBar;
+    public ResponseEntity<String> createBar(@RequestBody BarDetailsRequest request) {
+        System.out.println("HALOOOOOO");
+        try {
+            System.out.println("request::::" + request);
+            barService.setBar(request.getBar(), request.getDrinks(), request.getHappyHour(), request.getHappyHourDrinks());
+            return ResponseEntity.ok("Bar added succesfully to database.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error adding bar: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
