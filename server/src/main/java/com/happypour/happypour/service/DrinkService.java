@@ -31,4 +31,24 @@ public class DrinkService {
         });
     }
 
+
+    @Autowired
+    private HappyHourDrinkRepository happyHourDrinkRepository;
+
+    public void setHHDrink(List<HappyHourDrink> happyHourDrinks, Bar bar) {
+        happyHourDrinks.forEach(hhd -> {
+            hhd.setHappyHour(hhd.getHappyHour());
+            hhd.getDrink().setBar(bar);
+            happyHourDrinkRepository.save(hhd);
+        });
+    }
+
+    public Drink updateDrink(Long id, Drink updatedDrink) {
+        return drinkRepository.findById(id)
+                .map(existingDrink -> {
+                    BeanUtils.copyProperties(updatedDrink, existingDrink, "id", "bar");
+                    return drinkRepository.save(existingDrink);
+                })
+                .orElse(null);
+    }
 }

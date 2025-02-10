@@ -32,7 +32,8 @@ public class BarService {
 
     @Autowired
     DrinkService ds;
-    HappyHourDrinkService hhds;
+    @Autowired
+    HappyHourService hhs;
 
     public List<BarListRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
@@ -107,8 +108,7 @@ public class BarService {
         Bar savedBar = barRepository.save(bar);
 
         if (happyHour != null) {
-            happyHour.setBar(savedBar);
-            happyHourRepository.save(happyHour);
+            hhs.setHappyHour(savedBar, happyHour);
         }
 
         if (drinks != null && !drinks.isEmpty()) {
@@ -116,7 +116,7 @@ public class BarService {
         }
 
         if (happyHourDrinks != null && !happyHourDrinks.isEmpty()) {
-            hhds.setDrink(happyHourDrinks, bar);
+            ds.setHHDrink(happyHourDrinks, savedBar);
         }
     }
 
@@ -128,6 +128,8 @@ public class BarService {
                 })
                 .orElse(null);
     }
+
+
 
 
     public ResponseEntity<String> removeBar(Long id) {
