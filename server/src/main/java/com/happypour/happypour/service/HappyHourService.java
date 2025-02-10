@@ -22,6 +22,9 @@ public class HappyHourService {
     @Autowired
     HappyHourRepository happyHourRepository;
 
+    public List<HappyHour> getAll() {
+        return happyHourRepository.findAll();
+    }
     public void setHappyHour(Bar bar, HappyHour happyHour) {
         happyHour.setBar(bar);
         happyHourRepository.save(happyHour);
@@ -34,5 +37,9 @@ public class HappyHourService {
                     return happyHourRepository.save(existingHappyHour);
                 })
                 .orElse(null);
+    }
+
+    public List<HappyHour> findByBar(Long id) {
+        return happyHourRepository.findByBar(id);
     }
 }

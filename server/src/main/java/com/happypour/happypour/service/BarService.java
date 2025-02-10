@@ -1,13 +1,9 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.BarDetailsRequest;
-import com.happypour.happypour.dto.BarListRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
-import com.happypour.happypour.repository.DrinkRepository;
-import com.happypour.happypour.repository.HappyHourDrinkRepository;
-import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,23 +19,18 @@ public class BarService {
 
     @Autowired
     private BarRepository barRepository;
-    @Autowired
-    private DrinkRepository drinkRepository;
-    @Autowired
-    private HappyHourRepository happyHourRepository;
-    @Autowired
-    private HappyHourDrinkRepository happyHourDrinkRepository;
 
     @Autowired
-    DrinkService ds;
+    private HappyHourService happyHourService;
     @Autowired
-    HappyHourService hhs;
+    private DrinkService drinkService;
+
 
     public List<BarDetailsRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
-        List<HappyHour> happyHours = happyHourRepository.findAll();
-        List<Drink> drinks = drinkRepository.findAll();
-        List<HappyHourDrink> hhDrinks = happyHourDrinkRepository.findAll();
+        List<HappyHour> happyHours = happyHourService.getAll();
+        List<Drink> drinks = drinkService.getAllDrinks();
+        List<HappyHourDrink> hhDrinks = drinkService.getAllHappyHourDrinks();
 
         List<BarDetailsRequest> barDetailsRequests = new ArrayList<>();
 
@@ -83,14 +74,14 @@ public class BarService {
             barDetailsRequest = new BarDetailsRequest();
             barDetailsRequest.setBar(optionalBar.get());
 
-            List<Drink> drinks = new ArrayList<>(drinkRepository.findByBar(id));
+            List<Drink> drinks = new ArrayList<>(drinkService.findByBar(id));
             barDetailsRequest.setDrinks(drinks);
             
-            List<HappyHour> lh = happyHourRepository.findByBar(id);
+            List<HappyHour> lh = happyHourService.findByBar(id);
             if(!lh.isEmpty()) {
                 HappyHour hh = lh.get(0);
                 barDetailsRequest.setHappyHour(hh);
-                barDetailsRequest.setHappyHourDrinks(happyHourDrinkRepository.findByHappyHourId(hh.getId()));
+                barDetailsRequest.setHappyHourDrinks(drinkService.findByHappyHourId(hh.getId()));
             }
 
             return barDetailsRequest;
@@ -101,27 +92,21 @@ public class BarService {
 
     }
 
-//    public Bar getBar(Long id) {
-//        Optional<Bar> bar = barRepository.findById(id);
-//        System.out.println("Fetching bar: " + bar);
-//        return bar.orElse(null);
-//    }
-
     public void setBar(Bar bar, List<Drink> drinks, HappyHour happyHour, List<HappyHourDrink> happyHourDrinks) {
         System.out.println("BarService: Adding bar: " + bar.toString());
         bar.setId(null);
         Bar savedBar = barRepository.save(bar);
 
         if (happyHour != null) {
-            hhs.setHappyHour(savedBar, happyHour);
+            happyHourService.setHappyHour(savedBar, happyHour);
         }
 
         if (drinks != null && !drinks.isEmpty()) {
-            ds.setBar(drinks, savedBar);
+            drinkService.setBar(drinks, savedBar);
         }
 
         if (happyHourDrinks != null && !happyHourDrinks.isEmpty()) {
-            ds.setHHDrink(happyHourDrinks, savedBar);
+            drinkService.setHHDrink(happyHourDrinks, savedBar);
         }
     }
 
@@ -133,9 +118,6 @@ public class BarService {
                 })
                 .orElse(null);
     }
-
-
-
 
     public ResponseEntity<String> removeBar(Long id) {
         if (!barRepository.existsById(id)) {
