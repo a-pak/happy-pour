@@ -24,7 +24,7 @@ public class BarController {
     private BarService barService;
 
     @GetMapping
-    public List<BarListRequest> getBars() {
+    public List<BarDetailsRequest> getBars() {
         return barService.getAllBars();
     }
     @PostMapping

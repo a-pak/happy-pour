@@ -35,16 +35,16 @@ public class BarService {
     @Autowired
     HappyHourService hhs;
 
-    public List<BarListRequest> getAllBars() {
+    public List<BarDetailsRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
         List<HappyHour> happyHours = happyHourRepository.findAll();
         List<Drink> drinks = drinkRepository.findAll();
         List<HappyHourDrink> hhDrinks = happyHourDrinkRepository.findAll();
 
-        List<BarListRequest> barListRequests = new ArrayList<>();
+        List<BarDetailsRequest> barDetailsRequests = new ArrayList<>();
 
         for (Bar bar : bars) {
-            BarListRequest dto = new BarListRequest();
+            BarDetailsRequest dto = new BarDetailsRequest();
             dto.setBar(bar);
             // Check if HappyHour
             Optional<HappyHour> happyHour = happyHours.stream()
@@ -56,18 +56,23 @@ public class BarService {
             Optional<HappyHourDrink> hhDrink = happyHour.flatMap(hh -> hhDrinks.stream()
                     .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
                     .findFirst());
-            hhDrink.ifPresent(dto::setHhDrink);
+            hhDrink.ifPresent(hhd -> {
+                dto.getHappyHourDrinks().add(hhd);
+            });
 
             // Get Drinks without HappyHour
             Optional<Drink> drink = drinks.stream()
                     .filter(d -> d.getBar().getId().equals(bar.getId()))
                     .findFirst();
-            drink.ifPresent(dto::setDrink);
+            drink.ifPresent( d -> {
+                dto.getDrinks().add(d);
+                System.out.println("\n" + dto.getDrinks() + "\n");
+            });
 
-            barListRequests.add(dto);
+            barDetailsRequests.add(dto);
         }
 
-        return barListRequests;
+        return barDetailsRequests;
     }
 
     public BarDetailsRequest getById(Long id) {

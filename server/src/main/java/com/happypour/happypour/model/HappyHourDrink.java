@@ -1,4 +1,5 @@
 package com.happypour.happypour.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.happypour.happypour.model.embeddable.HappyHourDrinkId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "happy_hour_drink", schema = "public")
 public class HappyHourDrink {
-    
+    @JsonIgnore
     @EmbeddedId
     private HappyHourDrinkId id;
 
