@@ -1,6 +1,7 @@
 package com.happypour.happypour.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class Drink {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", nullable = false)
     private Bar bar;  // Assuming Bar entity exists
 

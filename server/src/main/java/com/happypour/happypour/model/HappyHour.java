@@ -1,5 +1,6 @@
 package com.happypour.happypour.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,8 @@ public class HappyHour {
     @Column(name = "happy_hour_id")
     private Long id;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", nullable = false)
     private Bar bar;
 

@@ -16,4 +16,5 @@ public class BarDetailsRequest {
     private HappyHour happyHour;
     private List<HappyHourDrink> happyHourDrinks;
     private List<Drink> drinks;
+
 }
