@@ -1,10 +1,14 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.BarDetailsRequest;
+import com.happypour.happypour.dto.BarPostRequest;
+import com.happypour.happypour.dto.BarPutRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +47,7 @@ public class BarService {
                     .findFirst();
             happyHour.ifPresent(dto::setHappyHour);
 
-            // Get Drinks if HappyHour
+            // Get Drinks with HappyHour
             Optional<HappyHourDrink> hhDrink = happyHour.flatMap(hh -> hhDrinks.stream()
                     .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
                     .findFirst());
@@ -52,14 +56,11 @@ public class BarService {
             });
 
             // Get Drinks without HappyHour
-            Optional<Drink> drink = drinks.stream()
-                    .filter(d -> d.getBar().getId().equals(bar.getId()))
-                    .findFirst();
-            drink.ifPresent( d -> {
-                dto.getDrinks().add(d);
-                System.out.println("\n" + dto.getDrinks() + "\n");
-            });
-
+            for (Drink drink : drinks) {
+                if(drink.getBar().getId() == bar.getId()) {
+                    dto.getDrinks().add(drink);
+                }
+            }
             barDetailsRequests.add(dto);
         }
 
@@ -92,8 +93,14 @@ public class BarService {
 
     }
 
-    public void setBar(Bar bar, List<Drink> drinks, HappyHour happyHour, List<HappyHourDrink> happyHourDrinks) {
+    public void setBar(BarPostRequest barPostRequest) {
+        Bar bar = barPostRequest.getBar();
+        HappyHour happyHour = barPostRequest.getHappyHour();
+        List<Drink> drinks = barPostRequest.getDrinks();
+        List<HappyHourDrink> happyHourDrinks = barPostRequest.getHappyHourDrinks();
+
         System.out.println("BarService: Adding bar: " + bar.toString());
+
         bar.setId(null);
         Bar savedBar = barRepository.save(bar);
 
@@ -110,8 +117,10 @@ public class BarService {
         }
     }
 
-    public Bar updateBar(Long id, Bar updatedBar) {
-        return barRepository.findById(id)
+    public Bar updateBar(Long barId, BarPutRequest barPutRequest) {
+        Bar updatedBar = barPutRequest.getBar();
+
+        return barRepository.findById(barId)
                 .map(existingBar -> {
                     BeanUtils.copyProperties(updatedBar, existingBar, "id");
                     return barRepository.save(existingBar);
@@ -120,11 +129,17 @@ public class BarService {
     }
 
     public ResponseEntity<String> removeBar(Long id) {
-        if (!barRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Bar> barToDelete = barRepository.findById(id);
+        if(barToDelete.isPresent()) {
+            try {
+                barRepository.deleteById(id); // App crashes here
+                return ResponseEntity.ok("Bar with ID " + id + " deleted.");
 
-        barRepository.deleteById(id);
-        return ResponseEntity.ok("Bar with ID " + id + " deleted.");
+            } catch (Exception e) {
+                System.err.println("Error occurred  while deleting bar: " + e.getMessage());
+                return ResponseEntity.internalServerError().build();
+            }
+            }
+        return ResponseEntity.notFound().build();
     }
 }

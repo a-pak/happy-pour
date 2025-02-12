@@ -42,4 +42,5 @@ public class HappyHourService {
     public List<HappyHour> findByBar(Long id) {
         return happyHourRepository.findByBar(id);
     }
+
 }

@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface HappyHourRepository extends JpaRepository<HappyHour, Long> {
 
     @Query("SELECT hh FROM HappyHour hh WHERE hh.bar.id = ?1")
-    public List<HappyHour> findByBar(Long id);
+    List<HappyHour> findByBar(Long id);
 }

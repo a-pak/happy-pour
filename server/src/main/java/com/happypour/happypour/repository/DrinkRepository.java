@@ -1,5 +1,6 @@
 package com.happypour.happypour.repository;
 
+import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.model.Drink;
 
 import java.util.List;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface DrinkRepository extends JpaRepository<Drink, Long>{
 
     @Query("SELECT d FROM Drink d WHERE d.name = ?1")
-    public Drink findByName(String name);
+    Drink findByName(String name);
     
     @Query("SELECT d FROM Drink d WHERE d.bar.id = ?1")
-    public List<Drink> findByBar(Long id);
+    List<Drink> findByBar(Long id);
+
+    void deleteById(Long id);
 }
