@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
@@ -16,16 +18,19 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "happy_hour_drink", schema = "public")
 public class HappyHourDrink {
+
     @JsonIgnore
     @EmbeddedId
     private HappyHourDrinkId id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @MapsId("happyHourId")
     @JoinColumn(name = "happy_hour_id", nullable = false)
     private HappyHour happyHour;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @MapsId("drinkId")
     @JoinColumn(name = "drink_id", nullable = false)
     private Drink drink;

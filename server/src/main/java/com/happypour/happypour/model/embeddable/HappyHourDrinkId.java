@@ -1,5 +1,6 @@
 package com.happypour.happypour.model.embeddable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import java.io.Serializable;
 
 import com.happypour.happypour.model.Drink;
 import com.happypour.happypour.model.HappyHour;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +20,10 @@ import com.happypour.happypour.model.HappyHour;
 @Embeddable
 public class HappyHourDrinkId implements Serializable {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private HappyHour happyHourId;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Drink drinkId;
 }

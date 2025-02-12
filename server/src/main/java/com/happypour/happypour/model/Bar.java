@@ -8,12 +8,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bar", schema = "public") // specify schema if necessary
+@Table(name = "bar", schema = "public")
 public class Bar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,11 +46,11 @@ public class Bar {
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy; // Assuming a User entity exists
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by", nullable = false)
-    private User updatedBy; // Assuming a User entity exists
+    private User updatedBy;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -59,19 +60,5 @@ public class Bar {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-//    @Column(name="beer05price", precision = 5)
-//    private double beer05Price;
-//
-//    @Column(name="wine075price", precision = 5)
-//    private double wine075Price;
-//
-//    @Column(name="coffeeprice", precision = 5)
-//    private double coffeePrice;
-//
-//    @Column(name="entryfee", precision = 5)
-//    private double entryFee;
-//
-//    @Column(name="cloakroomfee", precision = 5)
-//    private double cloakroomFee;
 }
 
