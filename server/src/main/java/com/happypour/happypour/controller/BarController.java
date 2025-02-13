@@ -1,7 +1,6 @@
 package com.happypour.happypour.controller;
 
 import com.happypour.happypour.dto.BarDetailsRequest;
-import com.happypour.happypour.dto.BarListRequest;
 import com.happypour.happypour.dto.BarPostRequest;
 import com.happypour.happypour.dto.BarPutRequest;
 import com.happypour.happypour.model.Bar;
@@ -34,7 +33,7 @@ public class BarController {
         System.out.println("HALOOOOOO");
         try {
             System.out.println("request::::" + request);
-            barService.setBar(request);
+            barService.createBar(request);
             return ResponseEntity.ok("Bar added succesfully to database.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error adding bar: " + e.getMessage());

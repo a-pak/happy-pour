@@ -26,6 +26,7 @@ public class HappyHourService {
         return happyHourRepository.findAll();
     }
     public void setHappyHour(Bar bar, HappyHour happyHour) {
+        happyHour.setId(null);
         happyHour.setBar(bar);
         happyHourRepository.save(happyHour);
     }

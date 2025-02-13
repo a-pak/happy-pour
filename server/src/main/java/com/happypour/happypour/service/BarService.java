@@ -6,9 +6,7 @@ import com.happypour.happypour.dto.BarPutRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -93,13 +91,11 @@ public class BarService {
 
     }
 
-    public void setBar(BarPostRequest barPostRequest) {
+    public void createBar(BarPostRequest barPostRequest) {
         Bar bar = barPostRequest.getBar();
         HappyHour happyHour = barPostRequest.getHappyHour();
         List<Drink> drinks = barPostRequest.getDrinks();
         List<HappyHourDrink> happyHourDrinks = barPostRequest.getHappyHourDrinks();
-
-        System.out.println("BarService: Adding bar: " + bar.toString());
 
         bar.setId(null);
         Bar savedBar = barRepository.save(bar);
