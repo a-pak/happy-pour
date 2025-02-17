@@ -30,9 +30,7 @@ public class BarController {
     }
     @PostMapping
     public ResponseEntity<String> createBar(@RequestBody BarPostRequest request) {
-        System.out.println("HALOOOOOO");
         try {
-            System.out.println("request::::" + request);
             barService.createBar(request);
             return ResponseEntity.ok("Bar added succesfully to database.");
         } catch (Exception e) {

@@ -1,15 +1,16 @@
 package com.happypour.happypour.service;
 
+import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.*;
 
 import com.happypour.happypour.repository.DrinkRepository;
 import com.happypour.happypour.repository.HappyHourDrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,9 +43,9 @@ public class DrinkService {
         return happyHourDrinkRepository.findAll();
     }
 
-    public void setBar(List<Drink> drinks, Bar bar) {
+    public void createDrink(DrinkPostRequest drinkPostRequest) {
+        List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
         drinks.forEach(drink -> {
-            drink.setBar(bar);
             drinkRepository.save(drink);
         });
     }

@@ -3,6 +3,7 @@ package com.happypour.happypour.service;
 import com.happypour.happypour.dto.BarDetailsRequest;
 import com.happypour.happypour.dto.BarPostRequest;
 import com.happypour.happypour.dto.BarPutRequest;
+import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
@@ -22,6 +23,8 @@ public class BarService {
     @Autowired
     private BarRepository barRepository;
 
+    @Autowired
+    UserService userService;
     @Autowired
     private HappyHourService happyHourService;
     @Autowired
@@ -93,24 +96,9 @@ public class BarService {
 
     public void createBar(BarPostRequest barPostRequest) {
         Bar bar = barPostRequest.getBar();
-        HappyHour happyHour = barPostRequest.getHappyHour();
-        List<Drink> drinks = barPostRequest.getDrinks();
-        List<HappyHourDrink> happyHourDrinks = barPostRequest.getHappyHourDrinks();
 
         bar.setId(null);
-        Bar savedBar = barRepository.save(bar);
-
-        if (happyHour != null) {
-            happyHourService.setHappyHour(savedBar, happyHour);
-        }
-
-        if (drinks != null && !drinks.isEmpty()) {
-            drinkService.setBar(drinks, savedBar);
-        }
-
-        if (happyHourDrinks != null && !happyHourDrinks.isEmpty()) {
-            drinkService.setHHDrink(happyHourDrinks, savedBar);
-        }
+        barRepository.save(bar);
     }
 
     public Bar updateBar(Long barId, BarPutRequest barPutRequest) {
