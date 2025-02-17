@@ -1,20 +1,15 @@
 package com.happypour.happypour.service;
 
-import com.happypour.happypour.dto.BarDetailsRequest;
-import com.happypour.happypour.dto.BarListRequest;
+import com.happypour.happypour.dto.HappyHourDetails;
 import com.happypour.happypour.model.*;
 
-import com.happypour.happypour.repository.HappyHourDrinkRepository;
 import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HappyHourService {
@@ -22,13 +17,14 @@ public class HappyHourService {
     @Autowired
     HappyHourRepository happyHourRepository;
 
+    @Autowired
+    DrinkService drinkService;
+
     public List<HappyHour> getAll() {
         return happyHourRepository.findAll();
     }
-    public void setHappyHour(Bar bar, HappyHour happyHour) {
-        happyHour.setId(null);
-        happyHour.setBar(bar);
-        happyHourRepository.save(happyHour);
+    public void createHappyHour(HappyHourDetails happyHourDetails) {
+        happyHourRepository.save(happyHourDetails.getHappyHour());
     }
 
     public HappyHour updateHappyHour(Long id, HappyHour updatedHappyHour) {

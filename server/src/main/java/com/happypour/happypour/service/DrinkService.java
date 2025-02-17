@@ -58,7 +58,8 @@ public class DrinkService {
         });
     }
 
-    public Drink updateDrink(Long id, Drink updatedDrink) {
+    public Drink updateDrink(Drink updatedDrink) {
+        Long id = updatedDrink.getId();
         return drinkRepository.findById(id)
                 .map(existingDrink -> {
                     BeanUtils.copyProperties(updatedDrink, existingDrink, "id", "bar");

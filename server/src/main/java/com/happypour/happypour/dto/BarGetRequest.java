@@ -9,20 +9,18 @@ import com.happypour.happypour.model.HappyHourDrink;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class BarDetailsRequest {
+public class BarGetRequest {
     private Bar bar;
     private HappyHour happyHour;
     private List<HappyHourDrink> happyHourDrinks;
     private List<Drink> drinks;
 
-    public BarDetailsRequest() {
+    public BarGetRequest() {
         this.happyHourDrinks = new ArrayList<>();
         this.drinks = new ArrayList<>();
     }

@@ -1,9 +1,8 @@
 package com.happypour.happypour.service;
 
-import com.happypour.happypour.dto.BarDetailsRequest;
+import com.happypour.happypour.dto.BarGetRequest;
 import com.happypour.happypour.dto.BarPostRequest;
 import com.happypour.happypour.dto.BarPutRequest;
-import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
@@ -31,16 +30,16 @@ public class BarService {
     private DrinkService drinkService;
 
 
-    public List<BarDetailsRequest> getAllBars() {
+    public List<BarGetRequest> getAllBars() {
         List<Bar> bars = barRepository.findAll();
         List<HappyHour> happyHours = happyHourService.getAll();
         List<Drink> drinks = drinkService.getAllDrinks();
         List<HappyHourDrink> hhDrinks = drinkService.getAllHappyHourDrinks();
 
-        List<BarDetailsRequest> barDetailsRequests = new ArrayList<>();
+        List<BarGetRequest> barGetRequests = new ArrayList<>();
 
         for (Bar bar : bars) {
-            BarDetailsRequest dto = new BarDetailsRequest();
+            BarGetRequest dto = new BarGetRequest();
             dto.setBar(bar);
             // Check if HappyHour
             Optional<HappyHour> happyHour = happyHours.stream()
@@ -62,31 +61,31 @@ public class BarService {
                     dto.getDrinks().add(drink);
                 }
             }
-            barDetailsRequests.add(dto);
+            barGetRequests.add(dto);
         }
 
-        return barDetailsRequests;
+        return barGetRequests;
     }
 
-    public BarDetailsRequest getById(Long id) {
-        BarDetailsRequest barDetailsRequest;
+    public BarGetRequest getById(Long id) {
+        BarGetRequest barGetRequest;
         Optional<Bar> optionalBar = barRepository.findById(id);
         
         if (optionalBar.isPresent()) {
-            barDetailsRequest = new BarDetailsRequest();
-            barDetailsRequest.setBar(optionalBar.get());
+            barGetRequest = new BarGetRequest();
+            barGetRequest.setBar(optionalBar.get());
 
             List<Drink> drinks = new ArrayList<>(drinkService.findByBar(id));
-            barDetailsRequest.setDrinks(drinks);
+            barGetRequest.setDrinks(drinks);
             
             List<HappyHour> lh = happyHourService.findByBar(id);
             if(!lh.isEmpty()) {
                 HappyHour hh = lh.get(0);
-                barDetailsRequest.setHappyHour(hh);
-                barDetailsRequest.setHappyHourDrinks(drinkService.findByHappyHourId(hh.getId()));
+                barGetRequest.setHappyHour(hh);
+                barGetRequest.setHappyHourDrinks(drinkService.findByHappyHourId(hh.getId()));
             }
 
-            return barDetailsRequest;
+            return barGetRequest;
             
         } else {
             return null;
