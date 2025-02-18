@@ -1,5 +1,6 @@
 package com.happypour.happypour.service;
 
+import com.happypour.happypour.dto.DrinkDTO;
 import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.*;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class DrinkService {
     public void createDrink(DrinkPostRequest drinkPostRequest) {
         List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
         drinks.forEach(drink -> {
+            drink.setId(null);
             drinkRepository.save(drink);
         });
     }
@@ -68,8 +71,14 @@ public class DrinkService {
                 .orElse(null);
     }
 
-    public List<Drink> findByBar(Long id) {
-        return drinkRepository.findByBar(id);
+    public List<DrinkDTO> findByBar(Long id) {
+        List<DrinkDTO> dtos = new ArrayList<>();
+        List<Drink> drinks = drinkRepository.findByBar(id);
+
+        for (Drink d: drinks) {
+            dtos.add(new DrinkDTO(d));
+        }
+        return dtos;
     }
 
     public List<HappyHourDrink> findByHappyHourId(Long id) {

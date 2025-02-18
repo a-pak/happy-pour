@@ -17,8 +17,8 @@ import lombok.Setter;
 public class BarGetRequest {
     private Bar bar;
     private HappyHour happyHour;
-    private List<HappyHourDrink> happyHourDrinks;
-    private List<Drink> drinks;
+    private List<HappyHourDrinkDTO> happyHourDrinks;
+    private List<DrinkDTO> drinks;
 
     public BarGetRequest() {
         this.happyHourDrinks = new ArrayList<>();

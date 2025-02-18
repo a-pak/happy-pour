@@ -1,8 +1,6 @@
 package com.happypour.happypour.service;
 
-import com.happypour.happypour.dto.BarGetRequest;
-import com.happypour.happypour.dto.BarPostRequest;
-import com.happypour.happypour.dto.BarPutRequest;
+import com.happypour.happypour.dto.*;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
@@ -52,13 +50,13 @@ public class BarService {
                     .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
                     .findFirst());
             hhDrink.ifPresent(hhd -> {
-                dto.getHappyHourDrinks().add(hhd);
+                dto.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
             });
 
             // Get Drinks without HappyHour
             for (Drink drink : drinks) {
                 if(drink.getBar().getId() == bar.getId()) {
-                    dto.getDrinks().add(drink);
+                    dto.getDrinks().add(new DrinkDTO(drink));
                 }
             }
             barGetRequests.add(dto);
@@ -75,14 +73,17 @@ public class BarService {
             barGetRequest = new BarGetRequest();
             barGetRequest.setBar(optionalBar.get());
 
-            List<Drink> drinks = new ArrayList<>(drinkService.findByBar(id));
+            List<DrinkDTO> drinks = new ArrayList<>(drinkService.findByBar(id));
             barGetRequest.setDrinks(drinks);
             
             List<HappyHour> lh = happyHourService.findByBar(id);
             if(!lh.isEmpty()) {
                 HappyHour hh = lh.get(0);
                 barGetRequest.setHappyHour(hh);
-                barGetRequest.setHappyHourDrinks(drinkService.findByHappyHourId(hh.getId()));
+                List<HappyHourDrink> hhds = drinkService.findByHappyHourId(hh.getId());
+                for (HappyHourDrink hhd : hhds) {
+                    barGetRequest.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
+                }
             }
 
             return barGetRequest;

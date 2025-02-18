@@ -1,5 +1,6 @@
 package com.happypour.happypour.controller;
 
+import com.happypour.happypour.dto.DrinkDTO;
 import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.Drink;
 import com.happypour.happypour.service.DrinkService;
@@ -19,12 +20,14 @@ import java.util.List;
         "http://localhost:3000",
 })
 public class DrinkController {
+
     @Autowired
     private DrinkService drinkService;
+
     @GetMapping("/{bar_id}")
-    public ResponseEntity<List<Drink>> getDrinks(@PathVariable Long bar_id) {
+    public ResponseEntity<List<DrinkDTO>> getDrinks(@PathVariable Long bar_id) {
         try {
-            List<Drink> drinks = drinkService.findByBar(bar_id);
+            List<DrinkDTO> drinks = drinkService.findByBar(bar_id);
             return ResponseEntity.ok(drinks);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -35,8 +38,7 @@ public class DrinkController {
     public ResponseEntity<String> postDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
         try {
             drinkService.createDrink(drinkPostRequest);
-            return ResponseEntity.ok("Drinks added succesfully!");
-
+            return ResponseEntity.ok("Drinks added successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(400).build();
         }
@@ -49,8 +51,7 @@ public class DrinkController {
             for (Drink d : drinks) {
                 drinkService.updateDrink(d);
             }
-            return ResponseEntity.ok("Drinks updated Succesfully!");
-
+            return ResponseEntity.ok("Drinks updated Successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(400).build();
         }

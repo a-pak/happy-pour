@@ -26,7 +26,6 @@ public class Drink {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "bar_id", nullable = false)
