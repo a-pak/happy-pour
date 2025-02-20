@@ -56,4 +56,17 @@ public class DrinkController {
             return ResponseEntity.status(400).build();
         }
     }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
+        try {
+            List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
+            for (Drink d: drinks) {
+                drinkService.deleteDrink(d);
+            }
+            return ResponseEntity.ok("Drinks deleted succesfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("FAIL: Deletion of drinks failed!" + e.getMessage());
+        }
+    }
 }

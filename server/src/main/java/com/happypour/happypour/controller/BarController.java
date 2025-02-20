@@ -60,7 +60,7 @@ public class BarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeBar(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBar(@PathVariable Long id) {
         return barService.removeBar(id);
     }
 }

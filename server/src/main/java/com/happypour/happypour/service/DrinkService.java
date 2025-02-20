@@ -84,4 +84,8 @@ public class DrinkService {
     public List<HappyHourDrink> findByHappyHourId(Long id) {
         return happyHourDrinkRepository.findByHappyHourId(id);
     }
+
+    public void deleteDrink(Drink d) {
+        drinkRepository.deleteById(d.getId());
+    }
 }
