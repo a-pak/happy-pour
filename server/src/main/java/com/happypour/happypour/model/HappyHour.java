@@ -1,48 +1,40 @@
 package com.happypour.happypour.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bar", schema = "public")
-public class Bar {
+@Table(name = "happy_hour", schema = "public") // specify schema if necessary
+public class HappyHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "happy_hour_id")
     private Long id;
 
-    @Column(name="name")
-    private String name;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "bar_id", nullable = false)
+    private Bar bar;
 
-    @Column(name="coordlong", precision = 9)
-    private double coordLong;
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
 
-    @Column(name="coordlat", precision = 8)
-    private double coordLat;
-
-    @Column(name="address")
-    private String address;
-
-    @Column(name="open_from")
-    private LocalTime openFrom;
-
-    @Column(name="open_to")
-    private LocalTime openTo;
-
-    @Column(name="entryfee", precision = 5)
-    private double entryFee;
-
-    @Column(name="cloakroomfee", precision = 5)
-    private double cloakroomFee;
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -59,6 +51,4 @@ public class Bar {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
 }
-

@@ -1,33 +1,119 @@
 package com.happypour.happypour;
 
+import com.happypour.happypour.model.*;
+import com.happypour.happypour.model.embeddable.HappyHourDrinkId;
+import com.happypour.happypour.repository.*;
+
+import java.sql.Time;
+import java.time.LocalTime;
+
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.repository.BarRepository;
-
 @SpringBootApplication
 public class HappypourApplication{
 
+    @Autowired
+    UserRepository userRepository;
 	@Autowired
 	private BarRepository barRepository;
+    @Autowired
+    private DrinkRepository drinkRepository;
+    @Autowired
+    private HappyHourRepository happyHourRepository;
+    @Autowired
+    private HappyHourDrinkRepository happyHourDrinkRepository;
+
+
+    @Autowired
+    EntityManager entityManager;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HappypourApplication.class, args);
 	}
 
     @Bean
-    public CommandLineRunner demo(BarRepository repository) {
-        return (args) -> {
-            // Lisää testidataa
-            // repository.save(new Bar(null, "Bar Helsinki", 24.9384, 60.1699, "Mannerheimintie 1", 5.50, 7.20, 3.00, 10.00, 2.50));
-            // repository.save(new Bar(null, "The Kallio Pub", 24.9484, 60.1799, "Pasilantie 2", 6.00, 8.00, 3.50, 8.00, 3.00));
-            // repository.save(new Bar(null, "Riverside Bar", 24.9334, 60.1649, "Itämerenkatu 3", 5.80, 7.50, 4.00, 12.00, 3.00));
+    public CommandLineRunner demo() {
 
-            repository.findAll().forEach(bar -> System.out.println(bar));
+        return (args) -> {
+            User user1 = new User(null, "admin", "salasana", "admin@example.com");
+            User user2 = new User(null, "moderator", "salasana", "moderator@example.com");
+
+            userRepository.save(user1);
+            userRepository.save(user2);
+
+            Bar bar1 = new Bar(
+                    null,
+                    "Bar Helsinki",
+                    24.9384,
+                    60.1699,
+                    "Mannerheimintie 1",
+                    LocalTime.of(14, 30),
+                    LocalTime.of(14, 30),
+                    0,
+                    0,
+                    user1,
+                    user2,
+                    null,
+                    null
+            );
+            Bar bar2 = new Bar(
+                    null,
+                    "Ravintola Frendi",
+                    24.9384,
+                    60.2099,
+                    "Talontie 2",
+                    LocalTime.of(14, 30),
+                    LocalTime.of(14, 30),
+                    0,
+                    0,
+                    user2,
+                    user2,
+                    null,
+                    null
+            );
+
+            barRepository.save(bar1);
+            barRepository.save(bar2);
+
+            Drink drink1 = new Drink(null, "Draft Beer", bar1, 5.50, user1, user1, null, null);
+            Drink drink2 = new Drink(null, "Coffee", bar1, 2.00, user1, user2, null, null);
+            Drink drink3 = new Drink(null, "Wine", bar2, 7.50, user2, user2, null, null);
+
+            drinkRepository.save(drink1);
+            drinkRepository.save(drink2);
+            drinkRepository.save(drink3);
+
+            HappyHour hh1 = new HappyHour(
+                    null,
+                    bar1,
+                    LocalTime.of(12, 30),
+                    LocalTime.of(13, 30),
+                    user1,
+                    user1,
+                    null,
+                    null
+            );
+            happyHourRepository.save(hh1); // detached entity passed to persist occurs here.
+
+            HappyHourDrink happyHourDrink = new HappyHourDrink(
+                    new HappyHourDrinkId(hh1, drink1),
+                    hh1,
+                    drink1,
+                    3.80
+                    ,user1,
+                    user1,
+                    null,
+                    null
+            );
+            happyHourDrinkRepository.save(happyHourDrink);
+
+            barRepository.findAll().forEach(bar -> System.out.println(bar));
         };
     }
 }

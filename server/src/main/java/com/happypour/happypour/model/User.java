@@ -1,5 +1,6 @@
 package com.happypour.happypour.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +19,10 @@ public class User {
     private Long id;
     @Column
     private String username;
+    @JsonIgnore
     @Column
     private String password;
+    @JsonIgnore
     @Column
     private String email;
 }

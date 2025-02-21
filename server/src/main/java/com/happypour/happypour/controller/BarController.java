@@ -1,5 +1,8 @@
 package com.happypour.happypour.controller;
 
+import com.happypour.happypour.dto.BarGetRequest;
+import com.happypour.happypour.dto.BarPostRequest;
+import com.happypour.happypour.dto.BarPutRequest;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +25,22 @@ public class BarController {
     private BarService barService;
 
     @GetMapping
-    public List<Bar> getBars() {
+    public List<BarGetRequest> getBars() {
         return barService.getAllBars();
     }
     @PostMapping
-    public Bar createBar(@RequestBody Bar newBar) {
-        System.out.println("!! addBar called: \n " + newBar.toString());
-        barService.setBar(newBar);
-        return newBar;
+    public ResponseEntity<String> createBar(@RequestBody BarPostRequest request) {
+        try {
+            barService.createBar(request);
+            return ResponseEntity.ok("Bar added succesfully to database.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error adding bar: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bar> getBar(@PathVariable Long id) {
-        Bar bar = barService.getBar(id);
+    public ResponseEntity<BarGetRequest> getBar(@PathVariable Long id) {
+        BarGetRequest bar = barService.getById(id);
         if (bar == null) {
             return ResponseEntity.notFound().build();
         }
@@ -44,8 +50,8 @@ public class BarController {
     @PutMapping("/{id}")
     public ResponseEntity<Bar> updateBar(
             @PathVariable Long id,
-            @RequestBody Bar updatedBar) {
-        Bar bar = barService.updateBar(id, updatedBar);
+            @RequestBody BarPutRequest barPutRequest) {
+        Bar bar = barService.updateBar(id, barPutRequest);
 
         if (bar == null) {
             return ResponseEntity.notFound().build();
@@ -54,7 +60,7 @@ public class BarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeBar(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBar(@PathVariable Long id) {
         return barService.removeBar(id);
     }
 }
