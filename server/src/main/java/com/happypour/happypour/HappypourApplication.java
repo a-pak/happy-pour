@@ -83,7 +83,7 @@ public class HappypourApplication{
 
             Drink drink1 = new Drink(null, "Draft Beer", bar1, 5.50, user1, user1, null, null);
             Drink drink2 = new Drink(null, "Coffee", bar1, 2.00, user1, user2, null, null);
-            Drink drink3 = new Drink(null, "Wine", bar1, 7.50, user2, user2, null, null);
+            Drink drink3 = new Drink(null, "Wine", bar2, 7.50, user2, user2, null, null);
 
             drinkRepository.save(drink1);
             drinkRepository.save(drink2);
