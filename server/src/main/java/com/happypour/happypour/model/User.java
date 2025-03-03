@@ -25,4 +25,7 @@ public class User {
     @JsonIgnore
     @Column
     private String email;
+    @JsonIgnore
+    @Column
+    private boolean verified;
 }

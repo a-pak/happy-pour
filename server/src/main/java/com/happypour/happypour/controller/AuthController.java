@@ -24,13 +24,17 @@ public class AuthController {
     public ResponseEntity<String> login (@RequestBody LoginRequest loginRequest) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
+        try {
+            if (userService.authenticate(email, password)) {
+                String username = userService.getByEmail(email).getUsername();
 
-        if (userService.authenticate(email, password)) {
-            String username = userService.getByEmail(email).getUsername();
+                return ResponseEntity.ok(jwtUtil.generateToken(username));
+            } else {
+                return ResponseEntity.status(401).body("Invalid username or password.");
+            }
+        } catch (Exception e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
 
-            return ResponseEntity.ok(jwtUtil.generateToken(username));
-        } else {
-            return ResponseEntity.status(401).body("Invalid username or password.");
         }
     }
 
@@ -54,11 +58,21 @@ public class AuthController {
                 return ResponseEntity.status(500).body("Unexpected error while writing user to database.");
             
             };
-            
             return ResponseEntity.status(201).body("User added to database!");
+
         }
+    }
 
-
-
+    @PostMapping("/verify/{token}")
+    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+        try {
+            if(userService.verifyUser(token)) {
+                return ResponseEntity.ok("User verified successfully!");
+            } else {
+                return ResponseEntity.badRequest().body("Request with token invalid!");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error occurred while verifying user!\n" + e.getMessage());
+        }
     }
 }
