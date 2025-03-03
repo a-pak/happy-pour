@@ -3,6 +3,7 @@ package com.happypour.happypour.security.filter;
 import com.happypour.happypour.security.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
     private String getJwtFromRequest(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    String jwtToken = cookie.getValue();
+                    return jwtToken;
+                }
+            }
         }
         return null;
     }

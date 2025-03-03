@@ -4,6 +4,9 @@ import com.happypour.happypour.dto.LoginRequest;
 import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.security.JWTUtil;
 import com.happypour.happypour.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +22,26 @@ public class AuthController {
         this.userService = us;
         this.jwtUtil = jt;
     }
-
+    // TODO: Return a userDTO on successful login.
     @PostMapping("/login")
-    public ResponseEntity<String> login (@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
             if (userService.authenticate(email, password)) {
                 String username = userService.getByEmail(email).getUsername();
 
-                return ResponseEntity.ok(jwtUtil.generateToken(username));
+                Cookie tokenCookie = new Cookie("token", jwtUtil.generateToken(username));
+                tokenCookie.setHttpOnly(true);
+                tokenCookie.setSecure(true);    // This ensures the cookie is sent only over HTTPS
+                tokenCookie.setPath("/");       // This cookie will be sent for all requests to the domain
+                tokenCookie.setMaxAge(60 * 60); // (e.g., 1 hour)
+                response.addCookie(tokenCookie);
+
+
+                return ResponseEntity.ok("Logged in Successfully!");
             } else {
-                return ResponseEntity.status(401).body("Invalid username or password.");
+                return ResponseEntity.status(401).body("Invalid credentials.");
             }
         } catch (Exception e) {
                 return ResponseEntity.badRequest().body(e.getMessage());

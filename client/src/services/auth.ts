@@ -4,21 +4,31 @@ import RegisterPayload from '../model/IRegisterPayloadInterface';
 
 const baseUrl = 'http://localhost:8080/api/auth'
 
-export const loginAPI = async (loginPayload: LoginPayload) => {
-  // Send POST request to the backend for authentication
-  const response = await axios.post(baseUrl + "/login", loginPayload);
-  if (response.status === 200) {
-    
-    const jwtToken = response.data;
-    if (jwtToken) {
-      // Store the JWT token in localStorage
-      localStorage.setItem('jwtToken', jwtToken);
+export const loginAPI = async (loginPayload : LoginPayload) => {
+  try {
+    const response = await fetch('https://your-backend.com/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginPayload),
+      credentials: 'include', // Important: this ensures cookies are sent with the request
+    });
 
-      // Redirect to the main page
+    if (response.ok) {
+
+      //TODO: Extract userDTO and store in UserContext, Implement UserContext(?)
+
+
+
+
       window.location.href = '/';
     } else {
-      alert('Login failed, token not there!');
+      // Handle error (invalid credentials)
+      console.error('Login failed');
     }
+  } catch (error) {
+    console.error('Error:', error);
   }
 };
 export const registerAPI = async (registerPayload: RegisterPayload) => {
