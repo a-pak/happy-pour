@@ -2,10 +2,10 @@ package com.happypour.happypour.controller;
 
 import com.happypour.happypour.dto.LoginRequest;
 import com.happypour.happypour.dto.RegisterRequest;
+import com.happypour.happypour.model.User;
 import com.happypour.happypour.security.JWTUtil;
 import com.happypour.happypour.service.UserService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +22,33 @@ public class AuthController {
         this.userService = us;
         this.jwtUtil = jt;
     }
-    // TODO: Return a userDTO on successful login.
+    // TODO: Return user details on successful login.
     @PostMapping("/login")
     public ResponseEntity<String> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
             if (userService.authenticate(email, password)) {
-                String username = userService.getByEmail(email).getUsername();
+                User user = userService.getByEmail(email);
 
-                Cookie tokenCookie = new Cookie("token", jwtUtil.generateToken(username));
+                Cookie tokenCookie = new Cookie("token", jwtUtil.generateToken(user.getUsername()));
                 tokenCookie.setHttpOnly(true);
                 tokenCookie.setSecure(true);    // This ensures the cookie is sent only over HTTPS
                 tokenCookie.setPath("/");       // This cookie will be sent for all requests to the domain
                 tokenCookie.setMaxAge(60 * 60); // (e.g., 1 hour)
                 response.addCookie(tokenCookie);
 
+                Cookie emailCookie = new Cookie("email", user.getEmail());
+                emailCookie.setPath("/");
+                emailCookie.setSecure(true);
+                // emailCookie.setMaxAge(60* 60);
+                response.addCookie(emailCookie);
+
+                Cookie usernameCookie = new Cookie("username", user.getUsername());
+                usernameCookie.setPath("/");
+                usernameCookie.setSecure(true);
+                // usernameCookie.setMaxAge(60 * 60);
+                response.addCookie(usernameCookie);
 
                 return ResponseEntity.ok("Logged in Successfully!");
             } else {
