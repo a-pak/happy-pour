@@ -23,15 +23,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        // .requestMatchers("api/auth/**").permitAll()
-                        // .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
-                        .anyRequest().permitAll()
-                        //.anyRequest().authenticated()
+                        .requestMatchers("api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
+                        // .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-                // .addFilterBefore(new JwtAuthenticationFilter(JWTUtil.getInstance()), UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(JWTUtil.getInstance()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

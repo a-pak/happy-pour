@@ -13,23 +13,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/get-by-username")
-    public ResponseEntity<User> getByName(@RequestHeader(value="Authorization") String authorizationHeader, @RequestParam String username) {
-        String token = "";
-        System.out.println(authorizationHeader);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(0,7);
-            System.err.println("Token from header:" + token);
-        }
+    public ResponseEntity<User> getByName(@RequestParam String username) {
 
+        try {
             User user = userService.getByUsername(username);
 
-            if (user != null && userService.matchUser(user.getEmail(), token)) {
+            if (user != null) {
                 return ResponseEntity.ok(user);
 
-            } else if (user == null) {
-                return ResponseEntity.notFound().build();
             }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
 
         return ResponseEntity.badRequest().build();
+        }
     }
 }
