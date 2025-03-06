@@ -15,7 +15,7 @@ import { Box, FormControl, InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useDrinkStore } from "../drinkStore";
 
 const AppBarComponent: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -23,7 +23,8 @@ const AppBarComponent: React.FC = () => {
   const menuItems = ['Log In', 'About', 'Contact'];
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const {defaultDrink, setDefaultDrink} = useDrinkStore()
+
   
     if(location.pathname != '/') {
       
@@ -39,9 +40,8 @@ const AppBarComponent: React.FC = () => {
     navigate('/')
   }
 
-  const [drink, setDrink] = useState('b0,5')
   const handleChange = (event: SelectChangeEvent) => {
-    setDrink(event.target.value);
+    setDefaultDrink(event.target.value);
   };
 
 
@@ -79,7 +79,7 @@ const AppBarComponent: React.FC = () => {
               <Select
                   labelId="drink-selector-label"
                   id="drink-selector-standard"
-                  value={drink}
+                  value={defaultDrink}
                   onChange={handleChange}
                   label="Drink"
                   sx={{
@@ -97,9 +97,9 @@ const AppBarComponent: React.FC = () => {
                     },
                   }}
               >
-                  <MenuItem value={'b0,5'}>Draft Beer (0,5 l)</MenuItem>
-                  <MenuItem value={'w0,75'}>House Wine (0,75 l)</MenuItem>
-                  <MenuItem value={'coffee'}>Coffee</MenuItem>
+                  <MenuItem value={'Draft Beer'}>Draft Beer 0,5 l</MenuItem>
+                  <MenuItem value={'Wine'}>House Wine 0,75 l</MenuItem>
+                  <MenuItem value={'Coffee'}>Coffee</MenuItem>
               </Select>
           </FormControl>
 
