@@ -23,7 +23,7 @@ const AppBarComponent: React.FC = () => {
   const menuItems = ['Log In', 'About', 'Contact'];
   const navigate = useNavigate();
   const location = useLocation();
-  const {defaultDrink, setDefaultDrink} = useDrinkStore()
+  const {defaultDrink, setDefaultDrink} = useDrinkStore();
 
   
     if(location.pathname != '/') {
@@ -111,9 +111,7 @@ const AppBarComponent: React.FC = () => {
         : <IconButton color="inherit" aria-label="bars" onClick={toggleBarList}>
             <SportsBarIcon />
           </IconButton>}
-
       </Toolbar>
-      
     </AppBar>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
 import { BarDataResponse } from '../model/IbarInterface';
 import { Marker, Popup } from 'react-leaflet';
@@ -6,15 +6,24 @@ import { ThemeProvider } from '@emotion/react';
 import { Typography, Box, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useDrinkStore } from "../drinkStore";
+import barsService from '../services/bars.ts';
 
-interface LocationMarkerProps {
-    bars: BarDataResponse | null;
-}
-
-export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars }) => {
+export const LocationMarkerComponent: React.FC = () => {
+    const [bars, setBars] = useState<BarDataResponse | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const defaultDrink = useDrinkStore((state) => state.defaultDrink);
     
-    // Apufunktio tarkistamaan, onko Happy Hour käynnissä
+    useEffect(() => {
+        barsService
+            .getAll()
+            .then((data: BarDataResponse) => {
+                setBars(data);
+            })
+            .catch((err) => {
+                setError(`Can't find any bars: ${err}`);
+            });
+    }, []);
+
     const isHappyHourActive = (startTime: string, endTime: string): boolean => {
         const now = new Date();
         const start = new Date();
@@ -29,6 +38,8 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
         return now >= start && now <= end;
     };
 
+    if (error) return <p>{error}</p>;
+
     return (
         <>
             {bars &&
@@ -37,39 +48,26 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                     let drinkPrice = null;
                     let isHappyHour = false;
 
-                    console.log(`Checking bar: ${barEntity.bar.name}`);
-
-                    try {
-                        // Tarkistetaan onko juoma saatavilla
-                        barEntity.drinks.forEach((drink) => {
-                            if (drink.name === defaultDrink) {
-                                console.log('Found drink:', drink.name);
-                                hasDrink = true;
-                                drinkPrice = drink.normalPrice;
-                            }
-                        });
-
-                        // Jos Happy Hour on voimassa, tarkistetaan Happy Hour -juoma
-                        if (barEntity.happyHour?.startTime && barEntity.happyHour?.endTime) {
-                            isHappyHour = isHappyHourActive(barEntity.happyHour.startTime, barEntity.happyHour.endTime);
-
-                            if (isHappyHour) {
-                                barEntity.happyHourDrinks.forEach((hhDrink) => {
-                                    if (hhDrink.drinkName === defaultDrink) {
-                                        console.log('Happy Hour drink found!', hhDrink.drinkName);
-                                        drinkPrice = hhDrink.happyHourPrice;
-                                    }
-                                });
-                            }
+                    barEntity.drinks.forEach((drink) => {
+                        if (drink.name === defaultDrink) {
+                            hasDrink = true;
+                            drinkPrice = drink.normalPrice;
                         }
-                    } catch (error) {
-                        console.log('Error checking drinks:', error);
+                    });
+
+                    if (barEntity.happyHour?.startTime && barEntity.happyHour?.endTime) {
+                        isHappyHour = isHappyHourActive(barEntity.happyHour.startTime, barEntity.happyHour.endTime);
+
+                        if (isHappyHour) {
+                            barEntity.happyHourDrinks.forEach((hhDrink) => {
+                                if (hhDrink.drinkName === defaultDrink) {
+                                    drinkPrice = hhDrink.happyHourPrice;
+                                }
+                            });
+                        }
                     }
 
-                    if (!hasDrink) {
-                        console.log(`Drink not found in ${barEntity.bar.name}, skipping...`);
-                        return null;
-                    }
+                    if (!hasDrink) return null;
 
                     return (
                         <ThemeProvider theme={theme} key={barEntity.bar.id}>
@@ -98,7 +96,7 @@ export const LocationMarkerComponent: React.FC<LocationMarkerProps> = ({ bars })
                                                 <strong>Prices:</strong>
                                             </Typography>
                                             <Typography variant="body2">
-                                                🍺 {defaultDrink}: {drinkPrice ? `${drinkPrice} €` : "Not available"}
+                                                {defaultDrink}: {drinkPrice ? `${drinkPrice} €` : "Not available"}
                                             </Typography>
                                             {isHappyHour && (
                                                 <Typography variant="body2" color="success.main">
