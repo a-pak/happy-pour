@@ -7,6 +7,7 @@ import com.happypour.happypour.repository.*;
 import java.sql.Time;
 import java.time.LocalTime;
 
+import com.happypour.happypour.service.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class HappypourApplication{
     @Autowired
     private HappyHourDrinkRepository happyHourDrinkRepository;
 
+    @Autowired
+    private UserService userService;
 
     @Autowired
     EntityManager entityManager;
@@ -44,8 +47,8 @@ public class HappypourApplication{
             User user1 = new User(null, "admin", "salasana", "admin@example.com",true);
             User user2 = new User(null, "moderator", "salasana", "moderator@example.com",true);
 
-            userRepository.save(user1);
-            userRepository.save(user2);
+            userService.createUser(user1);
+            userService.createUser(user2);
 
             Bar bar1 = new Bar(
                     null,

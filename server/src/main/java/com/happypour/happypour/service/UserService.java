@@ -97,8 +97,10 @@ public class UserService {
         }
     }
 
-    private boolean createUser(User user) {
+    public boolean createUser(User user) {
         try {
+            user.setVerified(true); // <- DEBUG
+            user.setPassword( passwordEncoder.encode(user.getPassword()) ); // <- DEBUG
             userRepository.save(user);
             return true;
 
