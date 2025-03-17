@@ -10,20 +10,22 @@ const getAll = async (): Promise<Bar[]> => {
 }
 
 const create = async (newBar: Bar): Promise<Bar> => {
-    const response = await axios.post<Bar>(BASE_URL, newBar);
+    const response = await axios.post(BASE_URL, {"bar": newBar}, {
+        withCredentials: true,
+    }).then(response => response.data);
     return response.data;
 }
 
-const update = async (id: Number, newBar: Bar): Promise<Bar> => {
+const update = async (id: number, newBar: Bar): Promise<Bar> => {
     const response = await axios.put<Bar>(`${BASE_URL}/${id}`, newBar);
     return response.data;
 }
 
-const getById = async (id: Number): Promise<Bar> => {
+const getById = async (id: number): Promise<Bar> => {
     const response = await axios.get(`${BASE_URL}/${id}`);
     return response.data;
 }
-const removeById = async (id: Number) => {
+const removeById = async (id: number) => {
     const response = await axios.delete(`${BASE_URL}/${id}`)
     return response.data
 }

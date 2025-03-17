@@ -25,13 +25,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers("api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/bars").permitAll()
-                        // .anyRequest().permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()//.permitAll()
                 )
                 .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(JWTUtil.getInstance()), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(
+                        JWTUtil.getInstance()),
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }

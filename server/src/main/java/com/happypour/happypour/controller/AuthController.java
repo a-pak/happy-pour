@@ -8,6 +8,7 @@ import com.happypour.happypour.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,20 +34,21 @@ public class AuthController {
 
                 Cookie tokenCookie = new Cookie("token", jwtUtil.generateToken(user.getUsername()));
                 tokenCookie.setHttpOnly(true);
-                tokenCookie.setSecure(true);    // This ensures the cookie is sent only over HTTPS
+                tokenCookie.setSecure(false);    // This ensures the cookie is sent only over HTTPS
                 tokenCookie.setPath("/");       // This cookie will be sent for all requests to the domain
-                tokenCookie.setMaxAge(60 * 60); // (e.g., 1 hour)
+                tokenCookie.setMaxAge(60 * 60 * 24); // (e.g., 1 hour)
                 response.addCookie(tokenCookie);
+                response.setHeader("SameSite","None");
 
                 Cookie emailCookie = new Cookie("email", user.getEmail());
                 emailCookie.setPath("/");
-                emailCookie.setSecure(true);
+                emailCookie.setSecure(false);
                 // emailCookie.setMaxAge(60* 60);
                 response.addCookie(emailCookie);
 
                 Cookie usernameCookie = new Cookie("username", user.getUsername());
                 usernameCookie.setPath("/");
-                usernameCookie.setSecure(true);
+                usernameCookie.setSecure(false);
                 // usernameCookie.setMaxAge(60 * 60);
                 response.addCookie(usernameCookie);
 
