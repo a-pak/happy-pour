@@ -32,25 +32,16 @@ public class AuthController {
             if (userService.authenticate(email, password)) {
                 User user = userService.getByEmail(email);
 
-                Cookie tokenCookie = new Cookie("token", jwtUtil.generateToken(user.getUsername()));
-                tokenCookie.setHttpOnly(true);
-                tokenCookie.setSecure(false);    // This ensures the cookie is sent only over HTTPS
-                tokenCookie.setPath("/");       // This cookie will be sent for all requests to the domain
-                tokenCookie.setMaxAge(60 * 60 * 24); // (e.g., 1 hour)
-                response.addCookie(tokenCookie);
-                response.setHeader("SameSite","None");
-
-                Cookie emailCookie = new Cookie("email", user.getEmail());
-                emailCookie.setPath("/");
-                emailCookie.setSecure(false);
-                // emailCookie.setMaxAge(60* 60);
-                response.addCookie(emailCookie);
-
-                Cookie usernameCookie = new Cookie("username", user.getUsername());
-                usernameCookie.setPath("/");
-                usernameCookie.setSecure(false);
-                // usernameCookie.setMaxAge(60 * 60);
-                response.addCookie(usernameCookie);
+                String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax";
+                response.setHeader("Set-Cookie", cookieValue);
+                response.addHeader(
+                        "Set-Cookie",
+                        "email=" + user.getEmail() + "; Path=/; "
+                );
+                response.addHeader(
+                        "Set-Cookie",
+                        "username=" + user.getUsername() + "; Path=/; "
+                );
 
                 return ResponseEntity.ok("Logged in Successfully!");
             } else {

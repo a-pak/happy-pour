@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println(cookie.getName() +": "+ cookie.getValue() );
             }
         }
-        System.out.println("NULL!");
+        System.err.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NULL!");
         return null;
     }
 }

@@ -2,21 +2,17 @@ import axios from 'axios'
 import LoginPayload from '../model/ILoginPayloadInterface';
 import RegisterPayload from '../model/IRegisterPayloadInterface';
 
-const baseUrl = 'http://localhost:8080/api/auth'
+const BASE_URL = 'http://localhost:8080/api/auth'
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
-    const response = await fetch('http://localhost:8080/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(loginPayload),
-      credentials: 'include', // Important: this ensures cookies are sent with the request
-    });
+    const response = await axios.post(
+        BASE_URL + '/login',
+        loginPayload,
+        {withCredentials: true}
+    );
 
-    if (response.ok) {
-
+    if (response.status === 200) {
       //TODO: Extract userDTO and store in UserContext, Implement UserContext(?)
 
 
@@ -33,7 +29,7 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
 };
 export const registerAPI = async (registerPayload: RegisterPayload) => {
 
-  const response = await axios.post(baseUrl + "/register", registerPayload)
+  const response = await axios.post(BASE_URL + "/register", registerPayload)
   if (response.status === 200) {
     // Redirect to login page
     window.location.href = '/login';

@@ -18,6 +18,7 @@ public class SecurityConfig {
     /*
         Security config with login filter. Uncomment rows to enable protection.
      */
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
