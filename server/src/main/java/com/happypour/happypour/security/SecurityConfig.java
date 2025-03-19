@@ -27,7 +27,6 @@ public class SecurityConfig {
     /*
         Security config with login filter. Uncomment rows to enable protection.
      */
-// TODO: ADD CORS CONFIGURATION!
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -47,29 +46,5 @@ public class SecurityConfig {
                 );
 
         return http.build();
-    }
-
-
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "https://happy-pour-be.onrender.com",
-                "http://localhost:8080",
-                "http://localhost:5173",
-                "http://localhost:3000"
-        ));
-        configuration.setAllowedMethods(Arrays.asList(
-                "GET",
-                "POST",
-                "DELETE",
-                "PUT",
-                "OPTIONS"
-        ));
-        //configuration.setAllowedHeaders(Arrays.asList("Cookie"));
-        //configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }
