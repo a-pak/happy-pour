@@ -96,7 +96,7 @@ public class UserService {
             return false;
         }
     }
-
+    //TODO: REMOVE LINES MARKED WITH DEBUG!
     public boolean createUser(User user) {
         try {
             user.setVerified(true); // <- DEBUG
