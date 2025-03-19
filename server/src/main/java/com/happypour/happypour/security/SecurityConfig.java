@@ -18,7 +18,7 @@ public class SecurityConfig {
     /*
         Security config with login filter. Uncomment rows to enable protection.
      */
-
+// TODO: ADD CORS CONFIGURATION!
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

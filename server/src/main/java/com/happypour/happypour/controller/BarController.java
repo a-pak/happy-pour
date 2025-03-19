@@ -13,12 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bars")
-@CrossOrigin(origins={
-    "https://happy-pour-be.onrender.com",
-    "http://localhost:8080", 
-    "http://localhost:5173",
-    "http://localhost:3000", 
-})
 public class BarController {
 
     @Autowired
@@ -28,6 +22,7 @@ public class BarController {
     public List<BarGetRequest> getBars() {
         return barService.getAllBars();
     }
+
     @PostMapping
     public ResponseEntity<String> createBar(@RequestBody BarPostRequest request) {
         try {

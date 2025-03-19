@@ -8,9 +8,9 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
     const response = await axios.post(
         BASE_URL + '/login',
-        loginPayload,
-        {withCredentials: true}
-    );
+        loginPayload, {
+          withCredentials: true
+        });
 
     if (response.status === 200) {
       //TODO: Extract userDTO and store in UserContext, Implement UserContext(?)

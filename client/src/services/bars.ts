@@ -5,7 +5,9 @@ const BASE_URL : string = import.meta.env.VITE_BASE_API_URL + "bars";
 
 const getAll = async (): Promise<Bar[]> => {
     console.log(BASE_URL);
-    const response = await axios.get(BASE_URL);
+    const response = await axios.get(BASE_URL,{
+        withCredentials: true,
+    });
     return response.data;
 }
 
@@ -17,7 +19,9 @@ const create = async (newBar: Bar): Promise<Bar> => {
 }
 
 const update = async (id: number, newBar: Bar): Promise<Bar> => {
-    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, newBar);
+    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, {"bar": newBar}, {
+        withCredentials: true,
+    });
     return response.data;
 }
 

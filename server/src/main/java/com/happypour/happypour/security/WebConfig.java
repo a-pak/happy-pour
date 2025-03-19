@@ -12,7 +12,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins(
+                        "https://happy-pour-be.onrender.com",
+                        "http://localhost:8080",
+                        "http://localhost:5173",
+                        "http://localhost:3000"
+                )
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
@@ -23,7 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders(
                         HttpHeaders.AUTHORIZATION,
                         HttpHeaders.CONTENT_TYPE,
-                        HttpHeaders.ACCEPT
+                        HttpHeaders.ACCEPT,
+                        HttpHeaders.COOKIE
                 )
                 .allowCredentials(true)  // This allows cookies to be sent with requests
                 .allowedHeaders("*");

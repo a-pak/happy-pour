@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins={"http://localhost:3000", "http://localhost:5173"})
 public class AuthController {
     private final UserService userService;
     private final JWTUtil jwtUtil;
@@ -32,7 +31,7 @@ public class AuthController {
             if (userService.authenticate(email, password)) {
                 User user = userService.getByEmail(email);
 
-                String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax";
+                String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax;";
                 response.setHeader("Set-Cookie", cookieValue);
                 response.addHeader(
                         "Set-Cookie",
@@ -49,7 +48,6 @@ public class AuthController {
             }
         } catch (Exception e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
-
         }
     }
 
