@@ -1,14 +1,11 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import barsService from '../services/bars.ts'
-import { LocationMarkerComponent } from './LocationMarkerComponent'
-import Bar from '../model/IbarInterface';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, Popup, Marker, TileLayer, useMapEvents } from 'react-leaflet';
-import locationService from '../services/location'
-import L from 'leaflet'
-import { Box, Button, Typography } from '@mui/material'
-import theme from '../Theme'
+import L from 'leaflet';
+import { Box, Button, Typography } from '@mui/material';
+import theme from '../Theme';
 import { useNavigate } from 'react-router-dom';
+import locationService from '../services/location';
+import { LocationMarkerComponent } from './LocationMarkerComponent';
 
 interface MapEventsHandlerProps {
   handleMapClick: (event: L.LeafletMouseEvent) => void;
@@ -16,13 +13,11 @@ interface MapEventsHandlerProps {
 
 const MapsComponent: React.FC = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);  
-  const [bars, setBars] = useState<Bar[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
 
   const navigate = useNavigate();
 
-  ////////// Asks the location of the user using locationService
   useEffect(() => {
     locationService
       .getUserLocation()
@@ -35,24 +30,9 @@ const MapsComponent: React.FC = () => {
       });
   }, []);
 
-  ///////////////GET all bars from database
-  useEffect(() => {
-    barsService
-      .getAll()
-      .then((data: Bar[]) => {
-        setBars(data)
-      })
-      .catch((err) => {
-        setError(`Can't find any bars: ${err}`)
-      })
-  }, [navigator.geolocation])
-
-  ////////////////Add bar to map
-
   const handleMapClick = (e: L.LeafletMouseEvent) => {
     const { lat, lng } = e.latlng;
     setPopupPosition([lat, lng]);
-    //alert(`Clicked at: ${lat}, ${lng}`);
   };
 
   const MapEventsHandler: React.FC<MapEventsHandlerProps> = ({ handleMapClick }) => {
@@ -62,7 +42,6 @@ const MapsComponent: React.FC = () => {
     return null;
   };
 
-  
   const openAddBarWindow = () => {
     if (popupPosition) {
       const [lat, lng] = popupPosition;
@@ -114,18 +93,11 @@ const MapsComponent: React.FC = () => {
           </Popup>
         )}
 
-        {error ? (
-          <>
-          <p>{error}</p>
-          <LocationMarkerComponent bars={bars} />
-          </>
-          )
-          :<LocationMarkerComponent bars={bars} />
-        }
+        {error ? <p>{error}</p> : <LocationMarkerComponent />}
       </MapContainer>
       </div>
     </div>
   );
 }
 
-export default MapsComponent
+export default MapsComponent;
