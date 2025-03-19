@@ -2,6 +2,7 @@ package com.happypour.happypour.controller;
 
 import com.happypour.happypour.dto.LoginRequest;
 import com.happypour.happypour.dto.RegisterRequest;
+import com.happypour.happypour.dto.UserDetailsDTO;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.security.JWTUtil;
 import com.happypour.happypour.service.UserService;
@@ -24,7 +25,7 @@ public class AuthController {
     }
     // TODO: Return user details on successful login.
     @PostMapping("/login")
-    public ResponseEntity<String> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<UserDetailsDTO> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
@@ -33,21 +34,14 @@ public class AuthController {
 
                 String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax;";
                 response.setHeader("Set-Cookie", cookieValue);
-                response.addHeader(
-                        "Set-Cookie",
-                        "email=" + user.getEmail() + "; Path=/; "
-                );
-                response.addHeader(
-                        "Set-Cookie",
-                        "username=" + user.getUsername() + "; Path=/; "
-                );
 
-                return ResponseEntity.ok("Logged in Successfully!");
+                return ResponseEntity.ok(new UserDetailsDTO(user));
+
             } else {
-                return ResponseEntity.status(401).body("Invalid credentials.");
+                return ResponseEntity.status(401).build();
             }
         } catch (Exception e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+                return ResponseEntity.badRequest().build();
         }
     }
 
