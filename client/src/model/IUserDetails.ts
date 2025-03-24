@@ -3,3 +3,9 @@ export default interface UserDetails {
     email: string;
     username: string;
 }
+
+export const defaultUserDetails: UserDetails = {
+    id : 0,
+    email:"",
+    username:"",
+}
