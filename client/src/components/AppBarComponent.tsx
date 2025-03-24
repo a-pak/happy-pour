@@ -16,11 +16,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDrinkStore } from "../drinkStore";
+import {useUser} from "../store/UserContext.tsx";
 
 const AppBarComponent: React.FC = () => {
+    const {user} = useUser();
   const [openDrawer, setOpenDrawer] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const menuItems = ['Log In', 'About', 'Contact'];
+  const menuItems = [(user !== null) ? user.username : 'Log In', 'About', 'Contact'];
   const navigate = useNavigate();
   const location = useLocation();
   const {defaultDrink, setDefaultDrink} = useDrinkStore();

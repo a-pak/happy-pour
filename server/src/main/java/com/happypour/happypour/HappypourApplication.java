@@ -45,7 +45,7 @@ public class HappypourApplication{
 
         return (args) -> {
             User user1 = new User(null, "admin", "salasana", "admin@example.com",true);
-            User user2 = new User(null, "moderator", "salasana", "moderator@example.com",true);
+            User user2 = new User(null, "Matti", "salasana", "matti@example.com",true);
 
             userService.createUser(user1);
             userService.createUser(user2);
