@@ -1,6 +1,9 @@
 import { loginAPI } from "../services/auth.ts";
 import LoginPayload from "../model/ILoginPayloadInterface";
 import { useState } from "react";
+import User from "../model/IUserContext.ts";
+import {useUser} from "../store/UserContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 // Login form component for LoginPage
@@ -8,10 +11,20 @@ const LoginComponent: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const {setUser} = useUser();
+    const navigate = useNavigate();
+
+    function setUserContext(user : User | undefined) {
+        if(user) {
+            setUser(user);
+            navigate("/");
+        } else {
+            throw new Error("User is undefined or missing");
+        }
+    }
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
-
         if (!email || !password) {
             setErrorMessage('Username and password are required.');
             return;
@@ -24,7 +37,8 @@ const LoginComponent: React.FC = () => {
                 password,
             };
             // Call the login API
-            await loginAPI(loginData);
+            const newUser : User | undefined = await loginAPI(loginData);
+            setUserContext(newUser);
 
         } catch (error) {
             alert('Login failed. Please try again.');

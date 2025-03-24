@@ -1,10 +1,10 @@
 import axios from 'axios'
 import LoginPayload from '../model/ILoginPayloadInterface';
 import RegisterPayload from '../model/IRegisterPayloadInterface';
-import UserDetails from "../model/IUserDetails.ts";
-import {useUserStore} from "../store/UserContext.ts";
+import User from "../model/IUserContext.ts";
 
 const BASE_URL = 'http://localhost:8080/api/auth'
+
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
     const response = await axios.post(
@@ -14,11 +14,9 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
         });
 
     if (response.status === 200) {
-      const newUser : UserDetails = response.data;
+      const newUser : User = response.data;
       console.log(newUser);
-      setUserDetails(newUser); // <-- invalid hook call
-      window.location.href = '/'; // <- May not be secure? Use Router?
-
+      return newUser;
     } else {
       // Handle error (invalid credentials)
       console.error('Login failed');
@@ -34,20 +32,10 @@ export const registerAPI = async (registerPayload: RegisterPayload) => {
         BASE_URL + "/register",
         registerPayload
     )
-
-    if (response.status === 200) {
-      // Redirect to login page
-      window.location.href = '/login';
-
-    } else {
-      console.error('Register failed');
+    if(response.status !== 201) {
+      console.error('Register failed', response.status);
     }
   } catch (e) {
       console.error('Error:', e);
   }
 };
-
-// TODO: Invalid Hook Call
-function setUserDetails (newUser : UserDetails)  {
-  const login = useUserStore(newUser); // <-- TODO: fix invalid hook call
-}

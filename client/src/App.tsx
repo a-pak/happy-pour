@@ -14,30 +14,33 @@ import { ThemeProvider } from '@emotion/react'
 import  { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
+import {UserProvider} from "./store/UserContext.tsx";
 
 function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LayoutComponent />}>
-              <Route index element={<LandingPage />} />
-              <Route path="/bars" element={<BarListPage />} />
-              <Route path="/bar/:id" element={<BarDetailsPage />} />
-              <Route path="/login" element={<LogInPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+        <UserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<LayoutComponent />}>
+                <Route index element={<LandingPage />} />
+                <Route path="/bars" element={<BarListPage />} />
+                <Route path="/bar/:id" element={<BarDetailsPage />} />
+                <Route path="/login" element={<LogInPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/about" element={<AboutUsPage />} />
-              
-              <Route element={<ProtectedRoutes />}>
-                <Route path='/update/:id' element={<UpdatePage />} />
-                <Route path='/submit/' element={<AddPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/about" element={<AboutUsPage />} />
+
+                <Route element={<ProtectedRoutes />}>
+                  <Route path='/update/:id' element={<UpdatePage />} />
+                  <Route path='/submit/' element={<AddPage />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </UserProvider>
       </ThemeProvider>
     </>
   )

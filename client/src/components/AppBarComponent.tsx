@@ -55,7 +55,10 @@ const AppBarComponent: React.FC = () => {
           </IconButton>
         )}
         {!isMobile && menuItems.map((item) => (
-          <Button key={item} color="inherit">{item}</Button>
+          <Button key={item}
+                  color="inherit"
+                  onClick={() => navigate(`/${item.toLowerCase().replace(" ", "")}`)
+          }>{item}</Button>
         ))}
         <Drawer 
           color='primary' 
