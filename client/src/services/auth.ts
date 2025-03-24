@@ -27,15 +27,10 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
 };
 
 export const registerAPI = async (registerPayload: RegisterPayload) => {
-  try {
-    const response = await axios.post(
+
+    return await axios.post(
         BASE_URL + "/register",
         registerPayload
-    )
-    if(response.status !== 201) {
-      console.error('Register failed', response.status);
-    }
-  } catch (e) {
-      console.error('Error:', e);
-  }
+    );
+
 };

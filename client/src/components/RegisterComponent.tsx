@@ -6,7 +6,6 @@ const RegisterComponent = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -22,13 +21,23 @@ const RegisterComponent = () => {
                 email,
                 password,
             };
-            // Call the login API
-            await registerAPI(registerData);
+            console.log("Before register!")
+            // Call the register API
+            const response = await registerAPI(registerData);
+            if(response) {
+                console.log("Response: " + response.data);
+                if (response.status === 201) {
+                    // Banner says successful login
+                } else {
+                    alert(response.data.message);
+                }
+            }
 
         } catch (error) {
             alert('Register failed. Please try again.');
             console.error('Register failed:', error);
         }
+
     }
 
     return (
