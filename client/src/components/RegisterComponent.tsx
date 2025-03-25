@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { registerAPI } from "../services/auth";
 import RegisterPayload from "../model/IRegisterPayloadInterface";
+import {useNavigate} from "react-router-dom";
 
 const RegisterComponent = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -27,7 +29,8 @@ const RegisterComponent = () => {
             if(response) {
                 console.log("Response: " + response.data);
                 if (response.status === 201) {
-                    // Banner says successful login
+                    // TODO: Banner says successful login
+                    navigate('/login');
                 } else {
                     alert(response.data.message);
                 }

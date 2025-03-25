@@ -1,4 +1,3 @@
-// AppBarComponent.tsx
 import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -27,11 +26,6 @@ const AppBarComponent: React.FC = () => {
   const location = useLocation();
   const {defaultDrink, setDefaultDrink} = useDrinkStore();
 
-  
-    if(location.pathname != '/') {
-      
-    }
-
   const toggleDrawer = (open: boolean) => () => {
     setOpenDrawer(open);
   };
@@ -46,8 +40,6 @@ const AppBarComponent: React.FC = () => {
     setDefaultDrink(event.target.value);
   };
 
-
-
   return (
     <AppBar position="sticky" color='secondary'>
       <Toolbar>
@@ -56,12 +48,26 @@ const AppBarComponent: React.FC = () => {
             <MenuIcon />
           </IconButton>
         )}
-        {!isMobile && menuItems.map((item) => (
-          <Button key={item}
-                  color="inherit"
-                  onClick={() => navigate(`/${item.toLowerCase().replace(" ", "")}`)
-          }>{item}</Button>
-        ))}
+          {!isMobile && menuItems.map((item) => {
+              // Check the condition based on the item's value
+              if (item !== "About" && item !== "Contact") {
+                  // You can return a different element or modify the Button here
+                  return (<Button key={item}
+                                 color="inherit"
+                                 onClick={() => navigate(`/profile`)}>{item}
+                  </Button>);
+              }
+
+              // Return the normal Button if the condition is not met
+              return (
+                  <Button key={item}
+                          color="inherit"
+                          onClick={() => navigate(`/${item.toLowerCase().replace(" ", "")}`)}
+                  >
+                      {item}
+                  </Button>
+              );
+          })}
         <Drawer 
           color='primary' 
           anchor="left" 

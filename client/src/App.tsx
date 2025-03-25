@@ -15,6 +15,7 @@ import  { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
 import {UserProvider} from "./store/UserContext.tsx";
+import {ProfilePage} from "./pages/ProfilePage.tsx";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                 <Route element={<ProtectedRoutes />}>
                   <Route path='/update/:id' element={<UpdatePage />} />
                   <Route path='/submit/' element={<AddPage />} />
+                  <Route path='/profile/' element={<ProfilePage/>}/>
                 </Route>
               </Route>
             </Routes>
