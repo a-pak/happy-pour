@@ -29,7 +29,7 @@ public class AuthController {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
-            if (userService.authenticate(email, password)) {
+            if (userService.authenticate(email, password)) {;
                 User user = userService.getByEmail(email);
 
                 String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax;";
@@ -38,6 +38,7 @@ public class AuthController {
                 return ResponseEntity.ok(new UserDetailsDTO(user));
 
             } else {
+                System.err.println("Password did not match! " + password);
                 return ResponseEntity.status(401).build();
             }
         } catch (Exception e) {

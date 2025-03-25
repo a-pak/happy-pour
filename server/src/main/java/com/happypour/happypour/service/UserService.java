@@ -69,6 +69,7 @@ public class UserService {
             return passwordEncoder.matches(rawPassword, user.getPassword());
 
         }
+        System.err.println("User not present!");
         return false;
     }
 
@@ -78,12 +79,12 @@ public class UserService {
      * @return true, if user was successfully created in the database.
      */
     public boolean registerUser(RegisterRequest registerRequest) {
-        String cryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User user = User.builder()
                 .id(null)
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
-                .password(cryptedPassword)
+                .password(encryptedPassword)
                 .verified(false)
                 .build();
         boolean registerSuccess = createUser(user);
@@ -100,7 +101,7 @@ public class UserService {
     public boolean createUser(User user) {
         try {
             user.setVerified(true); // <- DEBUG
-            user.setPassword( passwordEncoder.encode(user.getPassword()) ); // <- DEBUG
+            //user.setPassword( passwordEncoder.encode(user.getPassword()) ); // <- DEBUG
             userRepository.save(user);
             return true;
 

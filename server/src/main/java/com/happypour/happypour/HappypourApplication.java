@@ -1,5 +1,6 @@
 package com.happypour.happypour;
 
+import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.model.embeddable.HappyHourDrinkId;
 import com.happypour.happypour.repository.*;
@@ -44,11 +45,11 @@ public class HappypourApplication{
     public CommandLineRunner demo() {
 
         return (args) -> {
-            User user1 = new User(null, "admin", "salasana", "admin@example.com",true);
-            User user2 = new User(null, "Matti", "salasana", "matti@example.com",true);
+            userService.registerUser(new RegisterRequest("admin", "admin@example.com", "salasana"));
+            userService.registerUser(new RegisterRequest("Matti", "matti@example.com", "salasana"));
 
-            userService.createUser(user1);
-            userService.createUser(user2);
+            User user1 = userService.getByEmail("admin@example.com");
+            User user2 = userService.getByEmail("matti@example.com");
 
             Bar bar1 = new Bar(
                     null,

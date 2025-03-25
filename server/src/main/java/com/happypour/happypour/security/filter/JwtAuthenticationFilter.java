@@ -24,9 +24,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         // Skip token validation for login requests
         if (request.getRequestURI().contains("/api/auth/login")) {
-            filterChain.doFilter(request, response);  // Just continue the chain if it's a login request
+            filterChain.doFilter(request, response);
             return;
         }
 
