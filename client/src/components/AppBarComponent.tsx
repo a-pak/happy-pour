@@ -25,10 +25,6 @@ const AppBarComponent: React.FC = () => {
   const location = useLocation();
   const {defaultDrink, setDefaultDrink} = useDrinkStore();
 
-  
-    if(location.pathname != '/') {
-      
-    }
 
   const toggleDrawer = (open: boolean) => () => {
     setOpenDrawer(open);

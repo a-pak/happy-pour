@@ -36,6 +36,7 @@ public class DrinkController {
 
     @PostMapping
     public ResponseEntity<String> postDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
+        System.out.println("DRINKPOSTREEEEEEE:" + (drinkPostRequest.getDrinks()[0].getName().toString()));
         try {
             drinkService.createDrink(drinkPostRequest);
             return ResponseEntity.ok("Drinks added successfully!");
