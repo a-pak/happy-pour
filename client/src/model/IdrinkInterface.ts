@@ -1,11 +1,15 @@
 export interface IDrink {
     id: number;
     name: string;
-    barId: number;
+    bar: IBar;
     normalPrice: number;
     createdBy: IUser;
     updatedBy: IUser;
     updatedAt: string;
+}
+
+export interface IBar{
+    id: number;
 }
 
 export interface IUser {

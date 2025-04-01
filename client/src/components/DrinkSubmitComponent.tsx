@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import DrinkService from "../services/drinks";
-import { IDrink, IUser } from '../model/IdrinkInterface';
+import {IDrink} from '../model/IdrinkInterface';
+import {useParams} from "react-router-dom";
 
-const DrinkSubmitComponent: React.FC = () => {
+type properties = {
+  id: number;
+}
+const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
+  const barId = Number(id);
   const [drinks, setDrinks] = useState<IDrink[]>([
-    { id: 7, name: "", barId: 1, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
+    { id: 7, name: "", bar: {id: barId}, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
   ]);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +23,7 @@ const DrinkSubmitComponent: React.FC = () => {
   const addDrink = () => {
     setDrinks([
       ...drinks,
-      { id: Date.now(), name: "", barId: 1, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
+      { id: Date.now(), name: "", bar: {id: barId}, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
     ]);
   };
 
@@ -46,14 +51,6 @@ const DrinkSubmitComponent: React.FC = () => {
               label="Drink Name"
               value={drink.name}
               onChange={(e) => handleInputChange(index, "name", e.target.value)}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Bar ID"
-              type="number"
-              value={drink.barId}
-              onChange={(e) => handleInputChange(index, "barId", Number(e.target.value))}
               required
             />
             <TextField

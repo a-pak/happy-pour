@@ -9,10 +9,10 @@ const UpdatePage: React.FC = () => {
   const { id } = useParams();
   function submitComponentRender() {
     if(id !== undefined) {
-      const realId : number = parseInt(id);
+      const realId : number = Number(id);
       return (
         <>
-        <DrinkSubmitComponent/>
+        <DrinkSubmitComponent id = {realId} />
         </>
       )
     }
