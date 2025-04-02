@@ -24,9 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        // Skip token validation for login requests
-        if (request.getRequestURI().contains("/api/auth/login")) {
+        // Skip token validation for login and GET api/bars requests
+        System.out.println("Request URI: " + request.getRequestURI() + " " + request.getMethod());
+        System.out.println(request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()));
+        if (request.getRequestURI().contains("/api/auth/login") ||
+                (request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()))) {
+            System.out.println("Condition met!");
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println(cookie.getName() +": "+ cookie.getValue() );
             }
         }
-        System.err.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NULL!");
+        System.err.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Request's cookies are NULL!");
         return null;
     }
 }

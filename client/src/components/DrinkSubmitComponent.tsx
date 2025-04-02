@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import DrinkService from "../services/drinks";
 import {IDrink} from '../model/IdrinkInterface';
-import {useParams} from "react-router-dom";
 
 type properties = {
   id: number;
@@ -30,7 +29,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await DrinkService.createDrink({ drinks });
+      await DrinkService.createDrink( drinks );
       alert("Drinks added successfully!");
     } catch (err) {
       setError("Failed to submit drinks: " + err);
