@@ -4,7 +4,7 @@ import {defaultBar} from '../model/IbarInterface.ts'
 import BarService from '../services/bars.ts'
 import {Box, Button, Grid, IconButton, TextField, Typography} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface SubmitFormProps {
     initialBarId?: number;
@@ -164,7 +164,6 @@ const SubmitFormComponent: React.FC<SubmitFormProps> = ({ lng, lat, initialBarId
                 onChange={handleInputChange}
               />
             </Grid>
-  
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="secondary" fullWidth>
                 Submit

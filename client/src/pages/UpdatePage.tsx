@@ -1,14 +1,19 @@
 import * as React from 'react';
 import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import {useParams} from "react-router-dom";
+import DrinkSubmitComponent from '../components/DrinkSubmitComponent.tsx';
+
+//        <SubmitFormComponent initialBarId={realId} />
 
 const UpdatePage: React.FC = () => {
   const { id } = useParams();
   function submitComponentRender() {
     if(id !== undefined) {
-      const realId : number = parseInt(id);
+      const realId : number = Number(id);
       return (
-        <SubmitFormComponent initialBarId={realId} />
+        <>
+        <DrinkSubmitComponent id = {realId} />
+        </>
       )
     }
     return (

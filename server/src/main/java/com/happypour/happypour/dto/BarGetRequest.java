@@ -24,5 +24,4 @@ public class BarGetRequest {
         this.happyHourDrinks = new ArrayList<>();
         this.drinks = new ArrayList<>();
     }
-
 }

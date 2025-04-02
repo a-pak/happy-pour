@@ -42,14 +42,7 @@ const BarListPage: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-        <Typography variant="h6">Sort by:</Typography>
-        <Select value={selectedAttribute} onChange={handleAttributeChange} sx={{ width: 220 }}>
-          <MenuItem value="beer05Price">Beer (0.5L)</MenuItem>
-          <MenuItem value="wine075Price">Wine (0.75L)</MenuItem>
-          <MenuItem value="coffeePrice">Coffee</MenuItem>
-        </Select>
-      </Box>
+
 
       <TableContainer component={Paper} sx={{ border: 'none' }}>
         <Table>

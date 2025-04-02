@@ -8,4 +8,5 @@ import lombok.Setter;
 @Setter
 public class DrinkPostRequest {
     private Drink[] drinks;
+    //private HappyHourDrink[] hhDrinks;
 }
