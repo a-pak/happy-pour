@@ -11,11 +11,15 @@ const DrinkService = {
     },
 
     createDrink: async (drinkData: IDrink[]): Promise<void> => {
-        await axios.post(API_URL, drinkData);
+        await axios.post(API_URL, drinkData, {
+            withCredentials: true,
+        });
     },
 
     updateDrinks: async (drinkData: IDrink[]): Promise<void> => {
-        await axios.put(API_URL, drinkData);
+        await axios.put(API_URL, drinkData, {
+            withCredentials: true,
+        });
     }
 };
 
