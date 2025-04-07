@@ -1,3 +1,7 @@
+export interface IDrinkPayload {
+    drinks: IDrink[];
+}
+
 export interface IDrink {
     id: number;
     name: string;

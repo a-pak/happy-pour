@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IDrink } from '../model/IdrinkInterface';
+import { IDrink , IDrinkPayload} from '../model/IdrinkInterface';
 
 const API_URL : string = import.meta.env.VITE_BASE_API_URL + "drinks";
 
@@ -10,7 +10,7 @@ const DrinkService = {
         return response.data;
     },
 
-    createDrink: async (drinkData: IDrink[]): Promise<void> => {
+    createDrink: async (drinkData: IDrinkPayload): Promise<void> => {
         await axios.post(API_URL, drinkData, {
             withCredentials: true,
         });
