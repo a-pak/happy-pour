@@ -127,7 +127,7 @@ public class UserService {
      */
     public boolean verifyUser(String token) {
         String extractedEmail = jwtUtil.extractUsername(token);
-        boolean tokenValid = jwtUtil.validateToken(token, extractedEmail);
+        boolean tokenValid = jwtUtil.validateToken(token);
         Optional<User> optionalUser = userRepository.findByEmail(extractedEmail);
 
         if (optionalUser.isPresent() && tokenValid) {

@@ -1,6 +1,7 @@
 package com.happypour.happypour.security;
 
 import com.happypour.happypour.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +28,8 @@ public class SecurityConfig {
     /*
         Security config with login filter. Uncomment rows to enable protection.
      */
+    @Autowired
+    JwtAuthenticationFilter jwtFilter;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,8 +43,7 @@ public class SecurityConfig {
                 .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(
-                        JWTUtil.getInstance()),
+                .addFilterBefore(jwtFilter,
                         UsernamePasswordAuthenticationFilter.class
                 );
 

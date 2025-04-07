@@ -17,7 +17,7 @@ public class JWTtest {
 
     @BeforeEach
     void setup() {
-        this.jwtUtil = JWTUtil.getInstance();
+        this.jwtUtil = new JWTUtil();
     
     }
 
@@ -38,7 +38,7 @@ public class JWTtest {
         String token = jwtUtil.generateToken(username);
         System.out.println("Token: " + token);
         
-        boolean isValid = jwtUtil.validateToken(token, username);
+        boolean isValid = jwtUtil.validateToken(token);
         System.out.println("Is token valid? " + isValid);
 
         assertTrue(isValid);

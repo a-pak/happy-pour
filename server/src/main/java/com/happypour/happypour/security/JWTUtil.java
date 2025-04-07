@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.KeyGenerator;
@@ -24,40 +25,28 @@ import java.util.function.Function;
  */
 @Component
 public class JWTUtil {
-    private static final String secretKey = generateKey();
-    private static JWTUtil instance = null;
 
-    // Private Singleton no args constructor
-    private JWTUtil() {}
+    @Value("${jwt.secret}")
+    private String secretKey;  // Spring will inject the value here
 
-    /** Method returns the only instance of JWTUtil.
-     *
-     * @return Instance of JWTUTIL
-     */
-    public static JWTUtil getInstance() {
-        if(instance == null) {
-            instance = new JWTUtil();
-        }
-
-        return instance;     
-    }
+    // No need for singleton pattern, Spring will manage the bean
+    // Remove the getInstance() method as Spring manages the instance
 
     // Generate JWT token
     public String generateToken(String username) {
+        System.out.println("Secret: " + secretKey);  // This will print the secretKey when it is properly injected
         Map<String, Object> claims = new HashMap<>();
-
         return Jwts.builder()
-                .claims()
-                .add(claims)
+                .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
-                .and()
+                .expiration(new Date(System.currentTimeMillis() + 60 * 600 * 30))
                 .signWith(getKey())
                 .compact();
     }
 
-    public boolean validateToken(String token, String username) {
+    // Validate JWT token
+    public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
             return true;
@@ -67,40 +56,22 @@ public class JWTUtil {
         }
     }
 
-    // Generate a key with HmacSHA256 algorithm and return as string
-    private static String generateKey() {
-        SecretKey sk;
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            sk = keyGenerator.generateKey();
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Base64.getEncoder().encodeToString(sk.getEncoded());
-    }
-
     // Get local secretKey in SecretKey form
     private SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        if (secretKey == null || secretKey.trim().isEmpty()) {
+            throw new IllegalStateException("JWT Secret key is null or empty");
+        }
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);  // Decode the base64 encoded secret
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // Method to extract the username (subject) from the JWT Token
+    // Extract username from JWT Token
     public String extractUsername(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.getSubject(); // Get the username (subject) from the claims
+        return claims.getSubject();  // Get the username (subject) from the claims
     }
 
-    /** Method to extract all claims from the JWT token (private, used internally)
-     *
-     *  @Note: If included method Jwts.verifyWith(key) is called after an HTTP request, the request will be denied with status 500(Internal server error).
-     *  Even if there is no JWT security filter configured.
-     *
-     * @param token JWT token as String
-     * @return claims from the token as io.jsonwebtoken.Claims.
-     */
+    // Extract all claims from the JWT token
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
@@ -108,10 +79,5 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    // TODO: Extract expiration from a token, to see if it is still valid.
-    private boolean isTokenExpired(String token) {
-        return false;
     }
 }

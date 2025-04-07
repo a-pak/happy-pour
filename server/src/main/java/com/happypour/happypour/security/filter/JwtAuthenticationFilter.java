@@ -17,11 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JWTUtil jwtUtil;
     @Autowired
-    public JwtAuthenticationFilter(JWTUtil ju) {
-        this.jwtUtil = ju;
-    }
+    private JWTUtil jwtUtil;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Skip token validation for login and GET api/bars requests
@@ -41,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = jwtUtil.extractUsername(token);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtUtil.validateToken(token, username)) {
+            if (jwtUtil.validateToken(token)) {
                 UsernamePasswordAuthenticationToken authenticationToken
                         = new UsernamePasswordAuthenticationToken(username, null, null);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
