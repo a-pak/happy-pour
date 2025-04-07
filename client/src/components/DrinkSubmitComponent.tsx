@@ -29,7 +29,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await DrinkService.createDrink( drinks );
+      await DrinkService.createDrink( {drinks} );
       alert("Drinks added successfully!");
     } catch (err) {
       setError("Failed to submit drinks: " + err);
