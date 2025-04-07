@@ -15,7 +15,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
 
   const handleInputChange = (index: number, field: keyof IDrink, value: any) => {
     const newDrinks = [...drinks];
-    (newDrinks[index] as any)[field] = value;
+    (newDrinks[index][field] as string | number) = value;
     setDrinks(newDrinks);
   };
 
