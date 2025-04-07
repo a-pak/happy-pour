@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import DrinkService from "../services/drinks";
-import {IDrink} from '../model/IdrinkInterface';
+import {IDrink, IDrinkPayload} from '../model/IdrinkInterface';
 
 type properties = {
   id: number;
 }
 const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
+  const navigate = useNavigate();
   const barId = Number(id);
   const [drinks, setDrinks] = useState<IDrink[]>([
     { id: 7, name: "", bar: {id: barId}, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
@@ -28,9 +30,10 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const drinkPayload : IDrinkPayload = { drinks };
     try {
-      await DrinkService.createDrink( {drinks} );
-      alert("Drinks added successfully!");
+      await DrinkService.createDrink(drinkPayload);
+      navigate('/bar/' + barId);
     } catch (err) {
       setError("Failed to submit drinks: " + err);
     }
@@ -55,7 +58,6 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
             <TextField
               fullWidth
               label="Price (€)"
-              type="number"
               value={drink.normalPrice}
               onChange={(e) => handleInputChange(index, "normalPrice", Number(e.target.value))}
               required
