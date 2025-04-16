@@ -4,7 +4,8 @@ import {useUser} from "../store/UserContext.tsx";
 export const ProfilePage = () => {
     const {user, setUser} = useUser();
     function handleLogout() {
-       setUser(null);
+        setUser(null);
+        localStorage.removeItem('user');
     }
     return (
       <div className="wrapper">
