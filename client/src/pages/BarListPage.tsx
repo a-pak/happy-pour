@@ -42,8 +42,6 @@ const BarListPage: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2 }}>
-
-
       <TableContainer component={Paper} sx={{ border: 'none' }}>
         <Table>
           <TableHead>

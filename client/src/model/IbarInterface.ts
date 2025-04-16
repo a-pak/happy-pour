@@ -1,28 +1,34 @@
-export default interface Bar {
-    id: number;
-    name: string;
-    coordLong: number;
-    coordLat: number;
-    address: string;
-    beer05Price: number;
-    wine075Price: number;
-    coffeePrice: number;
-    entryFee: number;
-    cloakroomFee: number;
-  }
+export interface Bar {
+  id: number;
+  name: string;
+  coordLong: number;
+  coordLat: number;
+  address: string;
+  openFrom: string; // "HH:mm:ss" muotoisena
+  openTo: string;   // "HH:mm:ss" muotoisena
+  entryFee: number;
+  cloakroomFee: number;
+  createdBy: User;
+  updatedBy: User;
+  createdAt: string; // ISO timestamp
+  updatedAt: string; // ISO timestamp
+}
 
-export const defaultBar: Bar = {
+  export const defaultBar: Bar = {
     id: 0,
     name: "",
     coordLong: 0,
     coordLat: 0,
     address: "",
-    beer05Price: 0,
-    wine075Price: 0,
-    coffeePrice: 0,
+    openFrom: "00:00:00",
+    openTo: "00:00:00",
     entryFee: 0,
-    cloakroomFee: 0
-};
+    cloakroomFee: 0,
+    createdBy: { id: 1 },
+    updatedBy: { id: 1 },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 
 export interface User {
   id: number;

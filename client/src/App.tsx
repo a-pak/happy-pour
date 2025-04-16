@@ -14,11 +14,14 @@ import { ThemeProvider } from '@emotion/react'
 import  { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LayoutComponent />}>
@@ -38,6 +41,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+      </ LocalizationProvider >
       </ThemeProvider>
     </>
   )

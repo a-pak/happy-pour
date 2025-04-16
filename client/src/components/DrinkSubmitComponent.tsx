@@ -53,6 +53,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
               onChange={(e) => handleInputChange(index, "name", e.target.value)}
               required
             />
+            <br/>
             <TextField
               fullWidth
               label="Price (€)"
