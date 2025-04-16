@@ -8,8 +8,8 @@ export interface Bar {
   openTo: string;   // "HH:mm:ss" muotoisena
   entryFee: number;
   cloakroomFee: number;
-  createdBy: User;
-  updatedBy: User;
+  createdBy: User | null;
+  updatedBy: User | null;
   createdAt: string; // ISO timestamp
   updatedAt: string; // ISO timestamp
 }
@@ -24,8 +24,8 @@ export interface Bar {
     openTo: "00:00:00",
     entryFee: 0,
     cloakroomFee: 0,
-    createdBy: { id: 1 },
-    updatedBy: { id: 1 },
+    createdBy: { id: 1, username: "admin" },
+    updatedBy: { id: 1, username: "admin" },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

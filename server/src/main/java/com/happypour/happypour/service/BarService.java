@@ -95,8 +95,14 @@ public class BarService {
     }
 
     public void createBar(BarPostRequest barPostRequest) {
+        System.out.println(barPostRequest);
         Bar bar = barPostRequest.getBar();
-
+        System.out.println(bar);
+        bar.setId(null);
+        barRepository.save(bar);
+    }
+    public void createBar(Bar bar) {
+        System.out.println(bar);
         bar.setId(null);
         barRepository.save(bar);
     }

@@ -5,12 +5,11 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import barService from "../services/bars";
+import {Bar} from "../model/IbarInterface";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import barService from "../services/bars";
-import Bar from "../model/IbarInterface";
 
 type Props = {
   barId?: number | null;
@@ -25,7 +24,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
   const [entryFee, setEntryFee] = useState(0.0);
   const [cloakroomFee, setCloakroomFee] = useState(0.0);
-
+      
   useEffect(() => {
     if (barId) {
       barService.getById(barId).then((bar) => {
@@ -57,8 +56,8 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       openTo: openTo.format("HH:mm:ss"),
       entryFee,
       cloakroomFee,
-      createdBy: { id: 1 },
-      updatedBy: { id: 2 },
+      createdBy: {id: 1, username: "admin"},
+      updatedBy: {id: 1, username: "admin"},
       createdAt: now,
       updatedAt: now,
     };
