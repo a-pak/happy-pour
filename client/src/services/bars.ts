@@ -10,14 +10,14 @@ const getAll = async (): Promise<Bar[]> => {
 }
 
 const create = async (newBar: Bar): Promise<Bar> => {
-    const response = await axios.post(BASE_URL, {"bar": newBar}, {
+    const response = await axios.post(BASE_URL, newBar, {
         withCredentials: true,
-    }).then(response => response.data);
+    });
     return response.data;
 }
 
 const update = async (id: number, newBar: Bar): Promise<Bar> => {
-    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, {"bar": newBar}, {
+    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, newBar, {
         withCredentials: true,
     });
     return response.data;

@@ -10,6 +10,7 @@ import {Bar} from "../model/IbarInterface";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   barId?: number | null;
@@ -18,6 +19,8 @@ type Props = {
 };
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [openFrom, setOpenFrom] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
@@ -65,14 +68,20 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
     try {
       if (barId) {
         await barService.update(barId, bar);
-        alert("Baari päivitetty!");
+        navigate("/bar/" + barId);
+        console.log
       } else {
-        await barService.create(bar);
-        alert("Uusi baari luotu!");
+        const response = await barService.create(bar);
+        console.log(response)
+        if(response) {
+          navigate("/bar/" + response.id)
+        } else {
+          throw new Error("No bar in response");
+        }
       }
     } catch (error) {
-      console.error("Virhe:", error);
-      alert("Tapahtui virhe.");
+      console.error("Error:", error);
+      alert("An error occurred.");
     }
   };
 
@@ -80,51 +89,51 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ maxWidth: 400, margin: "0 auto", display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h6">
-          {barId ? "Päivitä baari" : "Lisää uusi baari"}
+          {barId ? "Update Bar" : "Add Bar"}
         </Typography>
 
         <TextField
-          label="Nimi"
+          label="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           fullWidth
         />
 
         <TextField
-          label="Osoite"
+          label="Address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           fullWidth
         />
 
         <TimePicker
-          label="Auki alkaen"
+          label="Open from"
           value={openFrom}
           onChange={(newValue) => setOpenFrom(newValue)}
         />
 
         <TimePicker
-          label="Auki loppuun"
+          label="Open to"
           value={openTo}
           onChange={(newValue) => setOpenTo(newValue)}
         />
 
         <TextField
-          label="Sisäänpääsymaksu (€)"
+          label="Entry fee (€)"
           type="number"
           value={entryFee}
           onChange={(e) => setEntryFee(parseFloat(e.target.value))}
         />
 
         <TextField
-          label="Narikkamaksu (€)"
+          label="Cloakroom fee (€)"
           type="number"
           value={cloakroomFee}
           onChange={(e) => setCloakroomFee(parseFloat(e.target.value))}
         />
 
         <Button variant="contained" onClick={handleSubmit}>
-          {barId ? "Päivitä" : "Luo baari"}
+          {barId ? "Update" : "Create Bar"}
         </Button>
       </Box>
     </LocalizationProvider>

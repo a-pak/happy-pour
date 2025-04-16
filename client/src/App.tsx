@@ -16,33 +16,37 @@ import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
 import {UserProvider} from "./store/UserContext.tsx";
 import {ProfilePage} from "./pages/ProfilePage.tsx";
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <UserProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LayoutComponent />}>
-                <Route index element={<LandingPage />} />
-                <Route path="/bars" element={<BarListPage />} />
-                <Route path="/bar/:id" element={<BarDetailsPage />} />
-                <Route path="/login" element={<LogInPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fi">
+          <UserProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<LayoutComponent />}>
+                  <Route index element={<LandingPage />} />
+                  <Route path="/bars" element={<BarListPage />} />
+                  <Route path="/bar/:id" element={<BarDetailsPage />} />
+                  <Route path="/login" element={<LogInPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
 
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/about" element={<AboutUsPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/about" element={<AboutUsPage />} />
 
-                <Route element={<ProtectedRoutes />}>
-                  <Route path='/update/:id' element={<UpdatePage />} />
-                  <Route path='/submit/' element={<AddPage />} />
-                  <Route path='/profile/' element={<ProfilePage/>}/>
+                  <Route element={<ProtectedRoutes />}>
+                    <Route path='/update/:id' element={<UpdatePage />} />
+                    <Route path='/submit/' element={<AddPage />} />
+                    <Route path='/profile/' element={<ProfilePage/>}/>
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </UserProvider>
+              </Routes>
+            </BrowserRouter>
+          </UserProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </>
   )

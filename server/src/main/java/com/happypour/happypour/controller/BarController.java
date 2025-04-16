@@ -1,7 +1,6 @@
 package com.happypour.happypour.controller;
 
 import com.happypour.happypour.dto.BarGetRequest;
-import com.happypour.happypour.dto.BarPostRequest;
 import com.happypour.happypour.dto.BarPutRequest;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
@@ -24,12 +23,12 @@ public class BarController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createBar(@RequestBody Bar request) {
+    public ResponseEntity<Bar> createBar(@RequestBody Bar request) {
         try {
-            barService.createBar(request);
-            return ResponseEntity.ok("Bar added succesfully to database.");
+            Bar createdBar = barService.createBar(request);
+            return ResponseEntity.ok(createdBar);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error adding bar: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 
