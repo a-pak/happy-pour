@@ -1,6 +1,6 @@
 import axios from 'axios'
-import LoginPayload from '../model/ILoginPayloadInterface';
-import RegisterPayload from '../model/IRegisterPayloadInterface';
+import LoginPayload from '../model/ILoginPayloadInterface.ts';
+import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
 import User from "../model/IUserContext.ts";
 
 const BASE_URL = 'http://localhost:8080/api/auth'

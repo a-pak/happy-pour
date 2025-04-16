@@ -5,7 +5,9 @@ import User, {UserContextType, UserProviderProps} from "../model/IUserContext.ts
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider :React.FC<UserProviderProps>= ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const userFromLocalStorage = localStorage.getItem('user');
+    const parsedUser : User = userFromLocalStorage ? JSON.parse(userFromLocalStorage) : null;
+    const [user, setUser] = useState<User | null>(parsedUser);
 
     return (
         <UserContext.Provider value={{user, setUser}}>

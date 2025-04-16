@@ -1,4 +1,4 @@
-export interface Bar {
+export default interface Bar {
   id: number;
   name: string;
   coordLong: number;
@@ -30,7 +30,7 @@ export interface Bar {
     updatedAt: new Date().toISOString(),
   };
 
-export interface User {
+interface User {
   id: number;
   username: string;
 }

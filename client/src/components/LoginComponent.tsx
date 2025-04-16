@@ -1,5 +1,5 @@
 import { loginAPI } from "../services/auth.ts";
-import LoginPayload from "../model/ILoginPayloadInterface";
+import LoginPayload from "../model/ILoginPayloadInterface.ts";
 import { useState } from "react";
 import User from "../model/IUserContext.ts";
 import {useUser} from "../store/UserContext.tsx";
@@ -39,6 +39,7 @@ const LoginComponent: React.FC = () => {
             // Call the login API
             const newUser : User | undefined = await loginAPI(loginData);
             setUserContext(newUser);
+            localStorage.setItem('user', JSON.stringify(newUser));
 
         } catch (error) {
             alert('Login failed. Please try again.');

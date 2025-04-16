@@ -12,11 +12,11 @@ export interface IDrink {
     updatedAt: string;
 }
 
-export interface IBar{
+interface IBar{
     id: number;
 }
 
-export interface IUser {
+interface IUser {
     id: number;
     name?: string;
 }

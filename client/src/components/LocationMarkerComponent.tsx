@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
-import { BarDataResponse } from '../model/IbarInterface';
+import { BarDataResponse } from '../model/IbarInterface.ts';
 import { Marker, Popup } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import { Typography, Box, Button } from '@mui/material';
