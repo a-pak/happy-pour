@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Bar from '../model/IbarInterface';
+import {Bar} from '../model/IbarInterface';
 
 const BASE_URL : string = import.meta.env.VITE_BASE_API_URL + "bars";
 

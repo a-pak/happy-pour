@@ -24,7 +24,7 @@ public class BarController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createBar(@RequestBody BarPostRequest request) {
+    public ResponseEntity<String> createBar(@RequestBody Bar request) {
         try {
             barService.createBar(request);
             return ResponseEntity.ok("Bar added succesfully to database.");
