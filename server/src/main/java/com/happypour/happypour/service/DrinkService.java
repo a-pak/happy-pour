@@ -1,6 +1,6 @@
 package com.happypour.happypour.service;
 
-import com.happypour.happypour.dto.DrinkDTO;
+import com.happypour.happypour.dto.DrinksByBarResponse;
 import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.*;
 
@@ -71,12 +71,12 @@ public class DrinkService {
                 .orElse(null);
     }
 
-    public List<DrinkDTO> findByBar(Long id) {
-        List<DrinkDTO> dtos = new ArrayList<>();
+    public List<DrinksByBarResponse> findByBar(Long id) {
+        List<DrinksByBarResponse> dtos = new ArrayList<>();
         List<Drink> drinks = drinkRepository.findByBar(id);
 
         for (Drink d: drinks) {
-            dtos.add(new DrinkDTO(d));
+            dtos.add(new DrinksByBarResponse(d));
         }
         return dtos;
     }

@@ -28,16 +28,16 @@ public class BarService {
     private DrinkService drinkService;
 
 
-    public List<BarGetRequest> getAllBars() {
+    public List<BarsGetResponse> getAllBars() {
         List<Bar> bars = barRepository.findAll();
         List<HappyHour> happyHours = happyHourService.getAll();
         List<Drink> drinks = drinkService.getAllDrinks();
         List<HappyHourDrink> hhDrinks = drinkService.getAllHappyHourDrinks();
 
-        List<BarGetRequest> barGetRequests = new ArrayList<>();
+        List<BarsGetResponse> barsGetResponses = new ArrayList<>();
 
         for (Bar bar : bars) {
-            BarGetRequest dto = new BarGetRequest();
+            BarsGetResponse dto = new BarsGetResponse();
             dto.setBar(bar);
             // Check if HappyHour
             Optional<HappyHour> happyHour = happyHours.stream()
@@ -56,37 +56,37 @@ public class BarService {
             // Get Drinks without HappyHour
             for (Drink drink : drinks) {
                 if(drink.getBar().getId() == bar.getId()) {
-                    dto.getDrinks().add(new DrinkDTO(drink));
+                    dto.getDrinks().add(new DrinksByBarResponse(drink));
                 }
             }
-            barGetRequests.add(dto);
+            barsGetResponses.add(dto);
         }
 
-        return barGetRequests;
+        return barsGetResponses;
     }
 
-    public BarGetRequest getById(Long id) {
-        BarGetRequest barGetRequest;
+    public BarsGetResponse getById(Long id) {
+        BarsGetResponse barsGetResponse;
         Optional<Bar> optionalBar = barRepository.findById(id);
         
         if (optionalBar.isPresent()) {
-            barGetRequest = new BarGetRequest();
-            barGetRequest.setBar(optionalBar.get());
+            barsGetResponse = new BarsGetResponse();
+            barsGetResponse.setBar(optionalBar.get());
 
-            List<DrinkDTO> drinks = new ArrayList<>(drinkService.findByBar(id));
-            barGetRequest.setDrinks(drinks);
+            List<DrinksByBarResponse> drinks = new ArrayList<>(drinkService.findByBar(id));
+            barsGetResponse.setDrinks(drinks);
             
             List<HappyHour> lh = happyHourService.findByBar(id);
             if(!lh.isEmpty()) {
                 HappyHour hh = lh.get(0);
-                barGetRequest.setHappyHour(hh);
+                barsGetResponse.setHappyHour(hh);
                 List<HappyHourDrink> hhds = drinkService.findByHappyHourId(hh.getId());
                 for (HappyHourDrink hhd : hhds) {
-                    barGetRequest.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
+                    barsGetResponse.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
                 }
             }
 
-            return barGetRequest;
+            return barsGetResponse;
             
         } else {
             return null;
@@ -94,14 +94,11 @@ public class BarService {
 
     }
     public Bar createBar(Bar bar) {
-        System.out.println(bar);
         bar.setId(null);
         return barRepository.save(bar);
     }
 
-    public Bar updateBar(Long barId, BarPutRequest barPutRequest) {
-        Bar updatedBar = barPutRequest.getBar();
-
+    public Bar updateBar(Long barId, Bar updatedBar) {
         return barRepository.findById(barId)
                 .map(existingBar -> {
                     BeanUtils.copyProperties(updatedBar, existingBar, "id");

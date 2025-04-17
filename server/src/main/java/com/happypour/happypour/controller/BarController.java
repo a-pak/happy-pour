@@ -1,7 +1,6 @@
 package com.happypour.happypour.controller;
 
-import com.happypour.happypour.dto.BarGetRequest;
-import com.happypour.happypour.dto.BarPutRequest;
+import com.happypour.happypour.dto.BarsGetResponse;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.service.BarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +17,14 @@ public class BarController {
     private BarService barService;
 
     @GetMapping
-    public List<BarGetRequest> getBars() {
+    public List<BarsGetResponse> getBars() {
         return barService.getAllBars();
     }
 
     @PostMapping
-    public ResponseEntity<Bar> createBar(@RequestBody Bar request) {
+    public ResponseEntity<Bar> createBar(@RequestBody Bar bar) {
         try {
-            Bar createdBar = barService.createBar(request);
+            Bar createdBar = barService.createBar(bar);
             return ResponseEntity.ok(createdBar);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -33,8 +32,8 @@ public class BarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BarGetRequest> getBar(@PathVariable Long id) {
-        BarGetRequest bar = barService.getById(id);
+    public ResponseEntity<BarsGetResponse> getBar(@PathVariable Long id) {
+        BarsGetResponse bar = barService.getById(id);
         if (bar == null) {
             return ResponseEntity.notFound().build();
         }
@@ -44,13 +43,13 @@ public class BarController {
     @PutMapping("/{id}")
     public ResponseEntity<Bar> updateBar(
             @PathVariable Long id,
-            @RequestBody BarPutRequest barPutRequest) {
-        Bar bar = barService.updateBar(id, barPutRequest);
+            @RequestBody Bar bar) {
+        Bar updatedBar = barService.updateBar(id, bar);
 
         if (bar == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(bar);
+        return ResponseEntity.ok(updatedBar);
     }
 
     @DeleteMapping("/{id}")

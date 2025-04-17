@@ -1,6 +1,6 @@
 package com.happypour.happypour.controller;
 
-import com.happypour.happypour.dto.DrinkDTO;
+import com.happypour.happypour.dto.DrinksByBarResponse;
 import com.happypour.happypour.dto.DrinkPostRequest;
 import com.happypour.happypour.model.Drink;
 import com.happypour.happypour.service.DrinkService;
@@ -25,9 +25,9 @@ public class DrinkController {
     private DrinkService drinkService;
 
     @GetMapping("/{bar_id}")
-    public ResponseEntity<List<DrinkDTO>> getDrinks(@PathVariable Long bar_id) {
+    public ResponseEntity<List<DrinksByBarResponse>> getDrinks(@PathVariable Long bar_id) {
         try {
-            List<DrinkDTO> drinks = drinkService.findByBar(bar_id);
+            List<DrinksByBarResponse> drinks = drinkService.findByBar(bar_id);
             return ResponseEntity.ok(drinks);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -36,7 +36,6 @@ public class DrinkController {
 
     @PostMapping
     public ResponseEntity<String> postDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
-        System.out.println("DRINKPOSTREEEEEEE:" + (drinkPostRequest.getDrinks()[0].getName().toString()));
         try {
             drinkService.createDrink(drinkPostRequest);
             return ResponseEntity.ok("Drinks added successfully!");

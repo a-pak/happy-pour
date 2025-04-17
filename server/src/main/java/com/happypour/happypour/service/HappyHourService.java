@@ -1,6 +1,5 @@
 package com.happypour.happypour.service;
 
-import com.happypour.happypour.dto.HappyHourDetails;
 import com.happypour.happypour.model.*;
 
 import com.happypour.happypour.repository.HappyHourRepository;
@@ -23,8 +22,9 @@ public class HappyHourService {
     public List<HappyHour> getAll() {
         return happyHourRepository.findAll();
     }
-    public void createHappyHour(HappyHourDetails happyHourDetails) {
-        happyHourRepository.save(happyHourDetails.getHappyHour());
+    public void createHappyHour(HappyHour happyHour) {
+        happyHour.setId(null);
+        happyHourRepository.save(happyHour);
     }
 
     public HappyHour updateHappyHour(Long id, HappyHour updatedHappyHour) {

@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 @Getter
 @Setter
-public class DrinkDTO {
+public class DrinksByBarResponse {
     private Long id;
     private String name;
     private Long barId;
@@ -16,7 +16,7 @@ public class DrinkDTO {
     private User updatedBy;
     private Timestamp updatedAt;
 
-    public DrinkDTO(Drink drink) {
+    public DrinksByBarResponse(Drink drink) {
         this.id = drink.getId();
         this.name = drink.getName();
         this.barId = drink.getBar().getId();
