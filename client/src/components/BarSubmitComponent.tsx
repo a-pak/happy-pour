@@ -11,6 +11,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
+import {useUser} from "../store/UserContext.tsx";
 
 type Props = {
   barId?: number | null;
@@ -20,6 +21,7 @@ type Props = {
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
+  const {setUser} = useUser();
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -79,17 +81,23 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
           throw new Error("No bar in response");
         }
       }
-    } catch (error) {
+    } catch (error : any) {
+      if (error.message === "Unauthorized") {
+        setUser(null);
+        navigate("/login");
+
+      } else {
       console.error("Error:", error);
       alert("An error occurred.");
     }
-  };
+  }
+ };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ maxWidth: 400, margin: "0 auto", display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h6">
-          {barId ? "Update Bar" : "Add Bar"}
+           {barId ? "Update Bar" : "Add Bar"}
         </Typography>
 
         <TextField

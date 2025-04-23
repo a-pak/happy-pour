@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import DrinkService from "../services/drinks";
 import {IDrink, IDrinkPayload} from '../model/IdrinkInterface';
+import { useUser } from "../store/UserContext.tsx";
 
 type properties = {
   id: number;
 }
 const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
+
   const barId = Number(id);
   const [drinks, setDrinks] = useState<IDrink[]>([
     { id: 7, name: "", bar: {id: barId}, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
@@ -34,10 +37,15 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
     try {
       await DrinkService.createDrink(drinkPayload);
       navigate('/bar/' + barId);
-    } catch (err) {
-      setError("Failed to submit drinks: " + err);
+    } catch (error : any) {
+      if(error.message === "Unauthorized") {
+        setUser(null);
+        navigate("/login");
+      } else {
+      setError("Failed to submit drinks: " + error);
     }
   };
+}
 
   return (
     <Box sx={{ padding: 2, maxWidth: 400, margin: "auto" }}>
@@ -74,6 +82,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
       </form>
     </Box>
   );
-};
+
+}
 
 export default DrinkSubmitComponent;

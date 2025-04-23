@@ -11,15 +11,21 @@ const DrinkService = {
     },
 
     createDrink: async (drinkData: IDrinkPayload): Promise<void> => {
-        await axios.post(API_URL, drinkData, {
+        const response = await axios.post(API_URL, drinkData, {
             withCredentials: true,
         });
+        if(response.status === 401 || response.status === 403) {
+            throw new Error("Unauthorized");
+        }
     },
 
     updateDrinks: async (drinkData: IDrink[]): Promise<void> => {
-        await axios.put(API_URL, drinkData, {
+        const response = await axios.put(API_URL, drinkData, {
             withCredentials: true,
         });
+        if(response.status === 401 || response.status === 403) {
+            throw new Error("Unauthorized");
+        }
     }
 };
 
