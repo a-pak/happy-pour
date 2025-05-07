@@ -6,25 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.happypour.happypour.security.JWTUtil;
 
 @SpringBootTest
 public class JWTtest {
+    @Autowired
     JWTUtil jwtUtil;
     final String username = "testuser";
-
-    @BeforeEach
-    void setup() {
-        this.jwtUtil = new JWTUtil();
-    
-    }
 
     @Test
     @DisplayName("Extracted name from token should match the original name")
     void extractNameTest() {
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateAccessToken(username);
         System.out.println("Token: " + token);
         
         String extractedUsername = jwtUtil.extractUsername(token);
@@ -35,7 +31,7 @@ public class JWTtest {
     @Test
     @DisplayName("Generated token should be valid")
     void validateTokenTest() {
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateAccessToken(username);
         System.out.println("Token: " + token);
         
         boolean isValid = jwtUtil.validateToken(token);

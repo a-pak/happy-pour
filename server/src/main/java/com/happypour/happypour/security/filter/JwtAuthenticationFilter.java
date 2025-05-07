@@ -7,7 +7,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -24,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Skip token validation for login and GET api/bars requests
         System.out.println("Request URI: " + request.getRequestURI() + " " + request.getMethod());
         System.out.println(request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()));
-        if (request.getRequestURI().contains("/api/auth/login") ||
+        if (request.getRequestURI().contains("/api/auth/") ||
                 (request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()))) {
             System.out.println("Condition met!");
             filterChain.doFilter(request, response);

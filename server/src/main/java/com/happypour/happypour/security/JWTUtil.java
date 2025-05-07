@@ -1,5 +1,6 @@
 package com.happypour.happypour.security;
 
+import com.happypour.happypour.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -7,40 +8,36 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
-/**
- * <h4>JWTUTIL implements the singleton pattern.</h4>
- * Its constructor is private and can be only accessed through the getInstance -method.
- * <br><br>
- * Don't try to use or un-private the instructor!
- * getInstance will return an existing instance or will create one, if it doesn't exist.
- */
 @Component
 public class JWTUtil {
 
     @Value("${jwt.secret}")
-    private String secretKey;  // Spring will inject the value here
+    private String secretKey;
 
-    // No need for singleton pattern, Spring will manage the bean
-    // Remove the getInstance() method as Spring manages the instance
+    
 
-    // Generate JWT token
-    public String generateToken(String username) {
-        System.out.println("Secret: " + secretKey);  // This will print the secretKey when it is properly injected
+    public String generateRefreshToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 600 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 120))
+                .signWith(getKey())
+                .compact();
+    }
+    public String generateAccessToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(getKey())
                 .compact();
     }

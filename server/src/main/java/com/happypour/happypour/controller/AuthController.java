@@ -6,10 +6,15 @@ import com.happypour.happypour.dto.UserDetailsDTO;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.security.JWTUtil;
 import com.happypour.happypour.service.UserService;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.net.http.HttpHeaders;
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +28,17 @@ public class AuthController {
         this.userService = us;
         this.jwtUtil = jt;
     }
-    // TODO: Return user details on successful login.
+    
     @PostMapping("/login")
     public ResponseEntity<UserDetailsDTO> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
-            if (userService.authenticate(email, password)) {;
+            if (userService.authenticate(email, password)) {
                 User user = userService.getByEmail(email);
 
-                String cookieValue = "token=" + jwtUtil.generateToken(user.getUsername()) + "; HttpOnly; Path=/; SameSite=Lax;";
-                response.setHeader("Set-Cookie", cookieValue);
+                response = applyRefreshCookie(response, user);
+                response = applyAccessCookie(response, user);
 
                 return ResponseEntity.ok(new UserDetailsDTO(user));
 
@@ -83,4 +88,48 @@ public class AuthController {
             return ResponseEntity.internalServerError().body("Error occurred while verifying user!\n" + e.getMessage());
         }
     }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
+        if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
+            return ResponseEntity.status(401).body("No valid token found!");
+        
+        }
+        String username = jwtUtil.extractUsername(refreshToken);
+        User user = userService.getByUsername(username);
+        
+        if(username == null || user == null) {
+            return ResponseEntity.status(401).body("No valid token found!");
+        
+        }
+        response = applyAccessCookie(response, user);
+        response = applyRefreshCookie(response, user);
+        return ResponseEntity.ok()
+                .body("Token refreshed successfully!");
+    }
+
+    private HttpServletResponse applyRefreshCookie(HttpServletResponse response, User user) {
+        ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateRefreshToken(user.getUsername()))
+        .httpOnly(true)
+        .path("/")
+        .sameSite("Lax")
+        .maxAge(Duration.ofHours(48))
+        .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return response;
+    }
+
+    private HttpServletResponse applyAccessCookie(HttpServletResponse response, User user) {
+        ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateRefreshToken(user.getUsername()))
+        .httpOnly(true)
+        .path("/")
+        .sameSite("Lax")
+        .maxAge(Duration.ofMinutes(15))
+        .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return response;
+    }
+
 }
