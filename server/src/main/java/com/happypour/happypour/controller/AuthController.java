@@ -92,20 +92,17 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
         System.out.println("\nREFRESH!");
-
-
-
         if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
             System.out.println("empty: "+ refreshToken.isEmpty());
             System.out.println("validate: "+ jwtUtil.validateToken(refreshToken));
-            return ResponseEntity.status(401).body("No valid token found!");
+            return ResponseEntity.status(401).body("Unauthorized");
         
         }
         String username = jwtUtil.extractUsername(refreshToken);
         User user = userService.getByUsername(username);
         
         if(username == null || user == null) {
-            return ResponseEntity.status(401).body("No valid token found!");
+            return ResponseEntity.status(401).body("Unauthorized");
         
         }
         response = applyAccessCookie(response, user);

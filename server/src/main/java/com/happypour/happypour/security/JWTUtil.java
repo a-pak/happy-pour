@@ -19,30 +19,45 @@ public class JWTUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    
-
+    /**
+     * Generates a long-lived (48 hours) refresh token for username.
+     * Refresh token is used to renew both access and refresh tokens.
+     * @param username
+     * @return
+     */
     public String generateRefreshToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 120))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48)) // 48 hours?
                 .signWith(getKey())
                 .compact();
     }
+
+    /**
+     * Generates a short-lived (15 minutes) access token for username.
+     * Access tokens are used for api access.
+     * @param username
+     * @return Access token in string form.
+     */
     public String generateAccessToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutes?
                 .signWith(getKey())
                 .compact();
     }
 
-    // Validate JWT token
+    /**
+     * Checks validity of token
+     * @param token in string form
+     * @return True, if token is valid.
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
@@ -53,7 +68,6 @@ public class JWTUtil {
         }
     }
 
-    // Get local secretKey in SecretKey form
     private SecretKey getKey() {
         if (secretKey == null || secretKey.trim().isEmpty()) {
             throw new IllegalStateException("JWT Secret key is null or empty");
@@ -62,13 +76,16 @@ public class JWTUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // Extract username from JWT Token
+    /**
+     *  Extract username from JWT Token
+     * @param token jwt in string form
+     * @return Extracted username
+     */
     public String extractUsername(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getSubject();  // Get the username (subject) from the claims
     }
 
-    // Extract all claims from the JWT token
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
