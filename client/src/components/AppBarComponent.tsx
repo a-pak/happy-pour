@@ -108,8 +108,8 @@ const AppBarComponent: React.FC = () => {
                     },
                   }}
               >
-                  <MenuItem value={'Draft Beer'}>Draft Beer 0,5 l</MenuItem>
-                  <MenuItem value={'Wine'}>House Wine 0,75 l</MenuItem>
+                  <MenuItem value={'Beer'}>Beer</MenuItem>
+                  <MenuItem value={'Wine'}>Wine</MenuItem>
                   <MenuItem value={'Coffee'}>Coffee</MenuItem>
               </Select>
           </FormControl>

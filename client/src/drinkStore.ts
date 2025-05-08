@@ -6,6 +6,6 @@ interface DrinkStore {
 }
 
 export const useDrinkStore = create<DrinkStore>((set) => ({
-  defaultDrink: "Draft Beer",
+  defaultDrink: "Beer",
   setDefaultDrink: (drink) => set({ defaultDrink: drink }),
 }));
