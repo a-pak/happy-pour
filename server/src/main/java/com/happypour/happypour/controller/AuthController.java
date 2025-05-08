@@ -89,9 +89,15 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
+        System.out.println("\nREFRESH!");
+
+
+
         if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
+            System.out.println("empty: "+ refreshToken.isEmpty());
+            System.out.println("validate: "+ jwtUtil.validateToken(refreshToken));
             return ResponseEntity.status(401).body("No valid token found!");
         
         }
@@ -121,11 +127,11 @@ public class AuthController {
     }
 
     private HttpServletResponse applyAccessCookie(HttpServletResponse response, User user) {
-        ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateRefreshToken(user.getUsername()))
+        ResponseCookie cookie = ResponseCookie.from("token", jwtUtil.generateRefreshToken(user.getUsername()))
         .httpOnly(true)
         .path("/")
         .sameSite("Lax")
-        .maxAge(Duration.ofMinutes(15))
+        .maxAge(Duration.ofMinutes(1))
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
 

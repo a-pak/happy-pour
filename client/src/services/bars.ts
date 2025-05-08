@@ -1,44 +1,52 @@
 import axios from 'axios'
 import Bar from '../model/IbarInterface';
+import api from './axiosInstance';
 
-const BASE_URL : string = import.meta.env.VITE_BASE_API_URL + "bars";
+const BARS_URL : string = "/bars";
 
 const getAll = async (): Promise<Bar[]> => {
-    console.log(BASE_URL);
-    const response = await axios.get(BASE_URL);
+    console.log(BARS_URL);
+    const response = await api.get(BARS_URL);
     return response.data;
 }
 
 const create = async (newBar: Bar): Promise<Bar> => {
-    const response = await axios.post(BASE_URL, newBar, {
-        withCredentials: true,
-    });
-    console.log("Resonse status: " + response.status);
-    if(response.status === 401 || response.status === 403) {
-        throw new Error("Unauthorized");
+    try {
+        const response = await api.post(BARS_URL, newBar);
+        return response.data;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error creating bar:', error.response?.data);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error; // Rethrow the error after logging it
     }
-    return response.data;
 }
 
 const update = async (id: number, newBar: Bar): Promise<Bar> => {
-    const response = await axios.put<Bar>(`${BASE_URL}/${id}`, newBar, {
-        withCredentials: true,
-    });
-    if(response.status === 401 || response.status === 403) {
-        throw new Error("Unauthorized");
+    try {
+        const response = await api.put(`${BARS_URL}/${id}`, newBar);
+        return response.data;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error creating bar:', error.response?.data);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error; // Rethrow the error after logging it
     }
-    return response.data;
 }
 
 const getById = async (id: number): Promise<Bar> => {
-    console.log(BASE_URL + '/' + id);
-    const response = await axios.get(`${BASE_URL}/${id}`);
+    console.log(BARS_URL + '/' + id);
+    const response = await api.get(`${BARS_URL}/${id}`);
     return response.data;
 }
 const removeById = async (id: number) => {
-    const response = await axios.delete(`${BASE_URL}/${id}`,{
-        withCredentials: true
-    });
+    const response = await api.delete(`${BARS_URL}/${id}`);
     return response.data
 }
 
