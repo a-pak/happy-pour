@@ -13,6 +13,7 @@ import {
 import { IDrink, IDrinkPayload } from "../model/IdrinkInterface";
 import { useUser } from "../store/UserContext.tsx";
 import { useErrorStore } from '../store/errorStore.ts';
+import { createDrink } from "../services/drinks";
 
 type Properties = {
   id: number;
@@ -86,11 +87,6 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
       <Typography variant="h4" gutterBottom align="center">
         Submit New Drinks
       </Typography>
-      {error && (
-        <Typography color="error" sx={{ mb: 2 }}>
-          {error}
-        </Typography>
-      )}
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>

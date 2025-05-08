@@ -1,7 +1,7 @@
 // components/GlobalNotifier.tsx
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertColor } from '@mui/material/Alert';
+import MuiAlert from '@mui/material/Alert';
 import { useErrorStore } from '../store/errorStore';
 
 const Alert = React.forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
