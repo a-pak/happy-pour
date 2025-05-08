@@ -4,21 +4,24 @@ import { useState } from "react";
 import User from "../model/IUserContext.ts";
 import {useUser} from "../store/UserContext.tsx";
 import {useNavigate} from "react-router-dom";
+import { useErrorStore } from '../store/errorStore.ts';
 
 
 // Login form component for LoginPage
 const LoginComponent: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string>('');
     const {setUser} = useUser();
     const navigate = useNavigate();
+    const { showNotification } = useErrorStore.getState();
 
     function setUserContext(user : User | undefined) {
         if(user) {
             setUser(user);
             navigate("/");
+            showNotification("Welcome back, " + user.username + "!", "success");
         } else {
+            showNotification("Sorry! Error encountered. Please try again.", "error");
             throw new Error("User is undefined or missing");
         }
     }
@@ -26,7 +29,7 @@ const LoginComponent: React.FC = () => {
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!email || !password) {
-            setErrorMessage('Username and password are required.');
+            showNotification("Email and password required. Please fill out both fields", "warning");
             return;
         }
 
@@ -42,7 +45,7 @@ const LoginComponent: React.FC = () => {
             localStorage.setItem('user', JSON.stringify(newUser));
 
         } catch (error) {
-            alert('Login failed. Please try again.');
+            showNotification("Login failed. Please check credentials.", "error");
             console.error('Login failed:', error);
         }
     }
@@ -75,7 +78,6 @@ const LoginComponent: React.FC = () => {
                 <button className="form-item" type="submit">Login</button>
                 </div>
             </form>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
     );
 };

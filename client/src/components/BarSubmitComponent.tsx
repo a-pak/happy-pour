@@ -76,13 +76,17 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       if (barId) {
         await barService.update(barId, bar);
         navigate("/bar/" + barId);
+        showNotification("Bar updated successfully!", "success");
       } else {
         const response = await barService.create(bar);
         console.log(response)
-        if(response) {
-          navigate("/bar/" + response.id)
-        } else {
-          throw new Error("No bar in response");
+
+          if(response) {
+            navigate("/bar/" + response.id)
+            showNotification("Bar created successfully!", "success");
+          } else {
+            throw new Error("No bar in response");
+            showNotification("Bar creation failed. Please try again.", "error");
         }
       }
     } catch (error : any) {

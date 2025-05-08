@@ -68,6 +68,7 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
     try {
       await createDrink(drinkPayload);
       navigate("/bar/" + barId);
+      showNotification("Drinks submitted successfully!", "success");
     } catch (error : any) {
       if(error.status === 401 || error.status === 403) {
         setUser(null);
