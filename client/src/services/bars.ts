@@ -21,7 +21,7 @@ const create = async (newBar: Bar): Promise<Bar> => {
         } else {
             console.error('Unexpected error:', error);
         }
-        throw error; // Rethrow the error after logging it
+        throw error;
     }
 }
 

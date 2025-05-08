@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography } from "@mui/material";
-import DrinkService from "../services/drinks";
+import {createDrink} from "../services/drinks";
 import {IDrink, IDrinkPayload} from '../model/IdrinkInterface';
 import { useUser } from "../store/UserContext.tsx";
+import { useErrorStore } from '../store/errorStore.ts';
 
 type properties = {
   id: number;
@@ -11,12 +12,12 @@ type properties = {
 const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
   const navigate = useNavigate();
   const { setUser } = useUser();
+  const { showNotification } = useErrorStore.getState();
 
   const barId = Number(id);
   const [drinks, setDrinks] = useState<IDrink[]>([
     { id: 7, name: "", bar: {id: barId}, normalPrice: 5.5, createdBy: { id: 1 }, updatedBy: { id: 1 }, updatedAt: new Date().toISOString() },
   ]);
-  const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (index: number, field: keyof IDrink, value: any) => {
     const newDrinks = [...drinks];
@@ -35,24 +36,27 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
     event.preventDefault();
     const drinkPayload : IDrinkPayload = { drinks };
     try {
-      await DrinkService.createDrink(drinkPayload);
+      await createDrink(drinkPayload);
       navigate('/bar/' + barId);
     } catch (error : any) {
-      if(error.message === "Unauthorized") {
+      if(error.status === 401 || error.status === 403) {
         setUser(null);
         navigate("/login");
+        showNotification("Session expired. Please log in again.", "warning");
+      
       } else {
-      setError("Failed to submit drinks: " + error);
+        console.error("Error submitting drinks:", error);
+        showNotification("Error submitting drinks. Please try again.", "error");
+      }
     }
   };
-}
+
 
   return (
     <Box sx={{ padding: 2, maxWidth: 400, margin: "auto" }}>
       <Typography variant="h5" gutterBottom>
         Submit New Drinks
       </Typography>
-      {error && <Typography color="error">{error}</Typography>}
       <form onSubmit={handleSubmit}>
         {drinks.map((drink, index) => (
           <Box key={drink.id} sx={{ marginBottom: 2 }}>
@@ -82,7 +86,7 @@ const DrinkSubmitComponent: React.FC<properties> = ({id}) => {
       </form>
     </Box>
   );
-
 }
+
 
 export default DrinkSubmitComponent;

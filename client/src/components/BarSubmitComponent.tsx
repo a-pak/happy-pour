@@ -12,6 +12,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
 import {useUser} from "../store/UserContext.tsx";
+import { useErrorStore } from '../store/errorStore.ts';
+
+// inside some component or 
 
 type Props = {
   barId?: number | null;
@@ -22,6 +25,8 @@ type Props = {
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
   const {setUser} = useUser();
+  const { showNotification } = useErrorStore.getState();
+
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -45,7 +50,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
 
   const handleSubmit = async () => {
     if (!name || !address || !openFrom || !openTo) {
-      alert("Täytä kaikki kentät!");
+      showNotification("Please fill in all fields.", "warning");
       return;
     }
 
@@ -71,7 +76,6 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       if (barId) {
         await barService.update(barId, bar);
         navigate("/bar/" + barId);
-        console.log
       } else {
         const response = await barService.create(bar);
         console.log(response)
@@ -82,13 +86,16 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
         }
       }
     } catch (error : any) {
-      if (error.message === "Unauthorized") {
+      console.error("Error:", error);
+      
+      if (error.status === 401 || error.status === 403) {
         setUser(null);
         navigate("/login");
+        showNotification("Session expired. Please log in again.", "warning");
 
       } else {
-      console.error("Error:", error);
-      alert("An error occurred.");
+        showNotification("An error occurred while submitting the form. Please try again.");
+
     }
   }
  };

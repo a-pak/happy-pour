@@ -1,32 +1,54 @@
 import axios from 'axios';
 import { IDrink , IDrinkPayload} from '../model/IdrinkInterface';
+import api from './axiosInstance';
 
-const API_URL : string = import.meta.env.VITE_BASE_API_URL + "drinks";
+const DRINKS_URL : string = "/drinks";
 
-
-const DrinkService = {
-    getByBarId: async (barId: number): Promise<IDrink[]> => {
-        const response = await axios.get<IDrink[]>(`${API_URL}/${barId}`);
-        return response.data;
-    },
-
-    createDrink: async (drinkData: IDrinkPayload): Promise<void> => {
-        const response = await axios.post(API_URL, drinkData, {
-            withCredentials: true,
-        });
-        if(response.status === 401 || response.status === 403) {
-            throw new Error("Unauthorized");
+const getByBarId = async (barId: number): Promise<IDrink[]> => {
+    try {
+    const response = await api.get(`${DRINKS_URL}/${barId}`);
+    return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error fetching drinks:', error.response?.data);
+        } else {
+            console.error('Unexpected error:', error);
         }
-    },
-
-    updateDrinks: async (drinkData: IDrink[]): Promise<void> => {
-        const response = await axios.put(API_URL, drinkData, {
-            withCredentials: true,
-        });
-        if(response.status === 401 || response.status === 403) {
-            throw new Error("Unauthorized");
-        }
+        throw error;
     }
-};
+}
 
-export default DrinkService;
+const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
+    try {
+        const response = await api.post(DRINKS_URL, drinkData);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error posting drink:', error.response?.data);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error;
+    }
+}
+
+const updateDrinks = async (drinkData: IDrink[]): Promise<void> => {
+    try {
+        const response = await api.put(DRINKS_URL, drinkData);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error posting drink:', error.response?.data);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error;
+    }
+}
+
+
+export {
+    getByBarId,
+    createDrink,
+    updateDrinks
+};
