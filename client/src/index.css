@@ -24,6 +24,15 @@ body {
   width: 100%;  
 }
 
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  background-color: #7c6cf1
+.leaflet-popup-content-wrapper {
+  background-color: #1e1e1e !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 5 !important;
+}
+
+.leaflet-popup-tip {
+  background: #1e1e1e !important;
+  box-shadow: none !important;
 }

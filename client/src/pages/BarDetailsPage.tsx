@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText, IconButton, Grid, Button } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Grid,
+  Button,
+} from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
-import theme from '../Theme';
 import CloseIcon from '@mui/icons-material/Close';
 
 const BarDetailsPage: React.FC = () => {
@@ -20,7 +29,11 @@ const BarDetailsPage: React.FC = () => {
   }, [id]);
 
   if (!barData) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box sx={{ color: '#b57edc', textAlign: 'center', mt: 4 }}>
+        <Typography>Loading...</Typography>
+      </Box>
+    );
   }
 
   const { bar, drinks, happyHour, happyHourDrinks } = barData;
@@ -28,58 +41,70 @@ const BarDetailsPage: React.FC = () => {
   const getDrinkPrice = (drinkName: string) => {
     const normalDrink = drinks.find((d: any) => d.name === drinkName);
     const happyHourDrink = happyHourDrinks.find((d: any) => d.drinkName === drinkName);
-    
     if (happyHourDrink) {
-      return `${happyHourDrink.happyHourPrice} € (Happy Hour)`;
+      return (
+        <span style={{ color: '#00e676' }}>
+          {happyHourDrink.happyHourPrice} € <em>(Happy Hour)</em>
+        </span>
+      );
     }
     return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
   };
 
   const removeBar = () => {
     if (window.confirm('Are you sure you want to delete this bar?')) {
-      if (id) {
-        barsService.removeById(bar.id).then(() => navigate('/'));
-      }
+      barsService.removeById(bar.id).then(() => navigate('/'));
     }
   };
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Paper sx={{ padding: 2, backgroundColor: theme.palette.secondary.main }}>
-        <Grid container spacing={1}>
+    <Box sx={{ padding: 3, backgroundColor: '#121212', minHeight: '100vh' }}>
+      <Paper
+        elevation={4}
+        sx={{
+          padding: 3,
+          backgroundColor: '#1e1e1e',
+          color: '#b57edc',
+          borderRadius: '12px',
+          maxWidth: 600,
+          margin: '0 auto',
+        }}
+      >
+        <Grid container spacing={1} alignItems="center">
           <Grid item xs={10}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#d1b3ff' }}>
               {bar.name}
             </Typography>
           </Grid>
-          <Grid item xs={2}>
-            <IconButton
-              aria-label="close"
-              size="large"
-              sx={{ color: 'text.primary', position: 'relative', left: '20px' }}
-              onClick={() => navigate(-1)}
-            >
-              <CloseIcon fontSize="inherit" />
+          <Grid item xs={2} sx={{ textAlign: 'right' }}>
+            <IconButton onClick={() => navigate(-1)} sx={{ color: '#b57edc' }}>
+              <CloseIcon />
             </IconButton>
           </Grid>
         </Grid>
-        <Typography variant="subtitle1" gutterBottom>
-          Address: {bar.address}
+
+        <Typography variant="subtitle1" sx={{ color: '#d1b3ff', mt: 1 }}>
+          {bar.address}
         </Typography>
+
         <List>
           {drinks.map((drink: any) => (
-            <ListItem key={drink.id}>
-              <ListItemText primary={drink.name} secondary={getDrinkPrice(drink.name)} />
+            <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
+              <ListItemText
+                primary={drink.name}
+                secondary={getDrinkPrice(drink.name)}
+                primaryTypographyProps={{ sx: { fontWeight: 'bold' } }}
+              />
             </ListItem>
           ))}
-          <ListItem>
+          <ListItem disablePadding>
             <ListItemText primary="Entry Fee" secondary={`${bar.entryFee} €`} />
           </ListItem>
-          <ListItem>
+          <ListItem disablePadding>
             <ListItemText primary="Cloakroom Fee" secondary={`${bar.cloakroomFee} €`} />
           </ListItem>
           {happyHour && (
-            <ListItem>
+            <ListItem disablePadding>
               <ListItemText
                 primary="Happy Hour"
                 secondary={`${happyHour.startTime} - ${happyHour.endTime}`}
@@ -88,10 +113,48 @@ const BarDetailsPage: React.FC = () => {
           )}
         </List>
 
-        <Link to={`/update/${bar.id}`}>
-          <Button sx={{ backgroundColor: theme.palette.secondary.light }}>Update Prices</Button>
-        </Link>
-        <Button onClick={removeBar}>Delete Bar (please don't)</Button>
+        <Box
+            sx={{
+              mt: 3,
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: 2,
+              alignItems: 'stretch',
+            }}
+          >
+          <Link to={`/update/${bar.id}`} style={{ textDecoration: 'none' }}>
+            <Button
+              
+              variant="outlined"
+              sx={{
+                width: { xs: '100%', sm: 'auto' },
+                borderColor: '#b57edc',
+                color: '#b57edc',
+                '&:hover': {
+                  backgroundColor: '#b57edc22',
+                  borderColor: '#b57edc',
+                },
+              }}
+            >
+              Update Prices
+            </Button>
+          </Link>
+          <Button
+            
+            onClick={removeBar}
+            variant="outlined"
+            sx={{
+              width: { xs: '100%', sm: 'auto' },
+              borderColor: '#ff5252',
+              color: '#ff5252',
+              '&:hover': {
+                backgroundColor: '#ff525222',
+              },
+            }}
+          >
+            Delete Bar
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );

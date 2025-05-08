@@ -72,43 +72,82 @@ export const LocationMarkerComponent: React.FC = () => {
                     return (
                         <ThemeProvider theme={theme} key={barEntity.bar.id}>
                             <Marker position={[barEntity.bar.coordLat, barEntity.bar.coordLong]}>
-                                <Popup className="custom-popup">
+                            <Popup className="custom-popup">
+                                <Box
+                                    sx={{
+                                    backgroundColor: '#1e1e1e', // Syvä tumma tausta
+                                    color: '#b57edc', // Purppura teksti
+                                    padding: '14px',
+                                    borderRadius: '12px',
+                                    fontFamily: 'Arial, sans-serif',
+                                    minWidth: '240px',
+                                    textAlign: 'center',
+                                    }}
+                                >
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#d1b3ff' }}>
+                                    {barEntity.bar.name}
+                                    </Typography>
+
+                                    <Typography variant="body2" sx={{ mb: 2, color: '#a38acc' }}>
+                                    {barEntity.bar.address}
+                                    </Typography>
+
                                     <Box
+                                    sx={{
+                                        backgroundColor: '#1f1f1f',
+                                        border: '1px solid #b57edc',
+                                        borderRadius: '8px',
+                                        padding: '8px',
+                                        mb: 2,
+                                    }}
+                                    >
+                                    <Typography variant="subtitle2" sx={{ color: '#b57edc', fontWeight: 500 }}>
+                                        {defaultDrink}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
                                         sx={{
-                                            backgroundColor: theme.palette.secondary.light,
-                                            color: theme.palette.common.white,
-                                            padding: '10px',
-                                            marginTop: '20px',
-                                            borderRadius: '8px',
-                                            fontFamily: 'Arial, sans-serif',
-                                            textAlign: 'center',
-                                            minWidth: '200px',
+                                        color: '#ffffff',
+                                        fontWeight: 'bold',
+                                        fontSize: '1.3rem',
                                         }}
                                     >
-                                        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                                            {barEntity.bar.name}
+                                        {drinkPrice ? `${drinkPrice} €` : "Not available"}
+                                    </Typography>
+                                    {isHappyHour && (
+                                        <Typography
+                                        variant="body2"
+                                        sx={{
+                                            mt: 1,
+                                            color: '#00e676',
+                                            fontWeight: 'bold',
+                                        }}
+                                        >
+                                        🎉 Happy Hour!
                                         </Typography>
-                                        <Typography variant="body2" sx={{ marginBottom: '10px' }}>
-                                            {barEntity.bar.address}
-                                        </Typography>
-                                        <Box sx={{ textAlign: 'left', marginBottom: '10px' }}>
-                                            <Typography variant="body2">
-                                                <strong>Prices:</strong>
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                {defaultDrink}: {drinkPrice ? `${drinkPrice} €` : "Not available"}
-                                            </Typography>
-                                            {isHappyHour && (
-                                                <Typography variant="body2" color="success.main">
-                                                    🎉 Happy Hour Price!
-                                                </Typography>
-                                            )}
-                                        </Box>
-                                        <Link to={`/bar/${barEntity.bar.id}`}>
-                                            <Button>More Details</Button>
-                                        </Link>
+                                    )}
                                     </Box>
+
+                                    <Link to={`/bar/${barEntity.bar.id}`} style={{ textDecoration: 'none' }}>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        sx={{
+                                        borderColor: '#b57edc',
+                                        color: '#b57edc',
+                                        fontWeight: 500,
+                                        '&:hover': {
+                                            backgroundColor: '#b57edc22',
+                                            borderColor: '#b57edc',
+                                        },
+                                        }}
+                                    >
+                                        More Details
+                                    </Button>
+                                    </Link>
+                                </Box>
                                 </Popup>
+
                             </Marker>
                         </ThemeProvider>
                     );

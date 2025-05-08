@@ -2,6 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       main: '#1F1F1F',
       light: '#3F4045',
@@ -9,15 +10,18 @@ const theme = createTheme({
     secondary: {
       main: '#322c60',
       light: '#7c6cf1',
-      dark: "{linear-gradient(#c69afb,#4233b3)}",
     },
     info: {
-      main: '#fcf8ff'
+      main: '#fcf8ff',
     },
     text: {
       primary: '#fcf8ff',
-      secondary: '#4c3862'
-    }
+      secondary: '#4c3862',
+    },
+    background: {
+      default: '#121212', // tumma tausta
+      paper: '#1e1e1e',   // Paper-komponentin tumma tausta
+    },
   },
   components: {
     MuiTextField: {
