@@ -1,5 +1,4 @@
 import { useSearchParams } from "react-router-dom";
-import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import BarSubmitComponent from "../components/BarSubmitComponent.tsx";
 
 export const AddPage : React.FC = () => {

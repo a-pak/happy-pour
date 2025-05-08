@@ -1,5 +1,4 @@
 import * as React from 'react';
-import SubmitFormComponent from "../components/SubmitFormComponent.tsx";
 import {useParams} from "react-router-dom";
 import DrinkSubmitComponent from '../components/DrinkSubmitComponent.tsx';
 
@@ -16,9 +15,6 @@ const UpdatePage: React.FC = () => {
         </>
       )
     }
-    return (
-        <SubmitFormComponent initialBarId={undefined} />
-    )
   }
 
   return (
