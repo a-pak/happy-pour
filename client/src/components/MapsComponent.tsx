@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Popup, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import theme from '../Theme';
 import { useNavigate } from 'react-router-dom';
 import locationService from '../services/location';
@@ -15,7 +15,7 @@ const MapsComponent: React.FC = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);  
   const [error, setError] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
-
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,12 +51,18 @@ const MapsComponent: React.FC = () => {
 
   return (
     <div>        
-      <div id='map' style={{ height: `calc(100vh - 56px)` }}>
-        <MapContainer 
-          center={userLocation || [60.192059, 24.945841]}
-          zoom={13} 
-          className="leaflet-container"
-        >
+      <Box
+  sx={{
+    height: isMobile ? 'calc(100vh - 56px)' : 'calc(100vh - 64px)',
+    width: '100%',
+  }}
+>
+  <MapContainer
+    center={userLocation || [60.192059, 24.945841]}
+    zoom={13}
+    className="leaflet-container"
+    style={{ height: '100%', width: '100%' }}
+  >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -95,7 +101,7 @@ const MapsComponent: React.FC = () => {
 
         {error ? <p>{error}</p> : <LocationMarkerComponent />}
       </MapContainer>
-      </div>
+      </Box>
     </div>
   );
 }
