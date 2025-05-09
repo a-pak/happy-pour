@@ -77,7 +77,7 @@ const BarDetailsPage: React.FC = () => {
             </Typography>
           </Grid>
           <Grid item xs={2} sx={{ textAlign: 'right' }}>
-            <IconButton onClick={() => navigate(-1)} sx={{ color: '#b57edc' }}>
+            <IconButton onClick={() => navigate('/')} sx={{ color: '#b57edc' }}>
               <CloseIcon />
             </IconButton>
           </Grid>
