@@ -52,17 +52,17 @@ const MapsComponent: React.FC = () => {
   return (
     <div>        
       <Box
-  sx={{
-    height: isMobile ? 'calc(100vh - 56px)' : 'calc(100vh - 64px)',
-    width: '100%',
-  }}
->
-  <MapContainer
-    center={userLocation || [60.192059, 24.945841]}
-    zoom={13}
-    className="leaflet-container"
-    style={{ height: '100%', width: '100%' }}
-  >
+        sx={{
+          height: isMobile ? 'calc(100vh - 56px)' : 'calc(100vh - 64px)',
+          width: '100%',
+        }}
+      >
+        <MapContainer
+          center={userLocation || [60.192059, 24.945841]}
+          zoom={13}
+          className="leaflet-container"
+          style={{ height: '100%', width: '100%' }}
+        >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

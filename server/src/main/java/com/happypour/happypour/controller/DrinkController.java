@@ -49,6 +49,7 @@ public class DrinkController {
         try {
             List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
             for (Drink d : drinks) {
+                System.out.println("drink::: \n" + d);
                 drinkService.updateDrink(d);
             }
             return ResponseEntity.ok("Drinks updated Successfully!");

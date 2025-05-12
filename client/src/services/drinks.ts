@@ -20,6 +20,8 @@ const getByBarId = async (barId: number): Promise<IDrink[]> => {
 
 const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
     try {
+        console.log("drinkkkdataa", drinkData)
+
         const response = await api.post(DRINKS_URL, drinkData);
         return response.data;
     } catch (error) {
@@ -32,8 +34,9 @@ const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
     }
 }
 
-const updateDrinks = async (drinkData: IDrink[]): Promise<void> => {
+const updateDrinks = async (drinkData: IDrinkPayload): Promise<void> => {
     try {
+        console.log("drinkkkdataa", drinkData)
         const response = await api.put(DRINKS_URL, drinkData);
         return response.data;
     } catch (error) {
