@@ -37,6 +37,7 @@ const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
 const updateDrinks = async (drinkData: IDrinkPayload): Promise<void> => {
     try {
         console.log("drinkkkdataa", drinkData)
+        console.log("Stringified payload:", JSON.stringify(drinkData));
         const response = await api.put(DRINKS_URL, drinkData);
         return response.data;
     } catch (error) {

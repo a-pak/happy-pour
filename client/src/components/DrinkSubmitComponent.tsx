@@ -105,22 +105,34 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     const newDrinks = drinks.filter(d => !existingDrinks.some(ed => ed.id === d.id));
     const updatedDrinks = drinks.filter(d => existingDrinks.some(ed => ed.id === d.id));
-
+  
     try {
-      const payload: IDrinkPayload = { drinks: [...newDrinks, ...updatedDrinks] };
-
-      // POST or PUT can be handled the same way if the logic is the same
       if (newDrinks.length > 0) {
+        const payload: IDrinkPayload = {
+          drinks: newDrinks.map(d => ({
+            ...d,
+            updatedAt: new Date().toISOString(),
+            updatedBy: { id: 1 } // Replace with logged-in user ID if available
+          }))
+        };
         await createDrink(payload); // Create new drinks
       }
-
+  
       if (updatedDrinks.length > 0) {
+        const payload: IDrinkPayload = {
+          drinks: updatedDrinks.map(d => ({
+            id: d.id,
+            normalPrice: d.normalPrice,
+            updatedBy: { id: 1 }, // Replace with logged-in user ID if available
+            updatedAt: new Date().toISOString()
+          }))
+        };
         await updateDrinks(payload); // Update existing drinks
       }
-
+  
       navigate(`/bar/${barId}`);
       showNotification("Drinks submitted successfully!", "success");
     } catch (error: any) {
