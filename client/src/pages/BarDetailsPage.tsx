@@ -40,14 +40,6 @@ const BarDetailsPage: React.FC = () => {
 
   const getDrinkPrice = (drinkName: string) => {
     const normalDrink = drinks.find((d: any) => d.name === drinkName);
-    const happyHourDrink = happyHourDrinks.find((d: any) => d.drinkName === drinkName);
-    if (happyHourDrink) {
-      return (
-        <span style={{ color: '#00e676' }}>
-          {happyHourDrink.happyHourPrice} € <em>(Happy Hour)</em>
-        </span>
-      );
-    }
     return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
   };
 
@@ -57,7 +49,21 @@ const BarDetailsPage: React.FC = () => {
     }
   };
 
+  const isHappyHourNow = () => {
+    if (!happyHour) return false;
+    const now = new Date();
+    const currentTime = now.getHours() + now.getMinutes() / 60;
+  
+    const [startHour, startMinute] = happyHour.startTime.split(':').map(Number);
+    const [endHour, endMinute] = happyHour.endTime.split(':').map(Number);
+    const startTime = startHour + startMinute / 60;
+    const endTime = endHour + endMinute / 60;
+  
+    return currentTime >= startTime && currentTime <= endTime;
+  };
+
   return (
+    
     <Box sx={{ padding: 3, backgroundColor: '#121212', minHeight: '100vh' }}>
       <Paper
         elevation={4}
@@ -87,6 +93,24 @@ const BarDetailsPage: React.FC = () => {
           {bar.address}
         </Typography>
 
+        {isHappyHourNow() && (
+          <Box sx={{ mt: 3, p: 2, backgroundColor: '#2e2e2e', borderRadius: '8px' }}>
+            <Typography variant="h6" sx={{ color: '#00e676', mb: 1 }}>
+              Happy Hour Prices
+            </Typography>
+            <List>
+              {happyHourDrinks.map((drink: any) => (
+                <ListItem key={drink.drinkName} disablePadding>
+                  <ListItemText
+                    primary={drink.drinkName}
+                    secondary={`${drink.happyHourPrice} €`}
+                    primaryTypographyProps={{ sx: { color: '#b2ff59', fontWeight: 'bold' } }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
         <List>
           {drinks.map((drink: any) => (
             <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
