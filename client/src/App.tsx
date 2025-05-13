@@ -18,6 +18,8 @@ import {UserProvider} from "./store/UserContext.tsx";
 import {ProfilePage} from "./pages/ProfilePage.tsx";
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import DeletePage from './pages/DeletePage.tsx'
+import NotFoundPage from './pages/NotFoundPage.tsx'
 
 function App() {
   return (
@@ -29,6 +31,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<LayoutComponent />}>
                   <Route index element={<LandingPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
                   <Route path="/bars" element={<BarListPage />} />
                   <Route path="/bar/:id" element={<BarDetailsPage />} />
                   <Route path="/login" element={<LogInPage />} />
@@ -39,6 +42,7 @@ function App() {
 
                   <Route element={<ProtectedRoutes />}>
                     <Route path='/update/:id' element={<UpdatePage />} />
+                    <Route path='/delete/:id' element={<DeletePage />} />
                     <Route path='/submit/' element={<AddPage />} />
                     <Route path='/profile/' element={<ProfilePage/>}/>
                   </Route>
