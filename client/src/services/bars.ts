@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Bar from '../model/IbarInterface';
+import Bar, { BarData } from '../model/IbarInterface';
 import api from './axiosInstance';
 
 const BARS_URL : string = "/bars";
@@ -40,12 +40,13 @@ const update = async (id: number, newBar: Bar): Promise<Bar> => {
     }
 }
 
-const getById = async (id: number): Promise<Bar> => {
+const getById = async (id: number): Promise<BarData> => {
     console.log(BARS_URL + '/' + id);
     const response = await api.get(`${BARS_URL}/${id}`);
+    console.log("BAR DATA: " + response.data.name);
     return response.data;
 }
-const removeById = async (id: number) => {
+const deleteById = async (id: number) => {
     const response = await api.delete(`${BARS_URL}/${id}`);
     return response.data
 }
@@ -55,5 +56,5 @@ export default {
     create,
     update,
     getById,
-    removeById
+    deleteById
 }

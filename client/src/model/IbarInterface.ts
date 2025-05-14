@@ -35,22 +35,6 @@ interface User {
   username: string;
 }
 
-export interface BarB {
-  id: number;
-  name: string;
-  coordLong: number;
-  coordLat: number;
-  address: string;
-  openFrom: string;
-  openTo: string;
-  entryFee: number;
-  cloakroomFee: number;
-  createdBy: User;
-  updatedBy: User;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface HappyHour {
   id: number;
   startTime: string;
@@ -80,7 +64,7 @@ export interface Drink {
 }
 
 export interface BarData {
-  bar: BarB;
+  bar: Bar;
   happyHour: HappyHour | null;
   happyHourDrinks: HappyHourDrink[];
   drinks: Drink[];

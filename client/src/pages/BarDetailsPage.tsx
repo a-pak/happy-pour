@@ -13,10 +13,11 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import { BarData } from '../model/IbarInterface.ts';
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [barData, setBarData] = useState<any>(null);
+  const [barData, setBarData] = useState<BarData | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,9 +45,7 @@ const BarDetailsPage: React.FC = () => {
   };
 
   const removeBar = () => {
-    if (window.confirm('Are you sure you want to delete this bar?')) {
-      barsService.removeById(bar.id).then(() => navigate('/'));
-    }
+    navigate(`/delete/${bar.id}`);
   };
 
   const isHappyHourNow = () => {

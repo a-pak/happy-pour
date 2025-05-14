@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import { useTheme } from '@mui/material/styles';
 import { SelectChangeEvent } from '@mui/material';
-import { useDrinkStore } from '../drinkStore.ts';
+import { useDrinkStore } from '../store/drinkStore.ts';
 
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<any[]>([]);
