@@ -5,7 +5,7 @@ import { Marker, Popup } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import { Typography, Box, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useDrinkStore } from "../store/drinkStore.ts";
+import { useDrinkStore } from "../store/drinkStore";
 import barsService from '../services/bars.ts';
 
 export const LocationMarkerComponent: React.FC = () => {

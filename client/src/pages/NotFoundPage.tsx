@@ -14,7 +14,7 @@ const NotFoundPage = () => {
                     component="img"
                     src="/spilled-beer.png"
                     alt="Framed"
-                    sx={{ width: 500, height: 'auto' }}
+                    sx={{ width: '40vh', height: 'auto' }}
                 />
                 </Box>
         </Container>

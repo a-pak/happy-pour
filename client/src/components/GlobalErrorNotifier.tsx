@@ -37,15 +37,15 @@ export const GlobalErrorNotifier: React.FC = () => {
         left: '50%',
         transform: 'translateX(-50%)',
       }}
-    >
-      <Alert
-        onClose={handleClose}
-        severity={notification.type}
-        sx={{ width: '100%' }}
-      >
-        {notification.message}
-      </Alert>
-    </Snackbar>
+>
+  <Alert
+    onClose={handleClose}
+    severity={notification.type}
+    sx={{ width: '100%' }}
+  >
+    {notification.message}
+  </Alert>
+</Snackbar>
 
 
   );

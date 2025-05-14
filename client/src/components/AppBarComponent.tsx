@@ -14,7 +14,7 @@ import { Box, FormControl, InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDrinkStore } from "../store/drinkStore.ts";
+import { useDrinkStore } from "../store/drinkStore";
 import {useUser} from "../store/UserContext.tsx";
 
 const AppBarComponent: React.FC = () => {
