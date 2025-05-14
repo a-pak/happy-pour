@@ -96,7 +96,7 @@ public class HappypourApplication{
             HappyHour hh1 = new HappyHour(
                     null,
                     bar1,
-                    LocalTime.of(12, 30),
+                    LocalTime.of(10, 30),
                     LocalTime.of(13, 30),
                     user1,
                     user1,

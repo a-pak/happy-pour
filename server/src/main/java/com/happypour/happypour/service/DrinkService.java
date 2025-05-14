@@ -7,9 +7,11 @@ import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.DrinkRepository;
 import com.happypour.happypour.repository.HappyHourDrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,13 +64,21 @@ public class DrinkService {
     }
 
     public Drink updateDrink(Drink updatedDrink) {
-        Long id = updatedDrink.getId();
-        return drinkRepository.findById(id)
-                .map(existingDrink -> {
-                    BeanUtils.copyProperties(updatedDrink, existingDrink, "id", "bar");
-                    return drinkRepository.save(existingDrink);
-                })
-                .orElse(null);
+//        Long id = updatedDrink.getId();
+//        return drinkRepository.findById(id)
+//                .map(existingDrink -> {
+//                    BeanUtils.copyProperties(updatedDrink, existingDrink, "id", "bar");
+//                    return drinkRepository.save(existingDrink);
+//                })
+//                .orElse(null);
+            return drinkRepository.findById(updatedDrink.getId())
+                    .map(existing -> {
+                        existing.setNormalPrice(updatedDrink.getNormalPrice());
+                        existing.setUpdatedBy(updatedDrink.getUpdatedBy());
+                        existing.setUpdatedAt(updatedDrink.getUpdatedAt());
+                        return drinkRepository.save(existing);
+                    })
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink not found"));
     }
 
     public List<DrinksByBarResponse> findByBar(Long id) {

@@ -46,14 +46,24 @@ public class DrinkController {
 
     @PutMapping
     public ResponseEntity<String> updateDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
+//        try {
+//            List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
+//            for (Drink d : drinks) {
+//                System.out.println("drink::: \n" + d);
+//                drinkService.updateDrink(d);
+//            }
+//            return ResponseEntity.ok("Drinks updated Successfully!");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(400).build();
+//        }
         try {
-            List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
+            List<Drink> drinks = Arrays.asList(drinkPostRequest.getDrinks());
             for (Drink d : drinks) {
                 drinkService.updateDrink(d);
             }
             return ResponseEntity.ok("Drinks updated Successfully!");
         } catch (Exception e) {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(400).body("Update failed: " + e.getMessage());
         }
     }
 
