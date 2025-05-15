@@ -7,20 +7,22 @@ import com.happypour.happypour.model.User;
 import com.happypour.happypour.security.JWTUtil;
 import com.happypour.happypour.service.UserService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.net.http.HttpHeaders;
 import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Value("${happypour.app.address}")
+    private String HAPPYPOUR_APP_ADDRESS;
     private final UserService userService;
     private final JWTUtil jwtUtil;
     @Autowired
@@ -56,7 +58,7 @@ public class AuthController {
         String email = registerRequest.getEmail();
         String username = registerRequest.getUsername();
         String password = registerRequest.getPassword();
-        
+
         if (userService.userExistsByEmail(email)) {
             return ResponseEntity.status(409).body("User email is already in use!");
 
@@ -76,16 +78,16 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/verify/{token}")
-    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+    @GetMapping("/verify/{token}")
+    public RedirectView verifyEmail(@PathVariable String token) {
         try {
             if(userService.verifyUser(token)) {
-                return ResponseEntity.ok("User verified successfully!");
+                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/");
             } else {
-                return ResponseEntity.badRequest().body("Request with token invalid!");
+                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/registration-failed");
             }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error occurred while verifying user!\n" + e.getMessage());
+            return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/error");
         }
     }
 
@@ -112,7 +114,7 @@ public class AuthController {
     }
 
     private HttpServletResponse applyRefreshCookie(HttpServletResponse response, User user) {
-        ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateRefreshToken(user.getUsername()))
+        ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateToken(user.getUsername(), 48 * 60))
         .httpOnly(true)
         .path("/")
         .sameSite("Lax")
@@ -124,7 +126,7 @@ public class AuthController {
     }
 
     private HttpServletResponse applyAccessCookie(HttpServletResponse response, User user) {
-        ResponseCookie cookie = ResponseCookie.from("token", jwtUtil.generateRefreshToken(user.getUsername()))
+        ResponseCookie cookie = ResponseCookie.from("token", jwtUtil.generateToken(user.getUsername(), 15))
         .httpOnly(true)
         .path("/")
         .sameSite("Lax")

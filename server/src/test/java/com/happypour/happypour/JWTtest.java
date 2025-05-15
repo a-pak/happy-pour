@@ -20,7 +20,7 @@ public class JWTtest {
     @Test
     @DisplayName("Extracted name from token should match the original name")
     void extractNameTest() {
-        String token = jwtUtil.generateAccessToken(username);
+        String token = jwtUtil.generateToken(username, 2);
         System.out.println("Token: " + token);
         
         String extractedUsername = jwtUtil.extractUsername(token);
@@ -31,7 +31,7 @@ public class JWTtest {
     @Test
     @DisplayName("Generated token should be valid")
     void validateTokenTest() {
-        String token = jwtUtil.generateAccessToken(username);
+        String token = jwtUtil.generateToken(username, 2);
         System.out.println("Token: " + token);
         
         boolean isValid = jwtUtil.validateToken(token);

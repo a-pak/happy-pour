@@ -4,6 +4,7 @@ import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.repository.UserRepository;
 import com.happypour.happypour.security.JWTUtil;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,7 +63,7 @@ public class UserService {
 
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if(user.isVerified() == false) {
+            if(!user.isVerified()) {
                 throw new RuntimeException
                         ("User account with email "+ user.getEmail() +"  is not verified.");
             }
@@ -90,8 +91,8 @@ public class UserService {
         boolean registerSuccess = createUser(user);
 
         if(registerSuccess) {
-            // String token = jwtUtil.generateToken(registerRequest.getEmail());
-            // mailService.sendRegisterLink(token, registerRequest.getEmail());
+                String token = jwtUtil.generateToken(registerRequest.getEmail(), 15);
+                mailService.sendRegisterLink(token, registerRequest.getEmail(), registerRequest.getUsername());
             return true;
         } else {
             return false;
@@ -100,8 +101,6 @@ public class UserService {
     //TODO: REMOVE LINES MARKED WITH DEBUG!
     public boolean createUser(User user) {
         try {
-            user.setVerified(true); // <- DEBUG
-            //user.setPassword( passwordEncoder.encode(user.getPassword()) ); // <- DEBUG
             userRepository.save(user);
             return true;
 

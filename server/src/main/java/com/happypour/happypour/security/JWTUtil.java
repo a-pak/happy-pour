@@ -1,6 +1,5 @@
 package com.happypour.happypour.security;
 
-import com.happypour.happypour.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -20,39 +19,23 @@ public class JWTUtil {
     private String secretKey;
 
     /**
-     * Generates a long-lived (48 hours) refresh token for username.
+     * Generates a JWT for username.
      * Refresh token is used to renew both access and refresh tokens.
-     * @param username
+     * @param username user email
+     * @param minutes token life cycle length in minutes.
      * @return
      */
-    public String generateRefreshToken(String username) {
+    public String generateToken(String username, int minutes) {
+
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48)) // 48 hours?
+                .expiration(new Date(System.currentTimeMillis() + 60000 * minutes)) // 48 hours?
                 .signWith(getKey())
                 .compact();
     }
-
-    /**
-     * Generates a short-lived (15 minutes) access token for username.
-     * Access tokens are used for api access.
-     * @param username
-     * @return Access token in string form.
-     */
-    public String generateAccessToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder()
-                .claims(claims)
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutes?
-                .signWith(getKey())
-                .compact();
-    }
-
     /**
      * Checks validity of token
      * @param token in string form
