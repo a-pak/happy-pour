@@ -1,7 +1,13 @@
 import LoginComponent from "../components/LoginComponent"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import "./styles/Auth.css";
+import { useErrorStore } from "../store/errorStore.ts";
+
 export const LogInPage = () => {
+  const { message } = useParams<{ message: string }>();
+  const {showNotification} = useErrorStore.getState();
+  message ? showNotification(message, "success") : null;
+  
   return (
     <div className="wrapper">
       <LoginComponent />

@@ -34,7 +34,7 @@ function App() {
                   <Route path="*" element={<NotFoundPage />} />
                   <Route path="/bars" element={<BarListPage />} />
                   <Route path="/bar/:id" element={<BarDetailsPage />} />
-                  <Route path="/login" element={<LogInPage />} />
+                  <Route path="/login/:message" element={<LogInPage />} />
                   <Route path="/register" element={<RegisterPage />} />
 
                   <Route path="/contact" element={<ContactPage />} />
