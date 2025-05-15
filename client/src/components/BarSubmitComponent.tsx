@@ -46,8 +46,38 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
         setEntryFee(bar.entryFee);
         setCloakroomFee(bar.cloakroomFee);
       });
+    } else {
+      const fetchAddress = async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+          );
+          const data = await response.json();
+  
+          if (data && data.address) {
+            const addr = data.address;
+  
+            const road = addr.road || "";
+            const houseNumber = addr.house_number || "";
+            const postcode = addr.postcode || "";
+            const city = addr.city || addr.town || addr.village || "";
+  
+            const formattedAddress = [road, houseNumber, postcode, city]
+              .filter(Boolean)
+              .join(" ");
+  
+            setAddress(formattedAddress);
+          } else {
+            console.warn("Address not found from Nominatimista.");
+          }
+        } catch (error) {
+          console.error("Nominatim-error:", error);
+        }
+      };
+  
+      fetchAddress();
     }
-  }, [barId]);
+  }, [barId, lat, lng]);
 
   const handleSubmit = async () => {
     if (!name || !address || !openFrom || !openTo) {
