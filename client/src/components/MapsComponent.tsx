@@ -83,18 +83,39 @@ const MapsComponent: React.FC = () => {
           <Popup position={popupPosition}>
             <Box
               sx={{
-                  backgroundColor: theme.palette.secondary.light,
-                  color: theme.palette.common.white,
-                  padding: '5px',
-                  marginTop: '5px',
-                  borderRadius: '8px',
-                  fontFamily: 'Arial, sans-serif',
-                  textAlign: 'center',
-                  minWidth: '200px',
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                boxShadow: 0,
+                padding: 1,
+                marginTop: 1,
+                borderRadius: 2,
+                fontFamily: 'Roboto, sans-serif',
+                textAlign: 'center',
+                minWidth: 240,
               }}
+            >
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                Do you want to add a new bar to this location?
+              </Typography>
+
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={openAddBarWindow}
+                sx={{
+                  mt: 1,
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  px: 3,
+                  borderRadius: 2,
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: theme.palette.secondary.dark,
+                  },
+                }}
               >
-              <Typography variant="h6">Do you want to add a new bar to this Location?</Typography>
-              <Button sx={{ marginTop: '10px', backgroundColor: theme.palette.secondary.main, }} onClick={openAddBarWindow}>Add bar</Button>
+                Add Bar
+              </Button>
             </Box>
           </Popup>
         )}
