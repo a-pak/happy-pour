@@ -18,7 +18,7 @@ import { useDrinkStore } from "../store/drinkStore";
 import {useUser} from "../store/UserContext.tsx";
 
 const AppBarComponent: React.FC = () => {
-    const {user} = useUser();
+  const {user} = useUser();
   const [openDrawer, setOpenDrawer] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const menuItems = [(user !== null) ? user.username : 'Log In', 'About', 'Contact'];
@@ -42,45 +42,46 @@ const AppBarComponent: React.FC = () => {
 
   return (
     <AppBar position="sticky" color='secondary'>
-      <Toolbar>
-        {isMobile && (
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
-            <MenuIcon />
-          </IconButton>
-        )}
-          {!isMobile && menuItems.map((item) => {
-              // Check the condition based on the item's value
-              if (item !== "About" && item !== "Contact") {
-                  // You can return a different element or modify the Button here
-                  return (<Button key={item}
-                                 color="inherit"
-                                 onClick={() => navigate(`/profile`)}>{item}
-                  </Button>);
-              }
+    <Toolbar>
+      {/* Desktop view */}
+      {!isMobile && (
+        <IconButton edge="start" color="inherit" aria-label="home" onClick={toggleLandingPage}>
+         <img src="/logo.png" alt="Logo" style={{ height: 32 }} />
+        </IconButton>
+      )}
+      {!isMobile && menuItems.map((item) => (
+        item !== "About" && item !== "Contact" ? (
+          <Button key={item} color="inherit" onClick={() => navigate(`/profile`)}>
+            {item}
+          </Button>
+        ) : (
+          <Button key={item} color="inherit" onClick={() => navigate(`/${item.toLowerCase().replace(" ", "")}`)}>
+            {item}
+          </Button>
+        )
+      ))}
 
-              // Return the normal Button if the condition is not met
-              return (
-                  <Button key={item}
-                          color="inherit"
-                          onClick={() => navigate(`/${item.toLowerCase().replace(" ", "")}`)}
-                  >
-                      {item}
-                  </Button>
-              );
-          })}
-        <Drawer 
-          color='primary' 
-          anchor="left" 
-          open={openDrawer} 
-          onClose={toggleDrawer(false)}
-          sx={{
-            '& .MuiDrawer-paper': {
+      {/* Mobile view */}
+      {isMobile && (
+        <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+          <MenuIcon />
+        </IconButton>
+      )}
+
+      <Drawer 
+        color='primary' 
+        anchor="left" 
+        open={openDrawer} 
+        onClose={toggleDrawer(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
             backgroundColor: 'primary.main',
             color: 'primary.contrastText', 
-            },
-          }} >
-          <MenuComponent />
-        </Drawer>
+          },
+        }}
+      >
+        <MenuComponent onClose={toggleDrawer(false)} />
+      </Drawer>
         <Box sx={{ flexGrow: 1, 
                     display: 'flex',
                     justifyContent: 'center'
@@ -108,6 +109,7 @@ const AppBarComponent: React.FC = () => {
                     },
                   }}
               >
+                  <MenuItem value={'View all'}>View all</MenuItem>
                   <MenuItem value={'Beer'}>Beer</MenuItem>
                   <MenuItem value={'Wine'}>Wine</MenuItem>
                   <MenuItem value={'Coffee'}>Coffee</MenuItem>

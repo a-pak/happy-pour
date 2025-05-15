@@ -4,17 +4,19 @@ import {
   Button,
   Box,
   Typography,
+  IconButton,
+  Paper
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import barService from "../services/bars";
 import Bar from "../model/IbarInterface";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
-import {useUser} from "../store/UserContext.tsx";
+import { useUser } from "../store/UserContext.tsx";
 import { useErrorStore } from '../store/errorStore.ts';
-
-// inside some component or 
+import theme from "../Theme";
 
 type Props = {
   barId?: number | null;
@@ -24,9 +26,8 @@ type Props = {
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
-  const {setUser} = useUser();
+  const { setUser } = useUser();
   const { showNotification } = useErrorStore.getState();
-
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -34,7 +35,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
   const [entryFee, setEntryFee] = useState(0.0);
   const [cloakroomFee, setCloakroomFee] = useState(0.0);
-      
+
   useEffect(() => {
     if (barId) {
       barService.getById(barId).then((bar) => {
@@ -66,8 +67,8 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       openTo: openTo.format("HH:mm:ss"),
       entryFee,
       cloakroomFee,
-      createdBy: {id: 1, username: "admin"},
-      updatedBy: {id: 1, username: "admin"},
+      createdBy: { id: 1, username: "admin" },
+      updatedBy: { id: 1, username: "admin" },
       createdAt: now,
       updatedAt: now,
     };
@@ -79,82 +80,114 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
         showNotification("Bar updated successfully!", "success");
       } else {
         const response = await barService.create(bar);
-        console.log(response)
-
-          if(response) {
-            navigate("/bar/" + response.id)
-            showNotification("Bar created successfully!", "success");
-          } else {
-            throw new Error("No bar in response");
-            showNotification("Bar creation failed. Please try again.", "error");
+        if (response) {
+          navigate("/bar/" + response.id);
+          showNotification("Bar created successfully!", "success");
+        } else {
+          throw new Error("No bar in response");
         }
       }
-    } catch (error : any) {
+    } catch (error: any) {
       console.error("Error:", error);
-      
       if (error.status === 401 || error.status === 403) {
         setUser(null);
         navigate("/login");
         showNotification("Session expired. Please log in again.", "warning");
-
       } else {
         showNotification("An error occurred while submitting the form. Please try again.");
-
+      }
     }
-  }
- };
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box sx={{ maxWidth: 400, margin: "0 auto", display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography variant="h6">
-           {barId ? "Update Bar" : "Add Bar"}
+      <Paper
+        elevation={4}
+        sx={{
+          maxWidth: 500,
+          margin: "4vh auto",
+          padding: 4,
+          position: "relative",
+          borderRadius: 4,
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
+        <IconButton
+          onClick={() => navigate("/")}
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            color: theme.palette.grey[700],
+            "&:hover": {
+              color: theme.palette.error.main,
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <Typography variant="h5" fontWeight={600} gutterBottom>
+          {barId ? "Update Bar" : "Add Bar"}
         </Typography>
 
-        <TextField
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth
-        />
+        <Box display="flex" flexDirection="column" gap={2}>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+          />
 
-        <TextField
-          label="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          fullWidth
-        />
+          <TextField
+            label="Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            fullWidth
+          />
 
-        <TimePicker
-          label="Open from"
-          value={openFrom}
-          onChange={(newValue) => setOpenFrom(newValue)}
-        />
+          <TimePicker
+            label="Open from"
+            value={openFrom}
+            onChange={(newValue) => setOpenFrom(newValue)}
+          />
 
-        <TimePicker
-          label="Open to"
-          value={openTo}
-          onChange={(newValue) => setOpenTo(newValue)}
-        />
+          <TimePicker
+            label="Open to"
+            value={openTo}
+            onChange={(newValue) => setOpenTo(newValue)}
+          />
 
-        <TextField
-          label="Entry fee (€)"
-          type="number"
-          value={entryFee}
-          onChange={(e) => setEntryFee(parseFloat(e.target.value))}
-        />
+          <TextField
+            label="Entry fee (€)"
+            type="number"
+            value={entryFee}
+            onChange={(e) => setEntryFee(parseFloat(e.target.value))}
+          />
 
-        <TextField
-          label="Cloakroom fee (€)"
-          type="number"
-          value={cloakroomFee}
-          onChange={(e) => setCloakroomFee(parseFloat(e.target.value))}
-        />
+          <TextField
+            label="Cloakroom fee (€)"
+            type="number"
+            value={cloakroomFee}
+            onChange={(e) => setCloakroomFee(parseFloat(e.target.value))}
+          />
 
-        <Button variant="contained" onClick={handleSubmit}>
-          {barId ? "Update" : "Create Bar"}
-        </Button>
-      </Box>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSubmit}
+            sx={{
+              mt: 1,
+              textTransform: "none",
+              fontWeight: 500,
+              borderRadius: 2,
+              boxShadow: "none",
+            }}
+          >
+            {barId ? "Update" : "Create Bar"}
+          </Button>
+        </Box>
+      </Paper>
     </LocalizationProvider>
   );
 };
