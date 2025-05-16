@@ -5,14 +5,14 @@
     <title>Email Verification</title>
 </head>
 <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f6f6f6;">
-<table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; background-color: #ffffff; padding: 40px; margin-top: 20px;">
+<table align="center" cellpadding="0" cellspacing="0" style=" width: 100%; border-collapse: collapse; background-color: #ffffff; padding: 20px; margin-top: 20px;">
     <tr>
         <td align="center" style="padding-bottom: 30px;">
             <h2 style="color: #333333;">Verify Your Email Address</h2>
         </td>
     </tr>
     <tr>
-        <td>
+        <td style="text-align: center;">
             <p style="color: #666666; font-size: 16px;">Hi <span th:text="${userName}">User</span>,</p>
             <p style="color: #666666; font-size: 16px;">Thank you for registering. Please verify your email address by clicking the button below:</p>
         </td>
@@ -26,9 +26,11 @@
         </td>
     </tr>
     <tr>
-        <td style="color: #999999; font-size: 14px; text-align: center;">
+        <td style="color: #f6f6f6; font-size: 14px; text-align: center; padding: 20px">
             <p>If the button doesn't work, copy and paste this link into your browser:</p>
-            <p><a th:href="${verificationLink}" th:text="${verificationLink}" style="color: #007bff; word-wrap: break-word;"></a></p>
+            <a th:href="${verificationLink}" th:text="${verificationLink}"
+               style="color: #f6f6f6; word-break: break-all; word-wrap: break-word; overflow-wrap: break-word; display: inline-block; max-width: 100%;"></a>
+
         </td>
     </tr>
     <tr>

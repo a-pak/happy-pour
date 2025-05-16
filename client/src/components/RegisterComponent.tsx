@@ -29,8 +29,7 @@ const RegisterComponent = () => {
             if(response) {
                 console.log("Response: " + response.data);
                 if (response.status === 201) {
-                    // TODO: Banner says successful login
-                    navigate('/login');
+                    navigate('/login?message=check-email');
                 } else {
                     alert(response.data.message);
                 }

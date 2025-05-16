@@ -22,6 +22,9 @@ export const LogInPage = () => {
       case "unauthorized":
         showNotification("Please log in first.", "warning");
         break;
+      case "check-email":
+        showNotification("Check your email for the verification link.", "info");
+        break;
       default:
         break;
     }
