@@ -82,9 +82,9 @@ public class AuthController {
     public RedirectView verifyEmail(@PathVariable String token) {
         try {
             if(userService.verifyUser(token)) {
-                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/");
+                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/login?message=register-success");
             } else {
-                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/registration-failed");
+                return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/login?message=register-fail");
             }
         } catch (Exception e) {
             return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/error");

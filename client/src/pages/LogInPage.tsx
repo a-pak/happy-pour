@@ -1,13 +1,32 @@
 import LoginComponent from "../components/LoginComponent"
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import "./styles/Auth.css";
 import { useErrorStore } from "../store/errorStore.ts";
+import { useEffect } from "react";
 
 export const LogInPage = () => {
-  const { message } = useParams<{ message: string }>();
+  const location = useLocation();
   const {showNotification} = useErrorStore.getState();
-  message ? showNotification(message, "success") : null;
-  
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const message = queryParams.get("message");
+
+    switch (message) {
+      case "register-success":
+        showNotification("Registration successful!\nYou can now log in.", "success");
+        break;
+      case "register-fail":
+        showNotification("Registration failed.\nThe link was expired.", "error");
+        break;
+      case "unauthorized":
+        showNotification("Please log in first.", "warning");
+        break;
+      default:
+        break;
+    }
+  }, [location.search]);
+
   return (
     <div className="wrapper">
       <LoginComponent />
