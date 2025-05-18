@@ -45,7 +45,7 @@ public class HappypourApplication{
     public CommandLineRunner demo() {
 
         return (args) -> {
-            userService.registerUser(new RegisterRequest("admin", "admin@example.com", "salasana"));
+            /*userService.registerUser(new RegisterRequest("admin", "admin@example.com", "salasana"));
             userService.registerUser(new RegisterRequest("Matti", "matti@example.com", "salasana"));
 
             User user1 = userService.getByEmail("admin@example.com");
@@ -116,6 +116,7 @@ public class HappypourApplication{
                     null
             );
             happyHourDrinkRepository.save(happyHourDrink);
+            */
 
             barRepository.findAll().forEach(bar -> System.out.println(bar));
         };

@@ -24,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         System.out.println("Request URI: " + request.getRequestURI() + " " + request.getMethod());
         System.out.println(request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()));
         if (request.getRequestURI().contains("/api/auth/") ||
+                request.getRequestURI().equals("/") ||
                 (request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()))) {
             System.out.println("Condition met!");
             filterChain.doFilter(request, response);

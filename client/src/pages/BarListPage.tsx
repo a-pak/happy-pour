@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography, Select, MenuItem } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import { useTheme } from '@mui/material/styles';
-import { SelectChangeEvent } from '@mui/material';
 import { useDrinkStore } from '../store/drinkStore.ts';
 
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<any[]>([]);
-  const [selectedAttribute, setSelectedAttribute] = useState<string>('beer05Price');
   const navigate = useNavigate();
   const theme = useTheme();
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
@@ -22,9 +20,7 @@ const BarListPage: React.FC = () => {
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
 
-  const handleAttributeChange = (event: SelectChangeEvent<string>) => {
-    setSelectedAttribute(event.target.value);
-  };
+
 
   const getDrinkPrice = (bar: any) => {
     const drink = bar.drinks.find((d: any) => d.name === defaultDrink);

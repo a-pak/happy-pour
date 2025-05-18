@@ -4,7 +4,7 @@ import api from './axiosInstance';
 
 const BARS_URL : string = "/bars";
 
-const getAll = async (): Promise<Bar[]> => {
+const getAll = async (): Promise<BarData[]> => {
     console.log(BARS_URL);
     const response = await api.get(BARS_URL);
     return response.data;

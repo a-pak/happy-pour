@@ -6,8 +6,8 @@ export const AddPage : React.FC = () => {
   const latParam = searchParams.get('lat');
   const lngParam = searchParams.get('lng');
 
-  const lat = latParam ? parseFloat(latParam) : undefined;
-  const long = lngParam ? parseFloat(lngParam) : undefined;
+  const lat = latParam ? parseFloat(latParam) : -1;
+  const long = lngParam ? parseFloat(lngParam) : -1;
 
   return (
     <div>

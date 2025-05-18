@@ -35,18 +35,30 @@ public class SecurityConfig {
         http
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "api/bars/**").permitAll()
-                        .anyRequest().authenticated()//.permitAll()
-                )
-                .sessionManagement( session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .authorizeHttpRequests(auth -> auth
+                        // Reactin index.html ja muut staattiset resurssit
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/*.js",
+                                "/*.css",
+                                "/favicon.ico",
+                                "/assets/**",    // jos käytössä esim. /assets
+                                "/static/**"     // tai /static-pathisi
+                        ).permitAll()
 
+                        // Julkiset API:t
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/bars/**").permitAll()
+
+                        // Kaikki muu vaatii autentikaation
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
         return http.build();
     }
 }

@@ -39,12 +39,12 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   useEffect(() => {
     if (barId) {
       barService.getById(barId).then((bar) => {
-        setName(bar.name);
-        setAddress(bar.address);
-        setOpenFrom(dayjs(bar.openFrom, "HH:mm:ss"));
-        setOpenTo(dayjs(bar.openTo, "HH:mm:ss"));
-        setEntryFee(bar.entryFee);
-        setCloakroomFee(bar.cloakroomFee);
+        setName(bar.bar.name);
+        setAddress(bar.bar.address);
+        setOpenFrom(dayjs(bar.bar.openFrom, "HH:mm:ss"));
+        setOpenTo(dayjs(bar.bar.openTo, "HH:mm:ss"));
+        setEntryFee(bar.bar.entryFee);
+        setCloakroomFee(bar.bar.cloakroomFee);
       });
     } else {
       const fetchAddress = async () => {
