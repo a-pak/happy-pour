@@ -32,7 +32,7 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<UserDetailsDTO> login (@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<UserDetailsDTO> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         try {
@@ -54,12 +54,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> login(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         String email = registerRequest.getEmail();
         String username = registerRequest.getUsername();
         String password = registerRequest.getPassword();
 
-        if (userService.userExistsByEmail(email)) {
+        if (userService.userExistsByEmail(email) && userService.userIsVerifiedByEmail(email)) {
             return ResponseEntity.status(409).body("User email is already in use!");
 
         } else if (userService.userExistsByUsername(username)) {
@@ -130,7 +130,7 @@ public class AuthController {
         .httpOnly(true)
         .path("/")
         .sameSite("Lax")
-        .maxAge(Duration.ofMinutes(1))
+        .maxAge(Duration.ofMinutes(15))
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
 

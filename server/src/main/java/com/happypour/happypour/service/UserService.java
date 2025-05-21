@@ -36,22 +36,27 @@ public class UserService {
     }
 
     public User getByUsername(String username) {
-        Optional<User> optionalUser = this.userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         return optionalUser.orElse(null);
     }
 
     public User getByEmail(String email) {
-        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.orElse(null);
     }
 
     public boolean userExistsByEmail(String email) {
-        return this.userRepository.findByEmail(email).isPresent();
+        return userRepository.findByEmail(email).isPresent();
     }
     public boolean userExistsByUsername(String username) {
-        return this.userRepository.findByUsername(username).isPresent();
+        return userRepository.findByUsername(username).isPresent();
     }
-
+    public boolean userIsVerifiedByEmail(String email) {
+        if(userRepository.findByEmail(email).isPresent()) {
+            return userRepository.findByEmail(email).get().isVerified();
+        }
+        return false;
+    }
     /**
      * Checks if a user with matching email and password exists in the database.
      * @param email
@@ -80,14 +85,17 @@ public class UserService {
      * @return true, if user was successfully created in the database.
      */
     public boolean registerUser(RegisterRequest registerRequest) {
-        String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User user = User.builder()
                 .id(null)
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
-                .password(encryptedPassword)
+                .password(registerRequest.getPassword())
                 .verified(false)
                 .build();
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if(optionalUser.isPresent()) {
+            userRepository.delete(optionalUser.get());
+        }
         boolean registerSuccess = createUser(user);
 
         if(registerSuccess) {
@@ -98,8 +106,15 @@ public class UserService {
             return false;
         }
     }
-    //TODO: REMOVE LINES MARKED WITH DEBUG!
+
+    /**
+     * Saves User to repository with an encrypted password.
+     * @param user
+     * @return true, if user was saved successfully.
+     */
     public boolean createUser(User user) {
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         try {
             userRepository.save(user);
             return true;
