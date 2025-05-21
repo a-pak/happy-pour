@@ -50,7 +50,7 @@ const AppBarComponent: React.FC = () => {
         </IconButton>
       )}
       {!isMobile && menuItems.map((item) => (
-        item !== "About" && item !== "Contact" ? (
+        item !== "About" && item !== "Contact" && item !=="Log In" ? (
           <Button key={item} color="inherit" onClick={() => navigate(`/profile`)}>
             {item}
           </Button>

@@ -39,13 +39,15 @@ function App() {
 
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/about" element={<AboutUsPage />} />
+                  <Route path='/profile' element={<ProfilePage/>}/>
 
                   <Route element={<ProtectedRoutes />}>
                     <Route path='/update/:id' element={<UpdatePage />} />
                     <Route path='/delete/:id' element={<DeletePage />} />
                     <Route path='/submit/' element={<AddPage />} />
-                    <Route path='/profile/' element={<ProfilePage/>}/>
                   </Route>
+                
+                
                 </Route>
               </Routes>
             </BrowserRouter>

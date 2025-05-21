@@ -32,14 +32,11 @@ const LoginComponent: React.FC = () => {
             showNotification("Email and password required. Please fill out both fields", "warning");
             return;
         }
-
         try {
-            // Prepare login payload
             const loginData: LoginPayload = {
                 email,
                 password,
             };
-            // Call the login API
             const newUser : User | undefined = await loginAPI(loginData);
             setUserContext(newUser);
             localStorage.setItem('user', JSON.stringify(newUser));
