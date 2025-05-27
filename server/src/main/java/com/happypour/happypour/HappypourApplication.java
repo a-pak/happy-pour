@@ -29,6 +29,9 @@ public class HappypourApplication{
     private HappyHourDrinkRepository happyHourDrinkRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     EntityManager entityManager;
 
 	public static void main(String[] args) {
@@ -39,7 +42,7 @@ public class HappypourApplication{
     public CommandLineRunner demo() {
 
         return (args) -> {
-            User user1 = User.builder()
+            userService.registerUser(new RegisterRequest("admin", "admin@example.com", "salasana"));
                     .id(null)
                     .username("mattimeikalainen")
                     .email("matti.meikalainen@example.com")
@@ -90,6 +93,8 @@ public class HappypourApplication{
                     null,
                     null
             );
+
+            barRepository.save(bar1);
             barRepository.save(bar2);
 
             Drink drink1 = new Drink(null, "Beer", bar1, 7.30, user1, user1, null, null);
@@ -123,6 +128,7 @@ public class HappypourApplication{
                     null
             );
             happyHourDrinkRepository.save(happyHourDrink);
+            */
 
             barRepository.findAll().forEach(bar -> System.out.println(bar));
         };

@@ -15,14 +15,14 @@ export const LocationMarkerComponent: React.FC = () => {
 
     useEffect(() => {
         barsService
-            .getAll()
-            .then((data: BarDataResponse) => {
-                setBars(data);
-            })
-            .catch((err) => {
-                setError(`Can't find any bars: ${err}`);
-            });
-    }, []);
+          .getAll()
+          .then((data: BarDataResponse) => {
+            setBars(data);
+          })
+          .catch((err) => {
+            setError(`Can't find any bars: ${err}`);
+          });
+      }, []);
 
     const isHappyHourActive = (startTime: string, endTime: string): boolean => {
         const now = new Date();

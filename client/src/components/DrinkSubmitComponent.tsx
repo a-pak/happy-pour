@@ -61,12 +61,12 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
     return rest;
   };
 
-  const handleInputChange = (index: number, field: keyof IDrink, value: any) => {
+  const handleInputChange = <K extends keyof DrinkFormItem>(index: number, field: K, value: DrinkFormItem[K]) => {
     const updated = [...drinks];
     updated[index][field] = value;
     setDrinks(updated);
   };
-
+  
   const handleSelectChange = (index: number, drinkId: number | "") => {
     const updated = [...drinks];
   
@@ -118,15 +118,18 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
             updatedBy: { id: 1 } // Replace with logged-in user ID if available
           }))
         };
-        await createDrink(payload); // Create new drinks
+        await createDrink(payload); 
       }
   
       if (updatedDrinks.length > 0) {
         const payload: IDrinkPayload = {
           drinks: updatedDrinks.map(d => ({
             id: d.id,
+            name: d.name,
+            bar: d.bar,
             normalPrice: d.normalPrice,
-            updatedBy: { id: 1 }, // Replace with logged-in user ID if available
+            createdBy: d.createdBy,
+            updatedBy: { id: 1 },
             updatedAt: new Date().toISOString()
           }))
         };
@@ -167,7 +170,7 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
                     <InputLabel>Choose Existing Drink</InputLabel>
                     <Select
                       value={drink.selectedDrinkId ?? ""}
-                      onChange={(e) => handleSelectChange(index, e.target.value)}
+                      onChange={(e) => handleSelectChange(index, e.target.value === "" ? "" : Number(e.target.value))}
                       label="Choose Existing Drink"
                     >
                       <MenuItem value="">

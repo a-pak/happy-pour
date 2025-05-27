@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BarService from "../services/bars";
 import { BarData } from "../model/IbarInterface";
 import { useErrorStore } from "../store/errorStore";
-import { Container, Typography, Box, Button, Stack, List, ListItemText, ListItem, Grid, IconButton, Paper } from '@mui/material';
+import { Typography, Box, Button, List, ListItemText, ListItem, Grid, IconButton, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'; // 👈 Add this line
 
 
