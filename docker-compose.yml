@@ -13,7 +13,7 @@ services:
   #     - app-network
 
   backend:
-    container_name: happy-pur-app
+    container_name: happy-pour-app
     build:
       context: .
       dockerfile: server/Dockerfile
