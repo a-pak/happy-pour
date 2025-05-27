@@ -64,13 +64,6 @@ public class DrinkService {
     }
 
     public Drink updateDrink(Drink updatedDrink) {
-//        Long id = updatedDrink.getId();
-//        return drinkRepository.findById(id)
-//                .map(existingDrink -> {
-//                    BeanUtils.copyProperties(updatedDrink, existingDrink, "id", "bar");
-//                    return drinkRepository.save(existingDrink);
-//                })
-//                .orElse(null);
             return drinkRepository.findById(updatedDrink.getId())
                     .map(existing -> {
                         existing.setNormalPrice(updatedDrink.getNormalPrice());
