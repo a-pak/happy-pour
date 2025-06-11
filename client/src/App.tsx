@@ -37,7 +37,7 @@ function App() {
                 <Route path="*" element={<NotFoundPage />} />
 
                 <Route path="/bars" element={<BarListPage />} />
-                <Route path="/bar/edit/:id" element={<BarDetailsPage />} />
+                <Route path="/bar/details/:id" element={<BarDetailsPage />} />
                 
                 <Route path="/login" element={<LogInPage />} />
                 <Route path="/register" element={<RegisterPage />} />

@@ -3,20 +3,24 @@ import {
   Typography, IconButton,
   Box, List, ListItem, 
   ListItemText, Grid, 
-  Button,Drawer, 
+  Button,Drawer,
+  Divider, 
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import barsService from '../services/bars.ts';
 import { BarData } from '../model/IbarInterface.ts';
 import { useMapStore } from '../store/mapStore.ts';
+import { useDrinkStore } from '../store/drinkStore.ts';
+import theme from '../Theme.tsx';
 
 const BarDetailsCard = () => {
     const { id } = useParams<{ id: string }>();
     const [barData, setBarData] = useState<BarData | null>(null);
     const navigate = useNavigate();
     const flyTo = useMapStore((state) => state.flyTo);
-  
+    const defaultDrink = useDrinkStore((state) => state.defaultDrink);
+    
     useEffect(() => {
       if (id) {
         barsService
@@ -37,12 +41,21 @@ const BarDetailsCard = () => {
 
     const { bar, drinks, happyHour, happyHourDrinks } = barData;
     flyTo(bar.coordLat, bar.coordLong, 15);
+
+      
     
-    const getDrinkPrice = (drinkName: string) => {
+    const getNormalPrice = (drinkName: string) => {
       const normalDrink = drinks.find((d: any) => d.name === drinkName);
-      return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
+      const drinkPrice = normalDrink ? normalDrink.normalPrice.toFixed(2) : null;
+      return drinkPrice ? `${drinkPrice} €`: null;
     };
-  
+
+    const getHappyHourPrice = (drinkName: string) => {
+      const happyHourDrink = happyHourDrinks.find((d: any) => d.drinkName === drinkName);
+      const happyHourPrice = happyHourDrink ? happyHourDrink.happyHourPrice.toFixed(2) : null;
+      return happyHourPrice ? `${happyHourPrice} €` : null;
+    }
+
     const isHappyHourNow = () => {
       if (!happyHour) return false;
       const now = new Date();
@@ -56,109 +69,95 @@ const BarDetailsCard = () => {
       return currentTime >= startTime && currentTime <= endTime;
     };
       return (
-        <Box sx={{ padding: 3 }}>
-        {/* Header Section */}
-        <Grid container spacing={1} alignItems="center" sx={{ mb: 2 }}>
-          <Grid item xs={10}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#d1b3ff' }}>
-              {bar.name}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} sx={{ textAlign: 'right' }}>
-            <IconButton onClick={handleClose} sx={{ color: '#b57edc' }}>
-              <CloseIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+        <Box sx={{ width: 350, p: 2 }}>
+  {/* Close button */}
+  <IconButton
+    onClick={handleClose}
+    sx={{
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      color: 'white',
+    }}
+    aria-label="close"
+  >
+    <CloseIcon />
+  </IconButton>
 
-        {/* Address */}
-        <Typography variant="subtitle1" sx={{ color: '#d1b3ff', mb: 2 }}>
-          {bar.address}
-        </Typography>
+  {/* Row 1: Bar Details (Left) and Default Drink (Right) */}
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+  {/* Left Box: Bar Details */}
+  <Box sx={{ flex: 1 }}>
+    <Box sx={{ p: 1}}>
+      <Typography variant="h6">{bar.name}</Typography>
+      <Typography><strong>Address:</strong> {bar.address}</Typography>
+      <Typography><strong>Open:</strong> {bar.openFrom.slice(0, -3)} - {bar.openTo.slice(0, -3)}</Typography>
+      { bar.cloakroomFee > 0 && (
+        <Typography><strong>Cloakroom Fee:</strong> €{bar.cloakroomFee}</Typography>  
+      )}
+      { bar.entryFee > 0 && (
+        <Typography><strong>Entry Fee:</strong> €{bar.entryFee}</Typography>
+      )}
+    </Box>
+  </Box>
 
-        {/* Happy Hour Section */}
-        {isHappyHourNow() && (
-          <Box sx={{ mb: 3, p: 2, backgroundColor: '#2e2e2e', borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ color: '#00e676', mb: 1 }}>
-              Happy Hour Prices
-            </Typography>
-            <List dense>
-              {happyHourDrinks.map((drink: any) => (
-                <ListItem key={drink.drinkName} disablePadding>
-                  <ListItemText
-                    primary={drink.drinkName}
-                    secondary={`${drink.happyHourPrice} €`}
-                    primaryTypographyProps={{ sx: { color: '#b2ff59', fontWeight: 'bold' } }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        )}
+  {/* Right Box: Default Drink */}
+  {(defaultDrink !== "View all" && (getNormalPrice(defaultDrink) || getHappyHourPrice(defaultDrink))) && (
+    <Box
+      sx={{
+        ml: 2,
+        p: 1,
+        textAlign: 'left',
+        minWidth: '100px',
+      }}
+    >
+      <Typography variant="body2" sx={{ color: '#b57edc' }}>
+        {defaultDrink}
+      </Typography>
+      <Typography variant="h4" sx={{ color: isHappyHourNow() && getHappyHourPrice(defaultDrink) ? 	'rgb(70, 234, 70)' : theme.palette.primary.contrastText, fontWeight: 'bold' }}>
+        {isHappyHourNow() && getHappyHourPrice(defaultDrink) ? getHappyHourPrice(defaultDrink): getNormalPrice(defaultDrink)}
+      </Typography>
+      {(isHappyHourNow() && happyHour) && (
+        <>
+          <Typography variant="caption" sx={{ color: '#E6BE8A' }}>
+            Happy Hour!
+          </Typography>
+          <Typography><strong>Until: </strong>{happyHour.endTime.slice(0,-3)}</Typography>
+        </>
+      )}
+    </Box>
+  )}
+</Box>
 
-        {/* Regular Drinks */}
-        <Box sx={{ mb: 2 }}>
-          <List dense>
-            {drinks.map((drink: any) => (
-              <ListItem key={drink.id} disablePadding>
-                <ListItemText
-                  primary={drink.name}
-                  secondary={getDrinkPrice(drink.name)}
-                  primaryTypographyProps={{ sx: { color: '#e0cfff', fontWeight: 'bold' } }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+  {/* More Button */}
+  <Link to={`/bar/details/${bar.id}`} style={{ textDecoration: 'none' }}>
+    <Button
+      variant="outlined"
+      sx={{
+        width: { xs: '100%', sm: 'auto' },
+        borderColor: '#b57edc',
+        color: '#b57edc',
+        '&:hover': {
+          backgroundColor: '#b57edc22',
+          borderColor: '#b57edc',
+        },
+      }}
+    >
+      More
+    </Button>
+  </Link>
 
-        {/* Fees and Happy Hour Time */}
-        <Box sx={{ mb: 2 }}>
-          <List dense>
-            <ListItem disablePadding>
-              <ListItemText primary="Entry Fee" secondary={`${bar.entryFee} €`} />
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemText primary="Cloakroom Fee" secondary={`${bar.cloakroomFee} €`} />
-            </ListItem>
-            {happyHour && (
-              <ListItem disablePadding>
-                <ListItemText
-                  primary="Happy Hour"
-                  secondary={`${happyHour.startTime} - ${happyHour.endTime}`}
-                />
-              </ListItem>
-            )}
-          </List>
-        </Box>
+  <Divider sx={{ my: 2 }} />
 
-        {/* Actions */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2,
-            mt: 3,
-          }}
-        >
-          <Link to={`/bar/edit/${bar.id}`} style={{ textDecoration: 'none' }}>
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{
-                borderColor: '#b57edc',
-                color: '#b57edc',
-                '&:hover': {
-                  backgroundColor: '#b57edc22',
-                  borderColor: '#b57edc',
-                },
-              }}
-            >
-              More
-            </Button>
-          </Link>
-        </Box>
-      </Box>
-      )
+  {/* Meta Info */}
+  <Typography variant="caption" display="block">
+    Created by {bar.createdBy ? bar.createdBy.username : "Unknown user"} at {new Date(bar.createdAt).toLocaleString()}
+  </Typography>
+  <Typography variant="caption" display="block">
+    Last updated by {bar.updatedBy ? bar.updatedBy.username : "Unknown user"} at {new Date(bar.updatedAt).toLocaleString()}
+  </Typography>
+</Box>
+      );
     }
 
   const handleClose = () => {
@@ -182,7 +181,7 @@ const BarDetailsCard = () => {
       maxHeight: '90vh',
       borderTopLeftRadius: 16,
       borderTopRightRadius: 16,
-      backgroundColor: '#121212',
+      backgroundColor: 'primary',
       overflow: 'auto',
     },
   }}
