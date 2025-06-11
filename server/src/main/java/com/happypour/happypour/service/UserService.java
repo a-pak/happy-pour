@@ -99,8 +99,12 @@ public class UserService {
         boolean registerSuccess = createUser(user);
 
         if(registerSuccess) {
+            // TODO: Un-comment to enable smtp links to send.
+            /*
                 String token = jwtUtil.generateToken(registerRequest.getEmail(), 15);
                 mailService.sendRegisterLink(token, registerRequest.getEmail(), registerRequest.getUsername());
+
+             */
             return true;
         } else {
             return false;
