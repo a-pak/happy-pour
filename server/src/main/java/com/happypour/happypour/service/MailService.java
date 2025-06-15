@@ -15,17 +15,18 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.UnsupportedEncodingException;
 
-@Service
+//@Service
 public class MailService {
+    /*
     @Value("${spring.app.address}")
     private String SPRING_APP_ADDRESS;
 
     @Value("${spring.mail.username}")
     private String fromAddress;
 
-    @Autowired
+    //@Autowired
     private JavaMailSender javaMailSender;
-    @Autowired
+    //@Autowired
     private TemplateEngine templateEngine;
     public void sendRegisterLink(String token, String emailAddress, String userName) {
         String verificationLink = SPRING_APP_ADDRESS + "/api/auth/verify/" + token;
@@ -53,5 +54,5 @@ public class MailService {
         helper.setText(text, true);
 
         javaMailSender.send(message);
-    }
+    }*/
 }

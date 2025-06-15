@@ -27,8 +27,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private JWTUtil jwtUtil;
-    @Autowired
-    MailService mailService;
+    /*@Autowired
+    MailService mailService;*/
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService (){
@@ -90,7 +90,7 @@ public class UserService {
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(registerRequest.getPassword())
-                .verified(false)
+                .verified(true)
                 .build();
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
         if(optionalUser.isPresent()) {

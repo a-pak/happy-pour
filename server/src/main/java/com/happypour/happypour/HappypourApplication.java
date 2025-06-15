@@ -8,7 +8,6 @@ import com.happypour.happypour.repository.*;
 import java.time.LocalTime;
 
 import com.happypour.happypour.service.UserService;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
