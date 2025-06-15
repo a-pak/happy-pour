@@ -12,6 +12,7 @@ export const LocationMarkerComponent: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const defaultDrink = useDrinkStore((state) => state.defaultDrink);
     const navigate = useNavigate();
+    
 
     useEffect(() => {
         barsService
@@ -45,8 +46,6 @@ export const LocationMarkerComponent: React.FC = () => {
             {bars &&
                 bars.map((barEntity) => {
                     let hasDrink = false;
-                    let drinkPrice = null;
-                    let isHappyHour = false;
 
                     // Jos drinkki on 'View all', näytetään baari joka tapauksessa
                     const showAll = defaultDrink === "View all";
@@ -54,21 +53,8 @@ export const LocationMarkerComponent: React.FC = () => {
                     barEntity.drinks.forEach((drink) => {
                         if (drink.name === defaultDrink) {
                             hasDrink = true;
-                            drinkPrice = drink.normalPrice;
                         }
                     });
-
-                    if (barEntity.happyHour?.startTime && barEntity.happyHour?.endTime) {
-                        isHappyHour = isHappyHourActive(barEntity.happyHour.startTime, barEntity.happyHour.endTime);
-
-                        if (isHappyHour) {
-                            barEntity.happyHourDrinks.forEach((hhDrink) => {
-                                if (hhDrink.drinkName === defaultDrink) {
-                                    drinkPrice = hhDrink.happyHourPrice;
-                                }
-                            });
-                        }
-                    }
 
                     if (!hasDrink && !showAll) return null;
 
@@ -77,9 +63,7 @@ export const LocationMarkerComponent: React.FC = () => {
                             <Marker 
                             position={[barEntity.bar.coordLat, barEntity.bar.coordLong]} 
                             eventHandlers={{
-                                click: (e) => {
-                                    navigate(`/bar/${barEntity.bar.id}`)
-                                }
+                                click: () => navigate(`/bar/${barEntity.bar.id}`)
                             }
                             }/>
                         </ThemeProvider>
