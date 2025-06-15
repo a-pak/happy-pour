@@ -22,11 +22,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Skip token validation for login and GET api/bars requests
         System.out.println("Request URI: " + request.getRequestURI() + " " + request.getMethod());
-        System.out.println(request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()));
+        System.out.println("Get bars? " + (request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod())));
         if (request.getRequestURI().contains("/api/auth/") ||
                 request.getRequestURI().equals("/") ||
                 (request.getRequestURI().contains("/api/bars") && "GET".equalsIgnoreCase(request.getMethod()))) {
-            System.out.println("Condition met!");
+            System.out.println("Request URI should not authenticate (Condition met).");
             filterChain.doFilter(request, response);
             return;
         }
