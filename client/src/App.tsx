@@ -11,16 +11,16 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 import UpdatePage from './pages/UpdatePage.tsx'
 import { AddPage } from './pages/AddPage'
 import { ThemeProvider } from '@emotion/react'
-import  { ContactPage } from './pages/ContactPage'
+import { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
-import {UserProvider} from "./store/UserContext.tsx";
-import {ProfilePage} from "./pages/ProfilePage.tsx";
+import { UserProvider } from "./store/UserContext.tsx";
+import { ProfilePage } from "./pages/ProfilePage.tsx";
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import DeletePage from './pages/DeletePage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
-import BarDetailsCard from './components/BarDetailsDrawer.tsx'
+import BarDetailsDrawer from './components/BarDetailsDrawer.tsx'
 
 function App() {
   return (
@@ -31,26 +31,26 @@ function App() {
             <BrowserRouter>
               <Routes>
                 <Route element={<LayoutComponent />}>
-                  <Route path='' element={<LandingPage/>} >
-                    <Route path="bar/:id" element={<BarDetailsCard />} />
+                  <Route path='' element={<LandingPage />}>
+                    <Route path="bar/:id" element={<BarDetailsDrawer />} />
                   </Route>
-                <Route path="*" element={<NotFoundPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
 
-                <Route path="/bars" element={<BarListPage />} />
-                <Route path="/bar/details/:id" element={<BarDetailsPage />} />
-                
-                <Route path="/login" element={<LogInPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/bars" element={<BarListPage />} />
+                  <Route path="/bar/details/:id" element={<BarDetailsPage />} />
 
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/about" element={<AboutUsPage />} />
-                <Route path='/profile' element={<ProfilePage/>}/>
+                  <Route path="/login" element={<LogInPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
 
-                <Route element={<ProtectedRoutes />}>
-                  <Route path='/update/:id' element={<UpdatePage />} />
-                  <Route path='/delete/:id' element={<DeletePage />} />
-                  <Route path='/submit/' element={<AddPage />} />
-                </Route>
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/about" element={<AboutUsPage />} />
+                  <Route path='/profile' element={<ProfilePage />} />
+
+                  <Route element={<ProtectedRoutes />}>
+                    <Route path='/update/:id' element={<UpdatePage />} />
+                    <Route path='/delete/:id' element={<DeletePage />} />
+                    <Route path='/submit/' element={<AddPage />} />
+                  </Route>
                 </Route>
               </Routes>
             </BrowserRouter>

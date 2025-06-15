@@ -41,7 +41,13 @@ const AppBarComponent: React.FC = () => {
   };
 
   return (
-    <AppBar position="sticky" color='secondary'>
+    <AppBar 
+      position="relative"
+      color='secondary'
+      sx={{
+        zIndex: (theme) => theme.zIndex.appBar
+      }}
+    >
     <Toolbar>
       {/* Desktop view */}
       {!isMobile && (

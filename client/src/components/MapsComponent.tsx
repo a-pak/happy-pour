@@ -6,7 +6,6 @@ import theme from '../Theme';
 import { useNavigate } from 'react-router-dom';
 import locationService from '../services/location';
 import { LocationMarkerComponent } from './LocationMarkerComponent';
-import { useMapStore } from '../store/mapStore';
 import MapEffect from './MapEffect';
 
 interface MapEventsHandlerProps {
@@ -19,7 +18,6 @@ const MapsComponent: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
-  const setMap = useMapStore((state) => state.setMap);
 
   useEffect(() => {
     locationService
