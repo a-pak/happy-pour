@@ -2,17 +2,17 @@ version: latest
 
 services:
 
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: client/Dockerfile
-  #   container_name: react-frontend
-  #   ports:
-  #     - "3000:80"
-  #   networks:
-  #     - app-network
+   frontend:
+    container_name: react-frontend
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
 
-  backend:
+   backend:
     container_name: happy-pour-app
     build:
       context: .
@@ -28,34 +28,35 @@ services:
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
       SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}
+      REACT_APP_ADDRESS: frontend:3000
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
-    # depends_on:
-    #   - database
+    depends_on:
+      - database
     networks:
       - app-network
 
-  # database:
-  #   image: postgres:latest
-  #   container_name: postgres-database
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_DB: happypour_dev
-  #     POSTGRES_USER: spring
-  #     POSTGRES_PASSWORD: happypour
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -d happypour_dev -U spring"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #   networks:
-  #     - app-network
+   database:
+    image: postgres:latest
+    container_name: postgres-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: happypour_dev
+      POSTGRES_USER: spring
+      POSTGRES_PASSWORD: happypour
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d happypour_dev -U spring"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
 
 networks:
   app-network:

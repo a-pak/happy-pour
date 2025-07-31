@@ -24,7 +24,7 @@ export const LocationMarkerComponent: React.FC = () => {
             setError(`Can't find any bars: ${err}`);
           });
       }, []);
-
+/*
     const isHappyHourActive = (startTime: string, endTime: string): boolean => {
         const now = new Date();
         const start = new Date();
@@ -38,7 +38,7 @@ export const LocationMarkerComponent: React.FC = () => {
 
         return now >= start && now <= end;
     };
-
+*/
     if (error) return <p>{error}</p>;
 
     return (
