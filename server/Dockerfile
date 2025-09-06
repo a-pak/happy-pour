@@ -1,18 +1,14 @@
 #### Build Stage ####
-FROM maven AS build
+FROM maven:3.9.2-eclipse-temurin AS build
 WORKDIR /app
 COPY server/pom.xml ./pom.xml
 COPY server/src ./src
-# COPY pom.xml ./pom.xml
-# COPY src ./src
 
-
-WORKDIR /app/
-# WORKDIR /app
 RUN mvn clean package -DskipTests
 
 #### Runtime Stage ####
-FROM openjdk
+FROM eclipse-temurin:20-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/happypour-0.0.1-SNAPSHOT.jar /app/happypour.jar
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/happypour.jar"]
