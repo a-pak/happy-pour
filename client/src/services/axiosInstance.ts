@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL || "http://localhost:8080/api",
+  baseURL: "/api",
+  //baseURL: import.meta.env.VITE_BASE_API_URL || "http://localhost:8080/api",
   withCredentials: true, // This ensures cookies are sent with requests
 });
 

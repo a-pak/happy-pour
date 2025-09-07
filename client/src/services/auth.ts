@@ -3,7 +3,7 @@ import LoginPayload from '../model/ILoginPayloadInterface.ts';
 import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
 import User from "../model/IUserContext.ts";
 
-const BASE_URL = 'http://localhost:8080/api/auth'
+const BASE_URL = '/api/auth'
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
