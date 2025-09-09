@@ -45,7 +45,6 @@ public class AuthController {
                 return ResponseEntity.ok(new UserDetailsDTO(user));
 
             } else {
-                System.err.println("Password did not match! " + password);
                 return ResponseEntity.status(401).build();
             }
         } catch (Exception e) {
@@ -77,7 +76,10 @@ public class AuthController {
 
         }
     }
-
+    /**
+     * (EMAIL) Endpoint hit when user clicks the link in the verification email
+     * Redirects to the frontend with a message indicating success or failure
+     */
     @GetMapping("/verify/{token}")
     public RedirectView verifyEmail(@PathVariable String token) {
         try {
@@ -90,13 +92,16 @@ public class AuthController {
             return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/error");
         }
     }
-
+    /**
+     * Refreshes the access token if the refresh token is valid
+     * @param refreshToken
+     * @param response
+     * @return 401 if the refresh token is invalid or missing, 200 with success message otherwise
+     */
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
         System.out.println("\nREFRESH!");
         if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
-            System.out.println("empty: "+ refreshToken.isEmpty());
-            System.out.println("validate: "+ jwtUtil.validateToken(refreshToken));
             return ResponseEntity.status(401).body("Unauthorized");
         
         }
