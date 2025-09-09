@@ -5,9 +5,9 @@ services:
     image: postgres:16
     container_name: postgres-database
     environment:
-      POSTGRES_DB: happypour_dev
-      POSTGRES_USER: spring
-      POSTGRES_PASSWORD: happypour
+      POSTGRES_DB: ${SPRING_DATASOURCE_DATABASE}
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -26,12 +26,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_dev
-      SPRING_DATASOURCE_USERNAME: spring
-      SPRING_DATASOURCE_PASSWORD: happypour          
-      REACT_APP_ADDRESS: http://localhost:8080/api
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JWT_SECRET: secret_key_here
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://database:5432/happypour_dev}  # Default to the Docker network address if not set
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}          
+      REACT_APP_ADDRESS: ${REACT_APP_ADDRESS:-http://localhost:8080/api}  # Default to localhost if not set
+      SPRING_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}  # Default to 'update' if not set
+      SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}  # Use environment variable for JWT secret
     depends_on:
       - database
     networks:
