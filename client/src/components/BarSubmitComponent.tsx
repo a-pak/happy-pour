@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../store/UserContext.tsx";
 import { useErrorStore } from '../store/errorStore.ts';
 import theme from "../Theme";
+import { getAddress } from "../services/geocode.ts";
 
 type Props = {
   barId?: number | null;
@@ -49,32 +50,36 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
     } else {
       const fetchAddress = async () => {
         try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-          );
-          const data = await response.json();
-  
-          if (data && data.address) {
-            const addr = data.address;
-  
-            const road = addr.road || "";
-            const houseNumber = addr.house_number || "";
-            const postcode = addr.postcode || "";
-            const city = addr.city || addr.town || addr.village || "";
-  
-            const formattedAddress = [road, houseNumber, postcode, city]
-              .filter(Boolean)
-              .join(" ");
-  
-            setAddress(formattedAddress);
-          } else {
-            console.warn("Address not found from Nominatimista.");
+          const response = await getAddress(lat, lng);
+          if(response) {
+
+            if (response.status != 200 || !response.data) {
+              console.error('Request failed:', response.status);
+              throw new Error('Reverse geocoding failed');
+            }
+            const data = response.data
+    
+            if (data && data.address) {
+              const addr = data.address;
+    
+              const road = addr.road || "";
+              const houseNumber = addr.house_number || "";
+              const postcode = addr.postcode || "";
+              const city = addr.city || addr.town || addr.village || "";
+    
+              const formattedAddress = [road, houseNumber, postcode, city]
+                .filter(Boolean)
+                .join(" ");
+    
+              setAddress(formattedAddress);
+            } else {
+              console.warn("Address not found from Nominatimista.");
+            }
           }
-        } catch (error) {
+         } catch (error) {
           console.error("Nominatim-error:", error);
-        }
-      };
-  
+        }      
+      }
       fetchAddress();
     }
   }, [barId, lat, lng]);
