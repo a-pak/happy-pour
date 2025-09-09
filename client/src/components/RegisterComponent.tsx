@@ -39,7 +39,7 @@ const RegisterComponent = () => {
             if(response) {
                 console.log("Response: " + response.data);
                 if (response.status === 201) {
-                    navigate('/login?message=check-email');
+                    navigate('/login?message=register-success'); // Change to /login?message=check-email if email verification is implemented
                 } else {
                     // Assuming response.data.message contains the error from the API
                     showNotification(response.data.message, "error");
