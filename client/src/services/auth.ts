@@ -3,7 +3,7 @@ import LoginPayload from '../model/ILoginPayloadInterface.ts';
 import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
 import User from "../model/IUserContext.ts";
 
-const BASE_URL = '/api/auth'
+const BASE_URL = import.meta.env.VITE_BASE_API_URL + 'auth';
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
