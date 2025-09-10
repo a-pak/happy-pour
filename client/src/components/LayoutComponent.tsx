@@ -1,27 +1,21 @@
 import { Outlet } from "react-router-dom";
 import AppBarComponent from "./AppBarComponent";
 import { GlobalErrorNotifier } from "./GlobalErrorNotifier";
-import { Box } from "@mui/material";
+import { Box, Toolbar } from '@mui/material'; // Toolbar is important
 
 const LayoutComponent = () => {
     return (
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
-            position: 'relative'
+            minHeight: '100vh'
         }}>
-            <AppBarComponent />
-            <GlobalErrorNotifier />
-            <Box sx={{
-                flex: 1,
-                position: 'relative',
-                zIndex: (theme) => theme.zIndex.appBar - 1
-            }}>
-                <Outlet />
-            </Box>
+            <AppBarComponent /> {/* Should be fixed inside the component itself */}
+            <GlobalErrorNotifier /> 
+            <Outlet />
         </Box>
-    )
+    );
 }
+
 
 export default LayoutComponent;

@@ -69,21 +69,27 @@ const BarDetailsDrawer = () => {
       return currentTime >= startTime && currentTime <= endTime;
     };
     return (
-      <Box sx={{ width: 350, p: 2, position: 'relative', marginTop: isMobile ? 0 : '64px', maxWidth: isMobile ? '100%' : '318px'}}>
-        
-        {/* Close button */}
-        <IconButton
-          onClick={handleClose}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            color: 'white'
-          }}
-          aria-label="close"
-        >
-          <CloseIcon />
-        </IconButton>
+      <Box sx={{
+        width: '100%',
+        p: isMobile ? '8px 16px' : 2,
+        position: 'relative',
+        marginTop: isMobile ? 0 : '64px',
+        maxWidth: isMobile ? '100%' : '318px',
+        boxSizing: 'border-box'
+      }}>
+      {/* Close button */}
+      <IconButton
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          color: 'white'
+        }}
+        aria-label="close"
+      >
+        <CloseIcon />
+      </IconButton>
 
 
         {/* Bar + Drink layout */}
@@ -201,32 +207,34 @@ const BarDetailsDrawer = () => {
           variant='persistent'
           hideBackdrop={true}
           ModalProps={{
-            keepMounted: true,          // optional: improves mobile performance
-            disableEnforceFocus: true,  // allows background interaction
-            disableScrollLock: true     // optional: allows page scroll in background
+            keepMounted: true,
+            disableEnforceFocus: true,
+            disableScrollLock: true
           }}
-          PaperProps={{
-            sx: {
-              maxHeight: '90vh',
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
-              backgroundColor: 'primary',
-              overflow: 'auto',
-            },
-          }}
-          sx={{
-            '& .MuiDrawer-paper': {
-              touchAction: 'pan-y pinch-zoom',
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch',
-              '& > *': {
-                overscrollBehaviorY: 'contain'
-              }
-            }
-          }}
-        >
-          {renderDrawerContent()}
-        </Drawer>
+  PaperProps={{
+    sx: {
+      width: '100%',            // add this to fill the screen width
+      maxHeight: '90vh',
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      backgroundColor: 'primary.main',
+      overflow: 'auto',
+      boxSizing: 'border-box',  // ensure padding is included
+    },
+  }}
+  sx={{
+    '& .MuiDrawer-paper': {
+      touchAction: 'pan-y pinch-zoom',
+      overflowY: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      '& > *': {
+        overscrollBehaviorY: 'contain'
+      }
+    }
+  }}
+>
+  {renderDrawerContent()}
+</Drawer>
       )}
 
       {!isMobile && (
@@ -243,7 +251,7 @@ const BarDetailsDrawer = () => {
           }}
           PaperProps={{
             sx: {
-              width: 350,
+              width: '30vh',
               backgroundColor: 'primary.main',
               color: 'primary.contrastText',
             },
