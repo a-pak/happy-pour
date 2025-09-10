@@ -30,7 +30,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}          
       REACT_APP_ADDRESS: ${REACT_APP_ADDRESS:-http://localhost:8080/api}  # Default to localhost if not set
-      SPRING_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}  # Default to 'update' if not set
+      SPRING_DDL_AUTO: ${SPRING_DDL_AUTO:-update}  # Default to 'update' if not set
       SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}  # Use environment variable for JWT secret
     depends_on:
       - database
