@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import AppBarComponent from "./AppBarComponent";
 import { GlobalErrorNotifier } from "./GlobalErrorNotifier";
-import { Box, Toolbar } from '@mui/material'; // Toolbar is important
+import { Box } from '@mui/material';
 
 const LayoutComponent = () => {
     return (
