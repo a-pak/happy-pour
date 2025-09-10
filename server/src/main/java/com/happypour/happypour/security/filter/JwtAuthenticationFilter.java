@@ -53,13 +53,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {
                     String jwtToken = cookie.getValue();
-                    System.out.println(jwtToken);
                     return jwtToken;
                 }
-                System.out.println(cookie.getName() +": "+ cookie.getValue() );
             }
         }
-        System.err.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Request's cookies are NULL!");
+        System.err.println("\n~~ Request's cookies are NULL!~~\n");
         return null;
     }
 }
