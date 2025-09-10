@@ -2,8 +2,13 @@ import axios from 'axios'
 import LoginPayload from '../model/ILoginPayloadInterface.ts';
 import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
 import User from "../model/IUserContext.ts";
+/* auth service for login and register 
 
-const BASE_URL = import.meta.env.VITE_BASE_API_URL + 'auth';
+  *******************************************************************************
+  NOTE:  uses axios directly instead of axiosInstance to avoid interceptor issues
+  *******************************************************************************
+*/
+const BASE_URL = (import.meta.env.VITE_BASE_API_URL || '/api' ) + '/auth';
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
