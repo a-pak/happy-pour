@@ -46,7 +46,7 @@ public class BarController {
             @RequestBody Bar bar) {
         Bar updatedBar = barService.updateBar(id, bar);
 
-        if (bar == null) {
+        if (updatedBar == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedBar);
@@ -54,6 +54,14 @@ public class BarController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBar(@PathVariable Long id) {
-        return barService.removeBar(id);
+        if(barService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            barService.removeBar(id);
+            return ResponseEntity.ok("Bar with id " + id + " deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error deleting bar with id " + id);
+        }
     }
 }
