@@ -1,15 +1,14 @@
-import {useUser} from "../store/UserContext.tsx";
+import {useUserStore} from "../store/userStore.ts";
 import { useNavigate } from "react-router-dom";
 import { useErrorStore } from "../store/errorStore.ts";
 import "./styles/Auth.css";
 
 export const ProfilePage = () => {
-    const {user, setUser} = useUser();
+    const {user, setUser} = useUserStore();
     const navigate = useNavigate();
     const {showNotification} = useErrorStore.getState();
     
     function handleLogout() {
-        localStorage.removeItem('user');
         setUser(null);
         showNotification("You have logged out successfully.", "success");
 

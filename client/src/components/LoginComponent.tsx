@@ -1,8 +1,7 @@
 import { loginAPI } from "../services/auth.ts";
 import LoginPayload from "../model/ILoginPayloadInterface.ts";
-import { useState } from "react";
-import User from "../model/IUserContext.ts";
-import {useUser} from "../store/UserContext.tsx";
+import { useState} from "react";
+import {useUserStore, User } from "../store/userStore.ts";
 import {useNavigate} from "react-router-dom";
 import { useErrorStore } from '../store/errorStore.ts';
 
@@ -11,7 +10,7 @@ import { useErrorStore } from '../store/errorStore.ts';
 const LoginComponent: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const {setUser} = useUser();
+    const {setUser} = useUserStore();
     const navigate = useNavigate();
     const { showNotification } = useErrorStore.getState();
 
@@ -39,7 +38,6 @@ const LoginComponent: React.FC = () => {
             };
             const newUser : User | undefined = await loginAPI(loginData);
             setUserContext(newUser);
-            localStorage.setItem('user', JSON.stringify(newUser));
 
         } catch (error) {
             showNotification("Login failed. Please check credentials.", "error");

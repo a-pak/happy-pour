@@ -14,7 +14,6 @@ import { ThemeProvider } from '@emotion/react'
 import { ContactPage } from './pages/ContactPage'
 import theme from './Theme'
 import { AboutUsPage } from './pages/AboutUsPage'
-import { UserProvider } from "./store/UserContext.tsx";
 import { ProfilePage } from "./pages/ProfilePage.tsx";
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -27,7 +26,6 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fi">
-          <UserProvider>
             <BrowserRouter>
               <Routes>
                 <Route element={<LayoutComponent />}>
@@ -54,7 +52,6 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-          </UserProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </>
