@@ -1,8 +1,8 @@
 import { Outlet, Navigate} from "react-router-dom";
-import {useUser} from "../store/UserContext.tsx";
+import {useUserStore} from "../store/userStore.ts";
 
 const ProtectedRoutes = () => {
-    const {user} = useUser();
+    const {user} = useUserStore();
 
     if (user === undefined) {
         return null; // Loading or splash

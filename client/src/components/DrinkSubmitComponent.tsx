@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { IDrink, IDrinkPayload } from "../model/IdrinkInterface";
-import { useUser } from "../store/UserContext.tsx";
+import { useUserStore } from "../store/userStore.ts";
 import { useErrorStore } from "../store/errorStore.ts";
 import { createDrink, getByBarId, updateDrinks } from "../services/drinks";
 
@@ -26,10 +26,12 @@ type DrinkFormItem = IDrink & { selectedDrinkId?: number | ""; };
 
 const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUserStore();
   const { showNotification } = useErrorStore.getState();
+  
   const barId = Number(id);
-
+  const currentUserId = user?.id || 1;
+  
   const [existingDrinks, setExistingDrinks] = useState<IDrink[]>([]);
   const [drinks, setDrinks] = useState<DrinkFormItem[]>([]);
 
@@ -38,6 +40,7 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
       try {
         const data = await getByBarId(barId);
         setExistingDrinks(data);
+
       } catch (error) {
         console.error("Error loading existing drinks", error);
       }
@@ -50,8 +53,8 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
     name: "",
     normalPrice: 5.5,
     bar: { id: barId },
-    createdBy: { id: 1 },
-    updatedBy: { id: 1 },
+    createdBy: { id: currentUserId},
+    updatedBy: { id: currentUserId },
     updatedAt: new Date().toISOString(),
     selectedDrinkId: "",
   });

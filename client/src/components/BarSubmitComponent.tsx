@@ -14,7 +14,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../store/UserContext.tsx";
+import { useUserStore } from "../store/userStore.ts";
 import { useErrorStore } from '../store/errorStore.ts';
 import theme from "../Theme";
 import { getAddress } from "../services/geocode.ts";
@@ -27,7 +27,7 @@ type Props = {
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { setUser } = useUserStore();
   const { showNotification } = useErrorStore.getState();
 
   const [name, setName] = useState("");

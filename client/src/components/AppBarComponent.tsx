@@ -15,10 +15,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDrinkStore } from "../store/drinkStore";
-import {useUser} from "../store/UserContext.tsx";
+import {useUserStore} from "../store/userStore.ts";
 
 const AppBarComponent: React.FC = () => {
-  const {user} = useUser();
+  const {user} = useUserStore();
   const [openDrawer, setOpenDrawer] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const menuItems = [(user !== null) ? user.username : 'Log In', 'About', 'Contact'];
