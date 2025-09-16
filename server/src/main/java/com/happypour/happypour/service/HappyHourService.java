@@ -22,9 +22,13 @@ public class HappyHourService {
     public List<HappyHour> getAll() {
         return happyHourRepository.findAll();
     }
-    public void createHappyHour(HappyHour happyHour) {
+    public HappyHour getById(Long id) {
+        return happyHourRepository.findById(id).orElse(null);
+    }
+
+    public HappyHour createHappyHour(HappyHour happyHour) {
         happyHour.setId(null);
-        happyHourRepository.save(happyHour);
+        return happyHourRepository.save(happyHour);
     }
 
     public HappyHour updateHappyHour(Long id, HappyHour updatedHappyHour) {
@@ -38,6 +42,11 @@ public class HappyHourService {
 
     public List<HappyHour> findByBar(Long id) {
         return happyHourRepository.findByBar(id);
+    }
+
+    public void deleteHappyHour(Long id) {
+        // Then, delete the HappyHour itself
+        happyHourRepository.deleteById(id);
     }
 
 }
