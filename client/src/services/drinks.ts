@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { IDrink , IDrinkPayload} from '../model/IdrinkInterface';
-import api from './axiosInstance';
+import api from '../utils/axiosInstance';
 
 const DRINKS_URL : string = "/drinks";
 
@@ -20,8 +20,7 @@ const getByBarId = async (barId: number): Promise<IDrink[]> => {
 
 const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
     try {
-        console.log("drinkkkdataa", drinkData)
-
+        console.log("Creating drink with data:", drinkData);
         const response = await api.post(DRINKS_URL, drinkData);
         return response.data;
     } catch (error) {
@@ -36,8 +35,6 @@ const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
 
 const updateDrinks = async (drinkData: IDrinkPayload): Promise<void> => {
     try {
-        console.log("drinkkkdataa", drinkData)
-        console.log("Stringified payload:", JSON.stringify(drinkData));
         const response = await api.put(DRINKS_URL, drinkData);
         return response.data;
     } catch (error) {

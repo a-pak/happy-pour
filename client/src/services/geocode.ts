@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import api from './axiosInstance';
+import api from '../utils/axiosInstance';
 
 /**
  * Gets address from latitude and longitude using the nominatim backend proxy.
