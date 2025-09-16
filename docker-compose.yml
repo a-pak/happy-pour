@@ -26,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_dev  # Default to the Docker network address if not set
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_db  # Default to the Docker network address if not set
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}          
       REACT_APP_ADDRESS: ${REACT_APP_ADDRESS:-http://localhost:8080/api}  # Default to localhost if not set
