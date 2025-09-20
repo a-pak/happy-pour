@@ -30,7 +30,7 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
   const { showNotification } = useErrorStore.getState();
   
   const barId = Number(id);
-  const currentUserId = user?.id || 1;
+  const currentUserId = user?.id || 0;
   
   const [existingDrinks, setExistingDrinks] = useState<IDrink[]>([]);
   const [drinks, setDrinks] = useState<DrinkFormItem[]>([]);
@@ -205,7 +205,6 @@ const DrinkSubmitComponent: React.FC<Properties> = ({ id }) => {
                   <TextField
                     fullWidth
                     label="Price (€)"
-                    type="number"
                     inputProps={{ min: 0, step: 0.1 }}
                     value={drink.normalPrice}
                     onChange={(e) =>
