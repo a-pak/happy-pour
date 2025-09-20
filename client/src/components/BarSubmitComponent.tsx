@@ -27,7 +27,7 @@ type Props = {
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
+  const { user, setUser } = useUserStore();
   const { showNotification } = useErrorStore.getState();
 
   const [name, setName] = useState("");
@@ -90,6 +90,12 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       return;
     }
 
+    if(!user) {
+      showNotification("You must be logged in to submit a bar.", "warning");
+      navigate("/login");
+      return;
+    }
+
     const now = new Date().toISOString();
 
     const bar: Bar = {
@@ -102,8 +108,8 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       openTo: openTo.format("HH:mm:ss"),
       entryFee,
       cloakroomFee,
-      createdBy: { id: 1, username: "admin" },
-      updatedBy: { id: 1, username: "admin" },
+      createdBy: { id: user.id, username: user.username },
+      updatedBy: { id: user.id, username: user.username },
       createdAt: now,
       updatedAt: now,
     };
