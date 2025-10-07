@@ -4,7 +4,6 @@ import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.repository.UserRepository;
 import com.happypour.happypour.security.JWTUtil;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -160,5 +159,9 @@ public class UserService {
 
     public boolean matchUser(String email, String token) {
         return jwtUtil.extractUsername(token).equals(email);
+    }
+
+    public User getById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }

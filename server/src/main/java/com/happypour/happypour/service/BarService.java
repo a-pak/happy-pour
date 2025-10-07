@@ -5,12 +5,10 @@ import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,106 +17,58 @@ public class BarService {
 
     @Autowired
     private BarRepository barRepository;
-
     @Autowired
     UserService userService;
-    @Autowired
-    private HappyHourService happyHourService;
-    @Autowired
-    private DrinkService drinkService;
 
+    public List<Bar> getAll() {
+        return barRepository.findAll();
+    }
 
-    public List<BarsGetResponse> getAllBars() {
-        List<Bar> bars = barRepository.findAll();
-        List<HappyHour> happyHours = happyHourService.getAll();
-        List<Drink> drinks = drinkService.getAllDrinks();
-        List<HappyHourDrink> hhDrinks = drinkService.getAllHappyHourDrinks();
+    public Bar getById(Long id) {
+        return barRepository.findById(id).orElse(null);
+    }
 
-        List<BarsGetResponse> barsGetResponses = new ArrayList<>();
+    public BarDTO createBar(BarDTO barDTO) {
+        User user = userService.getById(barDTO.getCreatorId());
+        if(user == null) throw new IllegalArgumentException("No user with id " + barDTO.getCreatorId() + " found.");
 
-        for (Bar bar : bars) {
-            BarsGetResponse dto = new BarsGetResponse();
-            dto.setBar(bar);
-            // Check if HappyHour
-            Optional<HappyHour> happyHour = happyHours.stream()
-                    .filter(hh -> hh.getBar().getId().equals(bar.getId()))
-                    .findFirst();
-            happyHour.ifPresent(dto::setHappyHour);
+        Bar bar = Bar.builder()
+            .id(null)
+            .name(barDTO.getName())
+            .address(barDTO.getAddress())
+            .coordLat(barDTO.getCoordLat())
+            .coordLong(barDTO.getCoordLong())
+            .openFrom(java.time.LocalTime.parse(barDTO.getOpenFrom()))
+            .openTo(java.time.LocalTime.parse(barDTO.getOpenTo()))
+            .cloakroomFee(0)
+            .entryFee(0)
+            .createdBy(user)
+            .updatedBy(user)
+            .build();
+        Bar createdBar = barRepository.save(bar);
+        return new BarDTO(createdBar);
+    }
 
-            // Get Drinks with HappyHour
-            Optional<HappyHourDrink> hhDrink = happyHour.flatMap(hh -> hhDrinks.stream()
-                    .filter(hhd -> hhd.getHappyHour().getId().equals(hh.getId()))
-                    .findFirst());
-            hhDrink.ifPresent(hhd -> {
-                dto.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
-            });
-
-            // Get Drinks without HappyHour
-            for (Drink drink : drinks) {
-                if(drink.getBar().getId() == bar.getId()) {
-                    dto.getDrinks().add(new DrinksByBarResponse(drink));
-                }
-            }
-            barsGetResponses.add(dto);
+    public BarDTO updateBar(Long barId, BarDTO barDTO) {
+        Optional<Bar> existingBar = barRepository.findById(barId);
+        if (existingBar.isPresent()) {
+            BeanUtils.copyProperties(barDTO, existingBar.get(), "id", "createdBy", "createdAt");
+            Bar updatedBar = barRepository.save(existingBar.get());
+            return new BarDTO(updatedBar);
         }
-
-        return barsGetResponses;
+        return null;
     }
 
-    public BarsGetResponse getById(Long id) {
-        BarsGetResponse barsGetResponse;
-        Optional<Bar> optionalBar = barRepository.findById(id);
-        
-        if (optionalBar.isPresent()) {
-            barsGetResponse = new BarsGetResponse();
-            barsGetResponse.setBar(optionalBar.get());
-
-            List<DrinksByBarResponse> drinks = new ArrayList<>(drinkService.findByBar(id));
-            barsGetResponse.setDrinks(drinks);
-            
-            List<HappyHour> lh = happyHourService.findByBar(id);
-            if(!lh.isEmpty()) {
-                HappyHour hh = lh.get(0);
-                barsGetResponse.setHappyHour(hh);
-                List<HappyHourDrink> hhds = drinkService.findByHappyHourId(hh.getId());
-                for (HappyHourDrink hhd : hhds) {
-                    barsGetResponse.getHappyHourDrinks().add(new HappyHourDrinkDTO(hhd));
-                }
-            }
-
-            return barsGetResponse;
-            
-        } else {
-            return null;
-        }
-
-    }
-    public Bar createBar(Bar bar) {
-        bar.setId(null);
-        return barRepository.save(bar);
-    }
-
-    public Bar updateBar(Long barId, Bar updatedBar) {
-        return barRepository.findById(barId)
-                .map(existingBar -> {
-                    BeanUtils.copyProperties(updatedBar, existingBar, "id");
-                    return barRepository.save(existingBar);
-                })
-                .orElse(null);
-    }
-
-    public ResponseEntity<String> removeBar(Long id) {
-        Optional<Bar> barToDelete = barRepository.findById(id);
-        if(barToDelete.isPresent()) {
+    public void removeBar(Long id) {
+        if(barRepository.existsById(id)) {
             try {
-                barRepository.deleteById(id); // App crashes here
-                return ResponseEntity.ok("Bar with ID " + id + " deleted.");
+                barRepository.deleteById(id);
 
             } catch (Exception e) {
-                System.err.println("Error occurred  while deleting bar: " + e.getMessage());
-                return ResponseEntity.internalServerError().build();
+                throw new RuntimeException("Error deleting bar with id " + id);
             }
-            }
-        return ResponseEntity.notFound().build();
+        } else {
+            throw new IllegalArgumentException("No bar with id " + id + " found.");
+        }
     }
 }
