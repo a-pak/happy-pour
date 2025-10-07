@@ -1,9 +1,6 @@
 package com.happypour.happypour.repository;
 
-import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.model.Drink;
-
-import java.util.List;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,9 +13,9 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>{
 
     @Query("SELECT d FROM Drink d WHERE d.name = ?1")
     Drink findByName(String name);
-    
-    @Query("SELECT d FROM Drink d WHERE d.bar.id = ?1")
-    List<Drink> findByBar(Long id);
+
+    Drink findById(long id);
+
     @Transactional
     @Modifying
     @Query("DELETE from Drink d where d.id = ?1")
