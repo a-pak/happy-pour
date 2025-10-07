@@ -1,14 +1,11 @@
 package com.happypour.happypour.controller;
 
-import com.happypour.happypour.dto.DrinksByBarResponse;
-import com.happypour.happypour.dto.DrinkPostRequest;
-import com.happypour.happypour.model.Drink;
+import com.happypour.happypour.dto.DrinkDTO;
 import com.happypour.happypour.service.DrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -23,19 +20,19 @@ public class DrinkController {
 
     @Autowired
     private DrinkService drinkService;
-
-    @GetMapping("/{bar_id}")
-    public ResponseEntity<List<DrinksByBarResponse>> getDrinks(@PathVariable Long bar_id) {
+   
+    @GetMapping
+    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
         try {
-            List<DrinksByBarResponse> drinks = drinkService.findByBar(bar_id);
-            return ResponseEntity.ok(drinks);
+            List<DrinkDTO> dtos = drinkService.getAllDTOs();
+            return ResponseEntity.ok(dtos);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<String> postDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
+    public ResponseEntity<String> postDrinks(@RequestBody List<DrinkDTO> drinkPostRequest) {
         try {
             drinkService.createDrink(drinkPostRequest);
             return ResponseEntity.ok("Drinks added successfully!");
@@ -44,36 +41,20 @@ public class DrinkController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
-//        try {
-//            List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
-//            for (Drink d : drinks) {
-//                System.out.println("drink::: \n" + d);
-//                drinkService.updateDrink(d);
-//            }
-//            return ResponseEntity.ok("Drinks updated Successfully!");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(400).build();
-//        }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateDrinks(@PathVariable Long id, @RequestBody DrinkDTO drinkDto) {
         try {
-            List<Drink> drinks = Arrays.asList(drinkPostRequest.getDrinks());
-            for (Drink d : drinks) {
-                drinkService.updateDrink(d);
-            }
+            drinkService.updateDrink(id, drinkDto);
             return ResponseEntity.ok("Drinks updated Successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Update failed: " + e.getMessage());
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteDrinks(@RequestBody DrinkPostRequest drinkPostRequest) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDrinks(@PathVariable Long drinkId) {
         try {
-            List<Drink> drinks = Arrays.stream(drinkPostRequest.getDrinks()).toList();
-            for (Drink d: drinks) {
-                drinkService.deleteDrink(d);
-            }
+            drinkService.deleteDrink(drinkId);
             return ResponseEntity.ok("Drinks deleted succesfully!");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("FAIL: Deletion of drinks failed!" + e.getMessage());

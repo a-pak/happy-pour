@@ -1,7 +1,8 @@
 package com.happypour.happypour.controller;
 
-import com.happypour.happypour.dto.BarsGetResponse;
-import com.happypour.happypour.model.Bar;
+import com.happypour.happypour.dto.BarDTO;
+import com.happypour.happypour.dto.BarDataDTO;
+import com.happypour.happypour.service.BarDataService;
 import com.happypour.happypour.service.BarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,19 @@ public class BarController {
     @Autowired
     private BarService barService;
 
+    @Autowired
+    private BarDataService barDataService;
+
     @GetMapping
-    public List<BarsGetResponse> getBars() {
-        return barService.getAllBars();
+    public List<BarDataDTO> getBars() {
+        return barDataService.getAllBars();
     }
 
     @PostMapping
-    public ResponseEntity<Bar> createBar(@RequestBody Bar bar) {
+    public ResponseEntity<BarDTO> createBar(@RequestBody BarDTO barDto) {
+        System.out.println("Received bar creation request: " + barDto.toString());
         try {
-            Bar createdBar = barService.createBar(bar);
+            BarDTO createdBar = barService.createBar(barDto);
             return ResponseEntity.ok(createdBar);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -32,19 +37,19 @@ public class BarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BarsGetResponse> getBar(@PathVariable Long id) {
-        BarsGetResponse bar = barService.getById(id);
-        if (bar == null) {
+    public ResponseEntity<BarDataDTO> getBar(@PathVariable Long id) {
+        BarDataDTO barDataDTO = barDataService.getDataDtoById(id);
+        if (barDataDTO == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(bar);
+        return ResponseEntity.ok(barDataDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Bar> updateBar(
+    public ResponseEntity<BarDTO> updateBar(
             @PathVariable Long id,
-            @RequestBody Bar bar) {
-        Bar updatedBar = barService.updateBar(id, bar);
+            @RequestBody BarDTO bar) {
+        BarDTO updatedBar = barService.updateBar(id, bar);
 
         if (updatedBar == null) {
             return ResponseEntity.notFound().build();
@@ -61,6 +66,11 @@ public class BarController {
             barService.removeBar(id);
             return ResponseEntity.ok("Bar with id " + id + " deleted successfully.");
         } catch (Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                return ResponseEntity.status(404).body(e.getMessage());
+            } else if (e instanceof RuntimeException) {
+                return ResponseEntity.status(500).body(e.getMessage());
+            }
             return ResponseEntity.internalServerError().body("Error deleting bar with id " + id);
         }
     }
