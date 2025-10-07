@@ -3,7 +3,9 @@ package com.happypour.happypour.dto;
 import com.happypour.happypour.model.User;
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * Data Transfer Object for User entity.
+ */
 @Setter
 @Getter
 public class UserDetailsDTO {
