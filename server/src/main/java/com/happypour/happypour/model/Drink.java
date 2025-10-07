@@ -1,23 +1,28 @@
 package com.happypour.happypour.model;
 
+import com.happypour.happypour.model.enums.DrinkType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-@Table(name = "drink", schema = "public")
+@Table(name = "drink", schema = "public", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "type", "size"}) // Ensure unique drink by name, type, and size
+})
 public class Drink {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +31,12 @@ public class Drink {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "bar_id", nullable = false)
-    private Bar bar;  // Assuming Bar entity exists
+    @Enumerated(EnumType.STRING)
+    private DrinkType type;
 
-    @Column(name = "normal_price", nullable = false, precision = 5)
-    private double normalPrice;
+    @Column(name = "size", nullable = false, precision = 2, scale = 2)
+    @Check(constraints = "size >= 0")
+    private BigDecimal size;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)

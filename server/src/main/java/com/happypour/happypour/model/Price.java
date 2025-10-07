@@ -1,42 +1,49 @@
 package com.happypour.happypour.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.happypour.happypour.model.embeddable.HappyHourDrinkId;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-@Table(name = "happy_hour_drink", schema = "public")
-public class HappyHourDrink {
+@Table(name = "price", schema = "public", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"bar_id", "happy_hour_id", "drink_id"}) // Ensure unique price per bar, happy hour, and drink combination
+})
+public class Price {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @JsonIgnore
-    @EmbeddedId
-    private HappyHourDrinkId id;
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @Column(name = "price", precision = 7, scale = 2)
+    private BigDecimal price;
+    
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @MapsId("happyHourId")
-    @JoinColumn(name = "happy_hour_id", nullable = false)
+    @JoinColumn(name = "bar_id", nullable = false)
+    private Bar bar;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "happy_hour_id", nullable = true)
     private HappyHour happyHour;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @MapsId("drinkId")
     @JoinColumn(name = "drink_id", nullable = false)
     private Drink drink;
-
-    @Column(name = "happy_hour_price", nullable = false)
-    private double happyHourPrice;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -53,5 +60,4 @@ public class HappyHourDrink {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
 }
