@@ -1,6 +1,10 @@
 package com.happypour.happypour.debug;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -9,7 +13,8 @@ import com.happypour.happypour.service.UserService;
 import com.happypour.happypour.repository.*;
 import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.model.*;
-import com.happypour.happypour.model.embeddable.HappyHourDrinkId;
+import com.happypour.happypour.model.enums.DrinkType;
+import com.happypour.happypour.model.enums.WeekDay;
 
 /**
  * This component runs a debug script after the application starts, if debug mode vmArgument is passed.
@@ -38,7 +43,7 @@ public class DebugScriptRunner implements CommandLineRunner {
     private HappyHourRepository happyHourRepository;
 
     @Autowired
-    private HappyHourDrinkRepository happyHourDrinkRepository;
+    private PriceRepository priceRepository;
 
     @Override
     public void run(String... args) {
@@ -51,9 +56,9 @@ public class DebugScriptRunner implements CommandLineRunner {
     private void runScript() {
         System.out.println(">>> Debug script is running.");
         userService.registerUser(new RegisterRequest("admin", "admin@example.com", "salasana"));
-        userService.registerUser(new RegisterRequest("otso", "otso@example.com", "salasana"));
+        userService.registerUser(new RegisterRequest("baarimies", "baarimies@example.com", "salasana"));
         User user1 = userService.getByEmail("admin@example.com");
-        User user2 = userService.getByEmail("otso@example.com");
+        User user2 = userService.getByEmail("baarimies@example.com");
 
         // 60.1708297,24.9437718
         Bar bar1 = new Bar(
@@ -92,39 +97,88 @@ public class DebugScriptRunner implements CommandLineRunner {
         barRepository.save(bar1);
         barRepository.save(bar2);
 
-        Drink drink1 = new Drink(null, "Beer", bar1, 7.30, user1, user1, null, null);
-        Drink drink2 = new Drink(null, "Coffee", bar1, 2.00, user1, user2, null, null);
-        Drink drink3 = new Drink(null, "Wine", bar2, 7.50, user2, user2, null, null);
-        Drink drink4 = new Drink(null, "Beer", bar2, 7.30, user1, user1, null, null);
+        Drink drink1 = Drink.builder()
+            .name("Karhu III")
+            .type(DrinkType.BEER)
+            .createdBy(user2)
+            .updatedBy(user2)
+            .size((new BigDecimal(0.5)))
+            .build();
+
+        Drink drink2 = Drink.builder()
+            .name("Karjala III")
+            .type(DrinkType.BEER)
+            .createdBy(user2)
+            .updatedBy(user2)
+            .size(new BigDecimal(0.5))
+            .build();
+        
+        Drink drink3 = Drink.builder()
+            .name("Gato Negro")
+            .type(DrinkType.WINE)
+            .createdBy(user2)
+            .updatedBy(user2)
+            .size((new BigDecimal(0.12)))
+            .build();
 
         drinkRepository.save(drink1);
         drinkRepository.save(drink2);
         drinkRepository.save(drink3);
-        drinkRepository.save(drink4);
 
-        HappyHour hh1 = new HappyHour(
-            null,
-            bar1,
-            LocalTime.of(9, 30),
-            LocalTime.of(23, 30),
-            user1,
-            user1,
-            null,
-            null
-        );
+        HappyHour hh1 = HappyHour.builder()
+            .bar(bar1)
+            .startTime(LocalTime.of(1, 0))
+            .endTime(LocalTime.of(23, 59))
+            .weekDays(Set.of(WeekDay.MONDAY, WeekDay.WEDNESDAY, WeekDay.FRIDAY, WeekDay.SUNDAY))
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
         happyHourRepository.save(hh1); // detached entity passed to persist occurs here.
 
-        HappyHourDrink happyHourDrink = new HappyHourDrink(
-            new HappyHourDrinkId(hh1, drink1),
-            hh1,
-            drink1,
-            3.80,
-            user1,
-            user1,
-            null,
-            null
-        );
-        happyHourDrinkRepository.save(happyHourDrink);
+        Price price1 = Price.builder()
+            .bar(bar2)
+            .drink(drink2)
+            .price(new BigDecimal(7.00).setScale(2, RoundingMode.UNNECESSARY))
+            .createdBy(user2)
+            .updatedBy(user1)
+            .build();
+        Price price2 = Price.builder()
+            .bar(bar1)
+            .drink(drink1)
+            .price(new BigDecimal(8.00).setScale(2, RoundingMode.UNNECESSARY))
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price3 = Price.builder()
+            .bar(bar1)
+            .drink(drink3)
+            .price(new BigDecimal(5.50).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(hh1)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price4 = Price.builder()
+            .bar(bar1)
+            .drink(drink3)
+            .price(new BigDecimal(7.50).setScale(2, RoundingMode.UNNECESSARY))
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price5 = Price.builder()
+            .bar(bar1)
+            .drink(drink1)
+            .price(new BigDecimal(3.50).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(hh1)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+
+        priceRepository.save(price1);
+        priceRepository.save(price2);
+        priceRepository.save(price3);
+        priceRepository.save(price4);
+        priceRepository.save(price5);
+
 
         barRepository.findAll().forEach(bar -> System.out.println(bar));
     }
