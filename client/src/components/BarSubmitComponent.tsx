@@ -34,8 +34,8 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const [address, setAddress] = useState("");
   const [openFrom, setOpenFrom] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
   const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
-  const [entryFee, setEntryFee] = useState(0.0);
-  const [cloakroomFee, setCloakroomFee] = useState(0.0);
+  //const [entryFee, setEntryFee] = useState(0.0);
+  //const [cloakroomFee, setCloakroomFee] = useState(0.0);
 
   useEffect(() => {
     if (barId) {
@@ -44,8 +44,6 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
         setAddress(bar.bar.address);
         setOpenFrom(dayjs(bar.bar.openFrom, "HH:mm:ss"));
         setOpenTo(dayjs(bar.bar.openTo, "HH:mm:ss"));
-        setEntryFee(bar.bar.entryFee);
-        setCloakroomFee(bar.bar.cloakroomFee);
       });
     } else {
       const fetchAddress = async () => {
@@ -106,12 +104,13 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       address,
       openFrom: openFrom.format("HH:mm:ss"),
       openTo: openTo.format("HH:mm:ss"),
-      entryFee,
-      cloakroomFee,
-      createdBy: { id: user.id, username: user.username },
-      updatedBy: { id: user.id, username: user.username },
+      //entryFee,
+      //cloakroomFee,
+      createdBy: user.username,
+      updatedBy: user.username,
       createdAt: now,
       updatedAt: now,
+      creatorId: user.id
     };
 
     try {
@@ -198,21 +197,21 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
             value={openTo}
             onChange={(newValue) => setOpenTo(newValue)}
           />
-
+          {/*
           <TextField
             label="Entry fee (€)"
             type="number"
             value={entryFee}
             onChange={(e) => setEntryFee(parseFloat(e.target.value))}
           />
-
+          
           <TextField
             label="Cloakroom fee (€)"
             type="number"
             value={cloakroomFee}
             onChange={(e) => setCloakroomFee(parseFloat(e.target.value))}
           />
-
+          */}
           <Button
             variant="contained"
             color="secondary"

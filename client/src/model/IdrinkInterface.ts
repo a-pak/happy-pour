@@ -1,22 +1,13 @@
-export interface IDrinkPayload {
-    drinks: IDrink[];
+export interface DrinkDTO {
+  id: number;
+  name: string;
+  type: DrinkType;
+  size: number;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+  creatorId?: number;
 }
 
-export interface IDrink {
-    id: number;
-    name: string;
-    bar: IBar;
-    normalPrice: number;
-    createdBy: IUser;
-    updatedBy: IUser;
-    updatedAt: string;
-}
-
-interface IBar{
-    id: number;
-}
-
-interface IUser {
-    id: number;
-    name?: string;
-}
+export type DrinkType = 'BEER' | 'WINE' | 'COFFEE';

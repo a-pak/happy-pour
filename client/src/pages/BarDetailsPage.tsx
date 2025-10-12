@@ -14,6 +14,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import { BarData } from '../model/IbarInterface.ts';
+import { PriceDTO } from '../model/IPriceInterface.ts';
+import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,29 +39,18 @@ const BarDetailsPage: React.FC = () => {
     );
   }
 
-  const { bar, drinks, happyHour, happyHourDrinks } = barData;
+  const { bar, prices } = barData;
 
   const getDrinkPrice = (drinkName: string) => {
-    const normalDrink = drinks.find((d: any) => d.name === drinkName);
-    return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
+    const normalPrice = prices.find((p: PriceDTO) => p.drinkName === drinkName);
+    return normalPrice ? `${normalPrice.price} €` : 'N/A';
   };
 
   const removeBar = () => {
-    navigate(`/delete/${bar.id}`);
+    navigate(`/bars/delete/${bar.id}`);
   };
-
-  const isHappyHourNow = () => {
-    if (!happyHour) return false;
-    const now = new Date();
-    const currentTime = now.getHours() + now.getMinutes() / 60;
   
-    const [startHour, startMinute] = happyHour.startTime.split(':').map(Number);
-    const [endHour, endMinute] = happyHour.endTime.split(':').map(Number);
-    const startTime = startHour + startMinute / 60;
-    const endTime = endHour + endMinute / 60;
-  
-    return currentTime >= startTime && currentTime <= endTime;
-  };
+  const currentHappyHour = getCurrentHappyHour(barData);
 
   return (
     
@@ -92,17 +83,17 @@ const BarDetailsPage: React.FC = () => {
           {bar.address}
         </Typography>
 
-        {isHappyHourNow() && (
+        {currentHappyHour && (
           <Box sx={{ mt: 3, p: 2, backgroundColor: '#2e2e2e', borderRadius: '8px' }}>
             <Typography variant="h6" sx={{ color: '#00e676', mb: 1 }}>
               Happy Hour Prices
             </Typography>
             <List>
-              {happyHourDrinks.map((drink: any) => (
-                <ListItem key={drink.drinkName} disablePadding>
+              {currentHappyHour.prices.map((hhPrice: PriceDTO) => (
+                <ListItem key={hhPrice.drinkName} disablePadding>
                   <ListItemText
-                    primary={drink.drinkName}
-                    secondary={`${drink.happyHourPrice} €`}
+                    primary={hhPrice.drinkName}
+                    secondary={`${hhPrice.price} €`}
                     primaryTypographyProps={{ sx: { color: '#b2ff59', fontWeight: 'bold' } }}
                   />
                 </ListItem>
@@ -111,26 +102,26 @@ const BarDetailsPage: React.FC = () => {
           </Box>
         )}
         <List>
-          {drinks.map((drink: any) => (
-            <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
+          {prices.map((price: PriceDTO) => (
+            <ListItem key={price.id} disablePadding sx={{ color: '#e0cfff' }}>
               <ListItemText
-                primary={drink.name}
-                secondary={getDrinkPrice(drink.name)}
+                primary={price.drinkName}
+                secondary={getDrinkPrice(price.drinkName)}
                 primaryTypographyProps={{ sx: { fontWeight: 'bold' } }}
               />
             </ListItem>
           ))}
-          <ListItem disablePadding>
+          {/*<ListItem disablePadding>
             <ListItemText primary="Entry Fee" secondary={`${bar.entryFee} €`} />
           </ListItem>
           <ListItem disablePadding>
             <ListItemText primary="Cloakroom Fee" secondary={`${bar.cloakroomFee} €`} />
-          </ListItem>
-          {happyHour && (
+          </ListItem>*/}
+          {currentHappyHour && (
             <ListItem disablePadding>
               <ListItemText
                 primary="Happy Hour"
-                secondary={`${happyHour.startTime} - ${happyHour.endTime}`}
+                secondary={`${currentHappyHour.startTime} - ${currentHappyHour.endTime}`}
               />
             </ListItem>
           )}
@@ -145,7 +136,7 @@ const BarDetailsPage: React.FC = () => {
               alignItems: 'stretch',
             }}
           >
-          <Link to={`/update/${bar.id}`} style={{ textDecoration: 'none' }}>
+          <Link to={`/prices/update/${bar.id}`} style={{ textDecoration: 'none' }}>
             <Button
               
               variant="outlined"
@@ -162,21 +153,23 @@ const BarDetailsPage: React.FC = () => {
               Update Prices
             </Button>
           </Link>
-          <Button
-            
-            onClick={removeBar}
-            variant="outlined"
-            sx={{
-              width: { xs: '100%', sm: 'auto' },
-              borderColor: '#ff5252',
-              color: '#ff5252',
-              '&:hover': {
-                backgroundColor: '#ff525222',
-              },
-            }}
-          >
-            Delete Bar
-          </Button>
+          <Link to={`/bars/delete/${bar.id}`}>
+            <Button
+              
+              onClick={removeBar}
+              variant="outlined"
+              sx={{
+                width: { xs: '100%', sm: 'auto' },
+                borderColor: '#ff5252',
+                color: '#ff5252',
+                '&:hover': {
+                  backgroundColor: '#ff525222',
+                },
+              }}
+            >
+              Delete Bar
+            </Button>
+          </Link>
         </Box>
       </Paper>
     </Box>

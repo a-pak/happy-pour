@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import { useTheme } from '@mui/material/styles';
 import { useDrinkStore } from '../store/drinkStore.ts';
+import { BarData } from '../model/IbarInterface.ts';
+import { PriceDTO } from '../model/IPriceInterface.ts';
+import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 
 const BarListPage: React.FC = () => {
-  const [bars, setBars] = useState<any[]>([]);
+  const [bars, setBars] = useState<BarData[]>([]);
   const navigate = useNavigate();
   const theme = useTheme();
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
@@ -20,14 +23,13 @@ const BarListPage: React.FC = () => {
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
 
-
-
-  const getDrinkPrice = (bar: any) => {
-    const drink = bar.drinks.find((d: any) => d.name === defaultDrink);
-    const happyHourDrink = bar.happyHourDrinks.find((d: any) => d.drinkName === defaultDrink);
-    
-    if (happyHourDrink) return happyHourDrink.happyHourPrice;
-    return drink ? drink.normalPrice : null;
+  const getDrinkPrice = (bar: BarData) => {
+    const drinkPrice = bar.prices.find((d: PriceDTO) => d.drinkType === defaultDrink);
+    const hh = getCurrentHappyHour(bar);
+    let happyHourPrice = hh ? hh.prices.find(hhPrice => hhPrice.drinkType === defaultDrink) : null;
+      
+    if (happyHourPrice) return happyHourPrice.price;
+    return drinkPrice ? drinkPrice.price : null;
   };
 
   const sortedBars = [...bars].sort((a, b) => {
@@ -57,7 +59,7 @@ const BarListPage: React.FC = () => {
                 onClick={() => navigate(`/bar/${bar.bar.id}`)}
               >
                 <TableCell>{bar.bar.name}</TableCell>
-                <TableCell align="right">{getDrinkPrice(bar) ? getDrinkPrice(bar).toFixed(2) : 'N/A'}</TableCell>
+                <TableCell align="right">{getDrinkPrice(bar) ? getDrinkPrice(bar)?.toFixed(2) : 'N/A'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

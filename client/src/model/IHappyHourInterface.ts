@@ -1,19 +1,16 @@
-export default interface HappyHour {
+import { PriceDTO } from "./IPriceInterface";
+export interface HappyHourDTO {
   id: number;
-  bar: IBar;
+  weekDays: WeekDay[];
   startTime: string;
   endTime: string;
-  createdBy: IUser;
-  updatedBy: IUser;
+  barId: number;
+  prices: PriceDTO[]; 
+  createdBy: string;
   createdAt: string;
+  updatedBy: string;
   updatedAt: string;
+  creatorId?: number;
 }
 
-interface IBar{
-    id: number;
-}
-
-interface IUser {
-    id: number;
-    name?: string;
-}
+export type WeekDay = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';

@@ -116,9 +116,9 @@ const AppBarComponent: React.FC = () => {
                   }}
               >
                   <MenuItem value={'View all'}>View all</MenuItem>
-                  <MenuItem value={'Beer'}>Beer</MenuItem>
-                  <MenuItem value={'Wine'}>Wine</MenuItem>
-                  <MenuItem value={'Coffee'}>Coffee</MenuItem>
+                  <MenuItem value={'BEER'}>Beer</MenuItem>
+                  <MenuItem value={'WINE'}>Wine</MenuItem>
+                  <MenuItem value={'COFFEE'}>Coffee</MenuItem>
               </Select>
           </FormControl>
 
