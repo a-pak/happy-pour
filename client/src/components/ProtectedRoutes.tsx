@@ -3,11 +3,7 @@ import {useUserStore} from "../store/userStore.ts";
 
 const ProtectedRoutes = () => {
     const {user} = useUserStore();
-
-    if (user === undefined) {
-        return null; // Loading or splash
-    }
-
-    return user != null ? <Outlet/> : <Navigate to="/login?message=unauthorized"/>
+    // TODO: Implement token validity check through backend.
+    return (user == null || user == undefined) ? <Navigate to="/login?message=unauthorized"/> : <Outlet/>
 } 
 export default ProtectedRoutes;

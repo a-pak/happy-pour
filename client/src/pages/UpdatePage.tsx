@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useParams} from "react-router-dom";
-import DrinkSubmitComponent from '../components/DrinkSubmitComponent.tsx';
+import PriceSubmitComponent from '../components/PriceSubmitComponent.tsx';
 
 //        <SubmitFormComponent initialBarId={realId} />
 
@@ -11,7 +11,7 @@ const UpdatePage: React.FC = () => {
       const realId : number = Number(id);
       return (
         <>
-        <DrinkSubmitComponent id = {realId} />
+        <PriceSubmitComponent barId = {realId} />
         </>
       )
     }

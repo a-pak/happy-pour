@@ -20,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import DeletePage from './pages/DeletePage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
 import BarDetailsDrawer from './components/BarDetailsDrawer.tsx'
+import DrinkPage from './pages/DrinkPage.tsx'
 
 function App() {
   return (
@@ -45,9 +46,10 @@ function App() {
                   <Route path='/profile' element={<ProfilePage />} />
 
                   <Route element={<ProtectedRoutes />}>
-                    <Route path='/update/:id' element={<UpdatePage />} />
-                    <Route path='/delete/:id' element={<DeletePage />} />
-                    <Route path='/submit/' element={<AddPage />} />
+                    <Route path='/prices/update/:id' element={<UpdatePage />} />
+                    <Route path='/drinks/update' element={<DrinkPage/>}/>
+                    <Route path='/bars/delete/:id' element={<DeletePage />} />
+                    <Route path='bars/create/' element={<AddPage />} />
                   </Route>
                 </Route>
               </Routes>
