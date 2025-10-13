@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -70,11 +69,19 @@ public class PriceService {
         User user = userService.getById(priceDtos.get(0).getCreatorId());
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Received price for creation: " + priceDtos.get(0).toString());
-        priceDtos.forEach(dto -> {
-            Bar bar = barService.getById(dto.getBarId());
+        Bar bar = barService.getById(priceDtos.get(0).getBarId());
+        if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
+
+        for(PriceDTO dto : priceDtos) {
+            Optional<Price> existing = priceRepository.findExistingPrice(bar.getId(), dto.getDrinkId(), dto.getHappyHourId());
+            if (existing.isPresent()) {
+                updatePrice(dto);
+                continue;
+            }
+
             Drink drink = drinkService.getById(dto.getDrinkId());
             HappyHour happyHour = happyHourService.getById(dto.getHappyHourId());
+
             Price price = Price.builder()
                 .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
                 .bar(bar)
@@ -85,15 +92,14 @@ public class PriceService {
                 .build();
 
             priceRepository.save(price);
-        });
+        }
     }
     
     public Price updatePrice(PriceDTO priceDTO) {
         Optional<Price> existingPrice = priceRepository.findById(priceDTO.getId());
         if (existingPrice.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Price not found");
 
-        priceDTO.setPrice(priceDTO.getPrice().setScale(2, RoundingMode.UNNECESSARY));
-        BeanUtils.copyProperties(priceDTO, existingPrice.get(), "id", "bar", "happyHour", "drink", "createdBy", "createdAt", "creatorId");
+        existingPrice.get().setPrice(priceDTO.getPrice().setScale(2, RoundingMode.UNNECESSARY));
         
         User user = userService.getById(priceDTO.getCreatorId());
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");

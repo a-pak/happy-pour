@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.PriceDTO;
 import com.happypour.happypour.model.Price;
@@ -76,6 +77,8 @@ public class PriceController {
         try {
             priceService.createPrice(priceDtos);
             return ResponseEntity.ok("Prices created succefully");
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
         } catch (Exception e) {
             System.err.println("ERROR: " + e.getMessage());
             e.printStackTrace();

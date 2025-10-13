@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.happypour.happypour.model.Price;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PriceRepository extends JpaRepository<Price, Long> {
@@ -14,4 +15,14 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
 
     @Query("SELECT p FROM Price p WHERE p.happyHour.id=?1")
     List<Price> findByHappyHourId(Long happyHourId);
+
+    @Query("""
+    SELECT p FROM Price p
+    WHERE p.bar.id = :barId
+      AND p.drink.id = :drinkId
+      AND ((:happyHourId IS NULL AND p.happyHour IS NULL)
+           OR (p.happyHour.id = :happyHourId))
+    """)
+    Optional<Price> findExistingPrice(Long barId, Long drinkId, Long happyHourId);
+
 }
