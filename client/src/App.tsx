@@ -21,6 +21,7 @@ import DeletePage from './pages/DeletePage.tsx'
 import NotFoundPage from './pages/NotFoundPage.tsx'
 import BarDetailsDrawer from './components/BarDetailsDrawer.tsx'
 import DrinkPage from './pages/DrinkPage.tsx'
+import HappyHourPage from './pages/HappyHourPage.tsx'
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
                     <Route path='/drinks/update' element={<DrinkPage/>}/>
                     <Route path='/bars/delete/:id' element={<DeletePage />} />
                     <Route path='bars/create/' element={<AddPage />} />
+                    <Route path='/happy-hours/create/:id' element={<HappyHourPage />} />
                   </Route>
                 </Route>
               </Routes>

@@ -6,7 +6,6 @@ import {
   Select,
   TextField,
   Typography,
-  InputLabel,
   FormControl,
 } from '@mui/material';
 import { DrinkDTO } from '../model/IdrinkInterface.ts';
@@ -22,7 +21,7 @@ interface PriceSubmitComponentProps { barId: number; }
 const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId}) => {
   const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>('');
   const [price, setPrice] = useState<number | ''>('');
-  const { user, setUser } = useUserStore();
+  const { user } = useUserStore();
   const navigate = useNavigate();
   const { showNotification } = useErrorStore.getState();
 
@@ -55,8 +54,17 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId}) => {
     e.preventDefault();
     if (!selectedDrink || price === '') return;
 
+    let newPriceId : number = -1;
+
+    // Check if a price exists for drink.
+    existingPrices?.forEach(p => {
+      if(p.drinkId == selectedDrink.id) {
+        newPriceId = p.id;
+      }
+    })
+
     const priceDto: PriceDTO = {
-      id:0,
+      id: newPriceId,
       price: Number(price),
       barId,
       drinkId: selectedDrink.id,
@@ -85,7 +93,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId}) => {
           displayEmpty // <-- Key to show placeholder
           renderValue={(selected) => {
             if (!selected) {
-              return <em>Select a drink</em>; // Placeholder text
+              return <em>Select a drink</em>;
             }
             const drink = drinks?.find((d) => d.id === selected);
             return `${drink?.name} (${drink?.type}, ${drink?.size}ml)`;
