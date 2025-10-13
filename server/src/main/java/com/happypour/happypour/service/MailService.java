@@ -1,5 +1,5 @@
 package com.happypour.happypour.service;
-
+/* 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.UnsupportedEncodingException;
-
+*/
 //@Service
 public class MailService {
     /*

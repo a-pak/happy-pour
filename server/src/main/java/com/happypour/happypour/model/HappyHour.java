@@ -1,6 +1,5 @@
 package com.happypour.happypour.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.happypour.happypour.model.enums.WeekDay;
 
 import jakarta.persistence.*;
