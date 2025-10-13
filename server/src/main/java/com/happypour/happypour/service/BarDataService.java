@@ -56,7 +56,8 @@ public class BarDataService {
             // Get Normal prices associated with this bar
             prices.forEach(p -> {
                 if(p.getHappyHour() == null) {
-                    barDataDto.getPrices().add(new PriceDTO(p));
+                    
+                    if(p.getBar() == b) barDataDto.getPrices().add(new PriceDTO(p));
                 }
             });
             barDataDTOs.add(barDataDto);
