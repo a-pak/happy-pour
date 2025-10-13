@@ -10,10 +10,8 @@ import {
   Typography,
   Container,
   Paper,
-  Grid,
   Grid2,
-  Card,
-  colors,
+  Card
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import {HappyHourDTO, WeekDay } from '../model/IHappyHourInterface'
@@ -25,7 +23,7 @@ const weekDays: WeekDay[] = [
   'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',
 ];
 
-const HappHourPage: React.FC = () => {
+const HappyHourSubmitPage: React.FC = () => {
   const { barid } = useParams<{ barid: string }>();
   const [selectedDays, setSelectedDays] = useState<WeekDay[]>([]);
   const [startTime, setStartTime] = useState<string>('');
@@ -133,4 +131,4 @@ const HappHourPage: React.FC = () => {
   );
 };
 
-export default HappHourPage;
+export default HappyHourSubmitPage;

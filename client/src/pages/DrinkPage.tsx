@@ -1,5 +1,5 @@
 // DrinkPage.tsx
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -8,16 +8,14 @@ import {
   Select,
   TextField,
   Typography,
-  Alert,
   FormControl,
   InputLabel,
   SelectChangeEvent,
 } from '@mui/material';
 import { createDrink } from '../services/drinks';
 import { DrinkDTO, DrinkType } from '../model/IdrinkInterface';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useErrorStore } from '../store/errorStore';
-import { userInfo } from 'os';
 import { useUserStore } from '../store/userStore';
 
 // Typical drink sizes by type (in liters)
@@ -36,16 +34,20 @@ const DrinkPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { showNotification } = useErrorStore.getState();
-  const {user, setUser} = useUserStore();
+  const { user } = useUserStore();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement> | SelectChangeEvent) => {
+  // For TextField and other regular inputs
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    setFormData(prev => ({
-      ...prev,
-      [name as string]: name === 'size' ? Number(value) : value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  // For Select components
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name!]: value }));
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +82,7 @@ const DrinkPage: React.FC = () => {
             label="Drink Name"
             name="name"
             value={formData.name}
-            onChange={handleChange} // no idea why it's red.
+            onChange={handleInputChange} // no idea why it's red.
             required
             fullWidth
           />
@@ -90,7 +92,7 @@ const DrinkPage: React.FC = () => {
               name="type"
               value={formData.type}
               label="Drink Type"
-              onChange={handleChange}
+              onChange={handleSelectChange}
             >
               <MenuItem value="BEER">Beer</MenuItem>
               <MenuItem value="WINE">Wine</MenuItem>
@@ -103,7 +105,7 @@ const DrinkPage: React.FC = () => {
               name="size"
               value={String(formData.size)}
               label="Size (l)"
-              onChange={handleChange}
+              onChange={handleSelectChange}
             >
               {TYPICAL_SIZES[formData.type].map(size => (
                 <MenuItem key={size} value={size}>{size}l</MenuItem>

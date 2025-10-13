@@ -24,7 +24,7 @@ export const LocationMarkerComponent: React.FC = () => {
           })
           .catch((err) => {
             setError(`Can't find any bars: ${err}`);
-          });
+        });
       }, []);
 
     if (error) return <p>{error}</p>;
@@ -34,11 +34,10 @@ export const LocationMarkerComponent: React.FC = () => {
             {bars &&
                 bars.map((barEntity) => {
                     let hasDrink = false;
-
                     // Jos drinkki on 'View all', näytetään baari joka tapauksessa
                     const showAll = defaultDrink === "View all";
                     // Check normal prices
-                    barEntity.prices.forEach((price) => {
+                    barEntity.prices.some((price) => {
                         if (price.drinkType === defaultDrink) hasDrink = true;    
                     });
                     // Check Happy Hour Prices
@@ -55,7 +54,7 @@ export const LocationMarkerComponent: React.FC = () => {
                             <Marker 
                             position={[barEntity.bar.coordLat, barEntity.bar.coordLong]} 
                             eventHandlers={{
-                                click: () => navigate(`/bar/${barEntity.bar.id}`)
+                                click: () => navigate(`/bars/${barEntity.bar.id}`)
                             }
                             }/>
                         </ThemeProvider>

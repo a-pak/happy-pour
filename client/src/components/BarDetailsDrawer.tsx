@@ -149,7 +149,7 @@ const BarDetailsDrawer = () => {
         </Box>
 
         {/* More Button */}
-        <Link to={`/bar/details/${bar.id}`} style={{ textDecoration: 'none' }}>
+        <Link to={`details`} style={{ textDecoration: 'none' }}>
           <Button
             variant="outlined"
             sx={{

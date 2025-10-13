@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import BarSubmitComponent from "../components/BarSubmitComponent.tsx";
 
-export const AddPage : React.FC = () => {
+export const BarSubmitPage : React.FC = () => {
   const [searchParams] = useSearchParams();
   const latParam = searchParams.get('lat');
   const lngParam = searchParams.get('lng');

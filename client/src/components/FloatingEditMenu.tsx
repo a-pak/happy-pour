@@ -7,9 +7,9 @@ import theme from '../Theme';
 
 const FloatingEditMenu: React.FC<{ barId: number }> = ({ barId }) => {
   const actions = [
-    { icon: <>🍻</>, name: 'Update Happy Hours', link: `/happy-hours/update/${barId}` },
-    { icon: <>💶</>, name: 'Update Prices', link: `/prices/update/${barId}` },
-    { icon: <><InfoIcon /></>, name: 'Edit Bar Info', link: `/bars/update/${barId}` },
+    { icon: <>🍻</>, name: 'Update Happy Hours', link: `/bars/${barId}/happy-hours/create` },
+    { icon: <>💶</>, name: 'Update Prices', link: `/bars/${barId}/prices/update` },
+    { icon: <><InfoIcon /></>, name: 'Edit Bar Info', link: `/bars/${barId}/update` },
   ];
 
   return (

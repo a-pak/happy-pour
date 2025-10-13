@@ -16,9 +16,9 @@ import { getAllDrinks } from '../services/drinks.ts';
 import { getByBarId, createPrice } from '../services/prices.ts';
 import { Link, useNavigate } from 'react-router-dom';
 
-interface PriceSubmitComponentProps { barId: number; }
+interface PriceSubmitComponentProps { barId: number; happyHourId?: number;}
 
-const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId}) => {
+const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happyHourId}) => {
   const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>('');
   const [price, setPrice] = useState<number | ''>('');
   const { user } = useUserStore();
@@ -67,6 +67,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId}) => {
       id: newPriceId,
       price: Number(price),
       barId,
+      happyHourId,
       drinkId: selectedDrink.id,
       drinkName: selectedDrink.name,
       drinkType: selectedDrink.type,

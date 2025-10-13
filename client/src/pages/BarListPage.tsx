@@ -56,7 +56,7 @@ const BarListPage: React.FC = () => {
                 key={bar.bar.id}
                 hover
                 sx={{ backgroundColor: theme.palette.primary.light, cursor: 'pointer', '&:hover': { backgroundColor: theme.palette.action.hover } }}
-                onClick={() => navigate(`/bar/${bar.bar.id}`)}
+                onClick={() => navigate(`/bars/${bar.bar.id}`)}
               >
                 <TableCell>{bar.bar.name}</TableCell>
                 <TableCell align="right">{getDrinkPrice(bar) ? getDrinkPrice(bar)?.toFixed(2) : 'N/A'}</TableCell>
