@@ -143,11 +143,11 @@ public class DebugScriptRunner implements CommandLineRunner {
             .updatedBy(user1)
             .build();
         Price price2 = Price.builder()
-            .bar(bar1)
-            .drink(drink1)
+            .bar(bar1) // Tom Sawyer's
+            .drink(drink1) // Karhu III
             .price(new BigDecimal(8.00).setScale(2, RoundingMode.UNNECESSARY))
-            .createdBy(user1)
-            .updatedBy(user1)
+            .createdBy(user1) // Admin
+            .updatedBy(user1) // Admin
             .build();
         Price price3 = Price.builder()
             .bar(bar1)
