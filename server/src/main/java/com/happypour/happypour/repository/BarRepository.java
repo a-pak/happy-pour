@@ -14,7 +14,7 @@ public interface BarRepository extends JpaRepository<Bar, Long> {
     @Modifying
     @Transactional
     @Query("delete from Bar b where b.id= ?1")
-    void deleteById(Long id);
+    void deleteById(long id);
 
     /** <h4>findByLocation</h4> looks for bars in a 3km distances from given location.
      *

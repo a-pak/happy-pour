@@ -19,5 +19,5 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>{
     @Transactional
     @Modifying
     @Query("DELETE from Drink d where d.id = ?1")
-    void deleteById(Long id);
+    void deleteById(long id);
 }
