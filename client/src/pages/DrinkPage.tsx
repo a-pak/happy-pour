@@ -20,8 +20,8 @@ import { useUserStore } from '../store/userStore';
 
 // Typical drink sizes by type (in liters)
 const TYPICAL_SIZES: Record<DrinkType, number[]> = {
-  BEER: [0.25, 0.33, 0.5, 0.66, 1.0],
-  WINE: [0.12, 0.16, 0.25],
+  BEER: [0.25, 0.33, 0.4, 0.5, 0.66, 1.0],
+  WINE: [0.12, 0.16, 0.25, 0.75],
   COFFEE: [0.125, 0.25, 0.5],
 };
 

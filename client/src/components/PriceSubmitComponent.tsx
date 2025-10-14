@@ -45,7 +45,9 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
   const selectedDrink = drinks ? drinks.find((drink) => drink.id === selectedDrinkId) : null;
 
   const setExistingPrice = (drinkId : number | '') => {
-    const existingPriceDto = existingPrices?.find((p : PriceDTO) => (p.drinkId === drinkId));
+    const existingPriceDto = existingPrices?.find(
+      (p : PriceDTO) => (p.drinkId === drinkId && p.happyHourId == happyHourId));
+    
     console.log(existingPriceDto)
     setPrice(existingPriceDto ? existingPriceDto.price : '');
   }
@@ -58,7 +60,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
 
     // Check if a price exists for drink.
     existingPrices?.forEach(p => {
-      if(p.drinkId == selectedDrink.id) {
+      if(p.drinkId === selectedDrink.id && p.happyHourId == happyHourId) {
         newPriceId = p.id;
       }
     })

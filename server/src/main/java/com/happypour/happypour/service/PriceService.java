@@ -80,7 +80,8 @@ public class PriceService {
             }
 
             Drink drink = drinkService.getById(dto.getDrinkId());
-            HappyHour happyHour = happyHourService.getById(dto.getHappyHourId());
+            HappyHour happyHour = dto.getHappyHourId() != null ? 
+                    happyHourService.getById(dto.getHappyHourId()) : null;
 
             Price price = Price.builder()
                 .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
