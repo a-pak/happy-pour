@@ -12,7 +12,7 @@ export function getCurrentHappyHour(bar : BarData): HappyHourDTO | null {
     const now = new Date();
     const currentTime = now.getHours() + now.getMinutes() / 60;
 
-    // Get current weekday in uppercase format matching your DTO (e.g., "MONDAY")
+    // Get current weekday in uppercase format matching type WeekDay (e.g., "MONDAY")
     const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
 
     const activeHappyHour = bar.happyHours.find((hh: HappyHourDTO) => {

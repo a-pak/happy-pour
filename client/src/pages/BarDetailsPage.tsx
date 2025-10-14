@@ -115,7 +115,7 @@ const BarDetailsPage: React.FC = () => {
                         <ListItemText
                           primary={
                             <Typography variant="body1">
-                              {price.drinkName} ({price.drinkType}, {price.drinkSize}ml)
+                              {price.drinkName} ({price.drinkType}, {price.drinkSize}l)
                             </Typography>
                           }
                           secondary={
