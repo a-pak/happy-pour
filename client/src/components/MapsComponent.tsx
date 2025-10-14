@@ -46,7 +46,7 @@ const MapsComponent: React.FC = () => {
   const openAddBarWindow = () => {
     if (popupPosition) {
       const [lat, lng] = popupPosition;
-      navigate(`/submit?lat=${lat}&lng=${lng}`)
+      navigate(`/bars/create?lat=${lat}&lng=${lng}`)
     }
   };
 

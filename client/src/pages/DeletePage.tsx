@@ -44,8 +44,8 @@ const DeletePage : React.FC = () => {
     }
     const getDrinkPrice = (drinkName: string) => {
       if (!barData) return 'N/A';
-      const normalDrink = barData.drinks.find((d: any) => d.name === drinkName);
-      return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
+      const normalDrink = barData.prices.find((d: any) => d.name === drinkName);
+      return normalDrink ? `${normalDrink.price} €` : 'N/A';
     };
     if (!barData) {
         return (
@@ -85,7 +85,7 @@ const DeletePage : React.FC = () => {
           {barData.bar.address}
         </Typography>
         <List>
-          {barData.drinks.map((drink: any) => (
+          {barData.prices.map((drink: any) => (
             <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
               <ListItemText
                 primary={drink.name}
@@ -94,17 +94,19 @@ const DeletePage : React.FC = () => {
               />
             </ListItem>
           ))}
+          {/*
           <ListItem disablePadding>
             <ListItemText primary="Entry Fee" secondary={`${barData.bar.entryFee} €`} />
           </ListItem>
           <ListItem disablePadding>
             <ListItemText primary="Cloakroom Fee" secondary={`${barData.bar.cloakroomFee} €`} />
           </ListItem>
-          {barData.happyHour && (
+          */}
+          {barData.happyHours && (
             <ListItem disablePadding>
               <ListItemText
                 primary="Happy Hour"
-                secondary={`${barData.happyHour.startTime} - ${barData.happyHour.endTime}`}
+                secondary={`${barData.happyHours} - ${barData.happyHours}`}
               />
             </ListItem>
           )}

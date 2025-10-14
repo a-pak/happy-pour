@@ -2,23 +2,22 @@ import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Box,
-  Paper,
   List,
   ListItem,
   ListItemText,
-  IconButton,
-  Grid,
-  Button,
+  Card,
+  CardContent,
+  Divider,
 } from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
-import CloseIcon from '@mui/icons-material/Close';
 import { BarData } from '../model/IbarInterface.ts';
+import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
+import FloatingEditMenu from '../components/FloatingEditMenu.tsx';
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [barData, setBarData] = useState<BarData | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -37,149 +36,132 @@ const BarDetailsPage: React.FC = () => {
     );
   }
 
-  const { bar, drinks, happyHour, happyHourDrinks } = barData;
-
-  const getDrinkPrice = (drinkName: string) => {
-    const normalDrink = drinks.find((d: any) => d.name === drinkName);
-    return normalDrink ? `${normalDrink.normalPrice} €` : 'N/A';
-  };
-
-  const removeBar = () => {
-    navigate(`/delete/${bar.id}`);
-  };
-
-  const isHappyHourNow = () => {
-    if (!happyHour) return false;
-    const now = new Date();
-    const currentTime = now.getHours() + now.getMinutes() / 60;
-  
-    const [startHour, startMinute] = happyHour.startTime.split(':').map(Number);
-    const [endHour, endMinute] = happyHour.endTime.split(':').map(Number);
-    const startTime = startHour + startMinute / 60;
-    const endTime = endHour + endMinute / 60;
-  
-    return currentTime >= startTime && currentTime <= endTime;
-  };
+  const { bar, prices, happyHours } = barData;
+  const activeHH = getCurrentHappyHour(barData);
 
   return (
-    
-    <Box sx={{ padding: 3, backgroundColor: '#121212', minHeight: '100vh' }}>
-      <Paper
-        elevation={4}
-        sx={{
-          padding: 3,
-          backgroundColor: '#1e1e1e',
-          color: '#b57edc',
-          borderRadius: '12px',
-          maxWidth: 600,
-          margin: '0 auto',
-        }}
-      >
-        <Grid container spacing={1} alignItems="center">
-          <Grid item xs={10}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#d1b3ff' }}>
-              {bar.name}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} sx={{ textAlign: 'right' }}>
-            <IconButton onClick={() => navigate('/')} sx={{ color: '#b57edc' }}>
-              <CloseIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+    <>
+      <FloatingEditMenu barId={bar.id} />
+      <Box sx={{ padding: 4 }}>
+        {/* Bar Info */}
+        <Card sx={{ marginBottom: 4 }}>
+          <CardContent>
+            <Typography variant="h4" gutterBottom>{bar.name}</Typography>
 
-        <Typography variant="subtitle1" sx={{ color: '#d1b3ff', mt: 1 }}>
-          {bar.address}
-        </Typography>
+            <Box sx={{ marginBottom: 2 }}>
+              <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                <strong>Address:</strong> {bar.address}
+              </Typography>
+              <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                <strong>Coordinates:</strong> {bar.coordLat}, {bar.coordLong}
+              </Typography>
+              <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                <strong>Opening Hours:</strong> {bar.openFrom} - {bar.openTo}
+              </Typography>
+            </Box>
 
-        {isHappyHourNow() && (
-          <Box sx={{ mt: 3, p: 2, backgroundColor: '#2e2e2e', borderRadius: '8px' }}>
-            <Typography variant="h6" sx={{ color: '#00e676', mb: 1 }}>
-              Happy Hour Prices
+            <Typography variant="body2" color="text.secondary">
+              Created by <strong>{bar.createdBy}</strong> on {new Date(bar.createdAt).toLocaleDateString()}<br />
+              Last updated by <strong>{bar.updatedBy}</strong> on {new Date(bar.updatedAt).toLocaleDateString()}
             </Typography>
+          </CardContent>
+        </Card>
+
+        {/* Active Happy Hour */}
+        {activeHH && (
+          <Card sx={{ marginBottom: 4 }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom sx={{ color: 'success.main' }}>
+                🎉 Happy Hour!
+              </Typography>
+              <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+                {activeHH.startTime} to {activeHH.endTime}
+              </Typography>
+              <List>
+                {activeHH.prices.map(price => (
+                  <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
+                    <ListItemText
+                      primary={
+                        <Typography variant="body1">
+                          {price.drinkName} ({price.drinkType}, {price.drinkSize}ml)
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="body2" color="text.secondary">
+                          {price.price.toFixed(2)}€
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* All Happy Hours */}
+        <Card sx={{ marginBottom: 4 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>🍻 Happy Hours</Typography>
+            {happyHours && happyHours.length > 0 ? (
+              happyHours.map(hh => (
+                <Box key={hh.id} sx={{ marginBottom: 3 }}>
+                  <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+                    {hh.weekDays.join(', ')} — {hh.startTime} to {hh.endTime}
+                  </Typography>
+                  <List>
+                    {hh.prices.map(price => (
+                      <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body1">
+                              {price.drinkName} ({price.drinkType}, {price.drinkSize}ml)
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography variant="body2" color="text.secondary">
+                              {price.price.toFixed(2)}€
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                  <Divider sx={{ marginY: 2 }} />
+                </Box>
+              ))
+            ) : (
+              <Typography variant="body2">No happy hours available.</Typography>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Regular Prices */}
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>🥂 Regular Prices</Typography>
             <List>
-              {happyHourDrinks.map((drink: any) => (
-                <ListItem key={drink.drinkName} disablePadding>
+              {prices.map(price => (
+                <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
                   <ListItemText
-                    primary={drink.drinkName}
-                    secondary={`${drink.happyHourPrice} €`}
-                    primaryTypographyProps={{ sx: { color: '#b2ff59', fontWeight: 'bold' } }}
+                    primary={
+                      <Typography variant="body1">
+                        {price.drinkName} ({price.drinkType}, {price.drinkSize}l)
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="body2" color="text.secondary">
+                        {price.price.toFixed(2)}€
+                      </Typography>
+                    }
                   />
                 </ListItem>
               ))}
             </List>
-          </Box>
-        )}
-        <List>
-          {drinks.map((drink: any) => (
-            <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
-              <ListItemText
-                primary={drink.name}
-                secondary={getDrinkPrice(drink.name)}
-                primaryTypographyProps={{ sx: { fontWeight: 'bold' } }}
-              />
-            </ListItem>
-          ))}
-          <ListItem disablePadding>
-            <ListItemText primary="Entry Fee" secondary={`${bar.entryFee} €`} />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemText primary="Cloakroom Fee" secondary={`${bar.cloakroomFee} €`} />
-          </ListItem>
-          {happyHour && (
-            <ListItem disablePadding>
-              <ListItemText
-                primary="Happy Hour"
-                secondary={`${happyHour.startTime} - ${happyHour.endTime}`}
-              />
-            </ListItem>
-          )}
-        </List>
-
-        <Box
-            sx={{
-              mt: 3,
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-              alignItems: 'stretch',
-            }}
-          >
-          <Link to={`/update/${bar.id}`} style={{ textDecoration: 'none' }}>
-            <Button
-              
-              variant="outlined"
-              sx={{
-                width: { xs: '100%', sm: 'auto' },
-                borderColor: '#b57edc',
-                color: '#b57edc',
-                '&:hover': {
-                  backgroundColor: '#b57edc22',
-                  borderColor: '#b57edc',
-                },
-              }}
-            >
-              Update Prices
-            </Button>
-          </Link>
-          <Button
-            
-            onClick={removeBar}
-            variant="outlined"
-            sx={{
-              width: { xs: '100%', sm: 'auto' },
-              borderColor: '#ff5252',
-              color: '#ff5252',
-              '&:hover': {
-                backgroundColor: '#ff525222',
-              },
-            }}
-          >
-            Delete Bar
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </>
   );
 };
 

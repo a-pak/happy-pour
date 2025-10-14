@@ -1,7 +1,2 @@
-CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(255),
-    password VARCHAR(255),
-    email VARCHAR(255),
-    verified BOOLEAN DEFAULT FALSE
-);
+CREATE UNIQUE INDEX idx_unique_bar_happy_drink
+ON price (bar_id, COALESCE(happy_hour_id, -1), drink_id);

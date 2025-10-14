@@ -14,7 +14,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../store/UserContext.tsx";
+import { useUserStore } from "../store/userStore.ts";
 import { useErrorStore } from '../store/errorStore.ts';
 import theme from "../Theme";
 import { getAddress } from "../services/geocode.ts";
@@ -27,15 +27,15 @@ type Props = {
 
 const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUserStore();
   const { showNotification } = useErrorStore.getState();
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [openFrom, setOpenFrom] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
   const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
-  const [entryFee, setEntryFee] = useState(0.0);
-  const [cloakroomFee, setCloakroomFee] = useState(0.0);
+  //const [entryFee, setEntryFee] = useState(0.0);
+  //const [cloakroomFee, setCloakroomFee] = useState(0.0);
 
   useEffect(() => {
     if (barId) {
@@ -44,8 +44,6 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
         setAddress(bar.bar.address);
         setOpenFrom(dayjs(bar.bar.openFrom, "HH:mm:ss"));
         setOpenTo(dayjs(bar.bar.openTo, "HH:mm:ss"));
-        setEntryFee(bar.bar.entryFee);
-        setCloakroomFee(bar.bar.cloakroomFee);
       });
     } else {
       const fetchAddress = async () => {
@@ -90,6 +88,12 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       return;
     }
 
+    if(!user) {
+      showNotification("You must be logged in to submit a bar.", "warning");
+      navigate("/login");
+      return;
+    }
+
     const now = new Date().toISOString();
 
     const bar: Bar = {
@@ -100,23 +104,24 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       address,
       openFrom: openFrom.format("HH:mm:ss"),
       openTo: openTo.format("HH:mm:ss"),
-      entryFee,
-      cloakroomFee,
-      createdBy: { id: 1, username: "admin" },
-      updatedBy: { id: 1, username: "admin" },
+      //entryFee,
+      //cloakroomFee,
+      createdBy: user.username,
+      updatedBy: user.username,
       createdAt: now,
       updatedAt: now,
+      creatorId: user.id
     };
 
     try {
       if (barId) {
         await barService.update(barId, bar);
-        navigate("/bar/" + barId);
+        navigate("/bars/" + barId);
         showNotification("Bar updated successfully!", "success");
       } else {
         const response = await barService.create(bar);
         if (response) {
-          navigate("/bar/" + response.id);
+          navigate("/bars/" + response.id);
           showNotification("Bar created successfully!", "success");
         } else {
           throw new Error("No bar in response");
@@ -192,21 +197,21 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
             value={openTo}
             onChange={(newValue) => setOpenTo(newValue)}
           />
-
+          {/*
           <TextField
             label="Entry fee (€)"
             type="number"
             value={entryFee}
             onChange={(e) => setEntryFee(parseFloat(e.target.value))}
           />
-
+          
           <TextField
             label="Cloakroom fee (€)"
             type="number"
             value={cloakroomFee}
             onChange={(e) => setCloakroomFee(parseFloat(e.target.value))}
           />
-
+          */}
           <Button
             variant="contained"
             color="secondary"

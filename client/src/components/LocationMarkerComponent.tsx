@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
-import { BarDataResponse } from '../model/IbarInterface.ts';
+import { BarData } from '../model/IbarInterface.ts';
 import { Marker } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import { useDrinkStore } from "../store/drinkStore";
 import barsService from '../services/bars.ts';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
+import { PriceDTO } from '../model/IPriceInterface.ts';
 
 export const LocationMarkerComponent: React.FC = () => {
-    const [bars, setBars] = useState<BarDataResponse | null>(null);
+    const [bars, setBars] = useState<BarData[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const defaultDrink = useDrinkStore((state) => state.defaultDrink);
     const navigate = useNavigate();
@@ -17,28 +19,14 @@ export const LocationMarkerComponent: React.FC = () => {
     useEffect(() => {
         barsService
           .getAll()
-          .then((data: BarDataResponse) => {
+          .then((data: BarData[]) => {
             setBars(data);
           })
           .catch((err) => {
             setError(`Can't find any bars: ${err}`);
-          });
+        });
       }, []);
-/*
-    const isHappyHourActive = (startTime: string, endTime: string): boolean => {
-        const now = new Date();
-        const start = new Date();
-        const end = new Date();
 
-        const [startHours, startMinutes] = startTime.split(":").map(Number);
-        const [endHours, endMinutes] = endTime.split(":").map(Number);
-
-        start.setHours(startHours, startMinutes, 0);
-        end.setHours(endHours, endMinutes, 0);
-
-        return now >= start && now <= end;
-    };
-*/
     if (error) return <p>{error}</p>;
 
     return (
@@ -46,15 +34,18 @@ export const LocationMarkerComponent: React.FC = () => {
             {bars &&
                 bars.map((barEntity) => {
                     let hasDrink = false;
-
                     // Jos drinkki on 'View all', näytetään baari joka tapauksessa
                     const showAll = defaultDrink === "View all";
-
-                    barEntity.drinks.forEach((drink) => {
-                        if (drink.name === defaultDrink) {
-                            hasDrink = true;
-                        }
+                    // Check normal prices
+                    barEntity.prices.some((price) => {
+                        if (price.drinkType === defaultDrink) hasDrink = true;    
                     });
+                    // Check Happy Hour Prices
+                    const activeHappyHour = getCurrentHappyHour(barEntity);
+                    if(activeHappyHour) {
+                        if (activeHappyHour.prices.find((p : PriceDTO) => (p.drinkType === defaultDrink))) hasDrink = true;
+                    }
+
 
                     if (!hasDrink && !showAll) return null;
 
@@ -63,7 +54,7 @@ export const LocationMarkerComponent: React.FC = () => {
                             <Marker 
                             position={[barEntity.bar.coordLat, barEntity.bar.coordLong]} 
                             eventHandlers={{
-                                click: () => navigate(`/bar/${barEntity.bar.id}`)
+                                click: () => navigate(`/bars/${barEntity.bar.id}`)
                             }
                             }/>
                         </ThemeProvider>

@@ -6,7 +6,7 @@
   ],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
-    "types": ["node"], 
+    "types": ["node", "jest"], 
   }
   
 }

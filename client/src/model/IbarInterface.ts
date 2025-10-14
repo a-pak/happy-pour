@@ -1,73 +1,25 @@
+import { HappyHourDTO } from "./IHappyHourInterface";
+import { PriceDTO } from "./IPriceInterface";
+
 export default interface Bar {
   id: number;
   name: string;
+  address: string;
   coordLong: number;
   coordLat: number;
-  address: string;
-  openFrom: string; // "HH:mm:ss" muotoisena
-  openTo: string;   // "HH:mm:ss" muotoisena
-  entryFee: number;
-  cloakroomFee: number;
-  createdBy: User | null;
-  updatedBy: User | null;
-  createdAt: string; // ISO timestamp
-  updatedAt: string; // ISO timestamp
-}
-
-  export const defaultBar: Bar = {
-    id: 0,
-    name: "",
-    coordLong: 0,
-    coordLat: 0,
-    address: "",
-    openFrom: "00:00:00",
-    openTo: "00:00:00",
-    entryFee: 0,
-    cloakroomFee: 0,
-    createdBy: { id: 1, username: "admin" },
-    updatedBy: { id: 1, username: "admin" },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-interface User {
-  id: number;
-  username: string;
-}
-
-export interface HappyHour {
-  id: number;
-  startTime: string;
-  endTime: string;
-  createdBy: User;
-  updatedBy: User;
+  openFrom: string;
+  openTo: string;
+  //entryFee: number;
+  //cloakRoomFee: number;
+  createdBy: string;
   createdAt: string;
+  updatedBy: string;
   updatedAt: string;
-}
-
-export interface HappyHourDrink {
-  happyHourId: number;
-  drinkId: number;
-  drinkName: string;
-  happyHourPrice: number;
-  updatedBy: User;
-  updatedAt: string;
-}
-
-export interface Drink {
-  id: number;
-  name: string;
-  barId: number;
-  normalPrice: number;
-  updatedBy: User;
-  updatedAt: string;
+  creatorId?: number;
 }
 
 export interface BarData {
   bar: Bar;
-  happyHour: HappyHour | null;
-  happyHourDrinks: HappyHourDrink[];
-  drinks: Drink[];
+  happyHours: HappyHourDTO[] | null;
+  prices: PriceDTO[];
 }
-
-export type BarDataResponse = BarData[];

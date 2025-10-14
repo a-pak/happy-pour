@@ -16,7 +16,7 @@ const theme = createTheme({
     },
     text: {
       primary: '#fcf8ff',
-      secondary: '#4c3862',
+      secondary: '#cab1e4ff',
     },
     background: {
       default: '#121212', // tumma tausta

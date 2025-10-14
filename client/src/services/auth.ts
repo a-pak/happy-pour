@@ -1,7 +1,7 @@
 import axios from 'axios'
 import LoginPayload from '../model/ILoginPayloadInterface.ts';
 import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
-import User from "../model/IUserContext.ts";
+import { User } from '../store/userStore.ts';
 /* auth service for login and register 
 
   *******************************************************************************
@@ -39,3 +39,11 @@ export const registerAPI = async (registerPayload: RegisterPayload) => {
     );
 
 };
+
+export const refreshAPI = async () => {
+    return await axios.post(
+      BASE_URL + "/refresh",
+      {},{
+      withCredentials: true
+    })
+}

@@ -3,7 +3,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box, Typography, Divider } from '@mui/material';
 import { Link } from "react-router-dom";
-import { useUser } from '../store/UserContext';
+import { useUserStore } from '../store/userStore.ts';
 import React from 'react';
 
 type MenuComponentProps = {
@@ -12,7 +12,7 @@ type MenuComponentProps = {
 
   
 export const MenuComponent: React.FC<MenuComponentProps> = ({ onClose }) => {
-    const { user } = useUser();
+    const { user } = useUserStore();
     const menuItems = [(user !== null) ? user.username : 'Log In', 'About', 'Contact'];
 
     return (

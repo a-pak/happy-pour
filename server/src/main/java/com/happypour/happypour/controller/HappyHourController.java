@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.happypour.happypour.dto.HappyHourDTO;
 import com.happypour.happypour.model.HappyHour;
 import com.happypour.happypour.service.HappyHourService;
 
@@ -26,11 +27,12 @@ public class HappyHourController {
     private HappyHourService happyHourService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<HappyHour> getHappyHour(@PathVariable Long id) {
+    public ResponseEntity<HappyHourDTO> getHappyHour(@PathVariable Long id) {
         try {
-            HappyHour happyHour = happyHourService.getById(id);
-            if (happyHour != null) {
-                return ResponseEntity.ok(happyHour);
+            HappyHourDTO happyHourDTO = happyHourService.getHappyHourDTOById(id);
+            if (happyHourDTO != null) {
+                return ResponseEntity.ok(happyHourDTO);
+            
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -40,24 +42,29 @@ public class HappyHourController {
     }
 
     @PostMapping
-    public ResponseEntity<HappyHour> createHappyHour(@RequestBody HappyHour happyHour) {
+    public ResponseEntity<String> createHappyHour(@RequestBody HappyHourDTO dto) {
         try {
-            HappyHour createdHappyHour = happyHourService.createHappyHour(happyHour);
-            return ResponseEntity.ok(createdHappyHour);
+            HappyHour createdHappyHour = happyHourService.createHappyHour(dto);
+            return ResponseEntity.ok("Happy hour created with id: " + createdHappyHour.getId());
+
         } catch (Exception e) {
+            System.err.println("ERROR: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<HappyHour> updateHappyHour(@PathVariable Long id, @RequestBody HappyHour happyHour) {
+    @PutMapping
+    public ResponseEntity<String> updateHappyHour(@PathVariable Long id, @RequestBody HappyHourDTO dto) {
         try {
-            HappyHour updatedHappyHour = happyHourService.updateHappyHour(id, happyHour);
+            HappyHour updatedHappyHour = happyHourService.updateHappyHour(id, dto);
             if(updatedHappyHour == null) {
                 return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.ok(updatedHappyHour);
+            return ResponseEntity.ok("Happy hour updated with id: " + updatedHappyHour.getId());
         } catch (Exception e) {
+            System.err.println("ERROR: \n");
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

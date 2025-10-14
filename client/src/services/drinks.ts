@@ -1,29 +1,20 @@
 import axios from 'axios';
-import { IDrink , IDrinkPayload} from '../model/IdrinkInterface';
-import api from './axiosInstance';
+import { DrinkDTO } from '../model/IdrinkInterface';
+import api from '../utils/axiosInstance';
 
 const DRINKS_URL : string = "/drinks";
 
-const getByBarId = async (barId: number): Promise<IDrink[]> => {
-    try {
-    const response = await api.get(`${DRINKS_URL}/${barId}`);
+export const getAllDrinks = async (): Promise<DrinkDTO[]> => {
+    console.log(import.meta.env.BASE_URL + DRINKS_URL);
+    const response = await api.get(DRINKS_URL);
     return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error fetching drinks:', error.response?.data);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-        throw error;
-    }
 }
 
-const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
+export const createDrink = async (drinks : DrinkDTO[]) : Promise<DrinkDTO[]> => {
     try {
-        console.log("drinkkkdataa", drinkData)
-
-        const response = await api.post(DRINKS_URL, drinkData);
+        const response = await api.post(DRINKS_URL, drinks);
         return response.data;
+
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error('Error posting drink:', error.response?.data);
@@ -33,26 +24,3 @@ const createDrink = async (drinkData: IDrinkPayload): Promise<void> => {
         throw error;
     }
 }
-
-const updateDrinks = async (drinkData: IDrinkPayload): Promise<void> => {
-    try {
-        console.log("drinkkkdataa", drinkData)
-        console.log("Stringified payload:", JSON.stringify(drinkData));
-        const response = await api.put(DRINKS_URL, drinkData);
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error posting drink:', error.response?.data);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-        throw error;
-    }
-}
-
-
-export {
-    getByBarId,
-    createDrink,
-    updateDrinks
-};

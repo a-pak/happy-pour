@@ -12,6 +12,8 @@ import { BarData } from '../model/IbarInterface.ts';
 import { useMapStore } from '../store/mapStore.ts';
 import { useDrinkStore } from '../store/drinkStore.ts';
 import theme from '../Theme.tsx';
+import { PriceDTO } from '../model/IPriceInterface.ts';
+import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 
 const BarDetailsDrawer = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,35 +41,28 @@ const BarDetailsDrawer = () => {
       );
     }
 
-    const { bar, drinks, happyHour, happyHourDrinks } = barData;
+    const { bar, prices } = barData;
     flyTo(bar.coordLat, bar.coordLong, 15);
 
+    const activeHappyHour = getCurrentHappyHour(barData);
 
-
-    const getNormalPrice = (drinkName: string) => {
-      const normalDrink = drinks.find((d: any) => d.name === drinkName);
-      const drinkPrice = normalDrink ? normalDrink.normalPrice.toFixed(2) : null;
-      return drinkPrice ? `${drinkPrice} €` : null;
+    const getNormalPrice = () => {
+      const normalPrice = prices.find((p: PriceDTO) => (p.drinkType === defaultDrink && p.happyHourId === null));
+      const drinkPrice = normalPrice ? normalPrice : null;
+      return drinkPrice ? drinkPrice : null;
     };
 
-    const getHappyHourPrice = (drinkName: string) => {
-      const happyHourDrink = happyHourDrinks.find((d: any) => d.drinkName === drinkName);
-      const happyHourPrice = happyHourDrink ? happyHourDrink.happyHourPrice.toFixed(2) : null;
-      return happyHourPrice ? `${happyHourPrice} €` : null;
+    const getHappyHourPrice = () => {
+      let drinkPrice;
+      if(activeHappyHour) {
+        const happyHourPrice = activeHappyHour.prices.find((p: PriceDTO) => (p.drinkType === defaultDrink));
+        drinkPrice = happyHourPrice ? happyHourPrice : null;
+      }
+      return drinkPrice ? drinkPrice : null;
     }
 
-    const isHappyHourNow = () => {
-      if (!happyHour) return false;
-      const now = new Date();
-      const currentTime = now.getHours() + now.getMinutes() / 60;
+    const currentPrice : PriceDTO | null = getHappyHourPrice() ? getHappyHourPrice() : getNormalPrice();  
 
-      const [startHour, startMinute] = happyHour.startTime.split(':').map(Number);
-      const [endHour, endMinute] = happyHour.endTime.split(':').map(Number);
-      const startTime = startHour + startMinute / 60;
-      const endTime = endHour + endMinute / 60;
-
-      return currentTime >= startTime && currentTime <= endTime;
-    };
     return (
       <Box sx={{
         width: '100%',
@@ -109,17 +104,11 @@ const BarDetailsDrawer = () => {
               <Typography variant="h6">{bar.name}</Typography>
               <Typography><strong>Address:</strong> {bar.address}</Typography>
               <Typography><strong>Open:</strong> {bar.openFrom.slice(0, -3)} - {bar.openTo.slice(0, -3)}</Typography>
-              {bar.cloakroomFee > 0 && (
-                <Typography><strong>Cloakroom Fee:</strong> €{bar.cloakroomFee}</Typography>
-              )}
-              {bar.entryFee > 0 && (
-                <Typography><strong>Entry Fee:</strong> €{bar.entryFee}</Typography>
-              )}
             </Box>
           </Box>
 
           {/* Drink Info */}
-          {(defaultDrink !== "View all" && (getNormalPrice(defaultDrink) || getHappyHourPrice(defaultDrink))) && (
+          {(defaultDrink !== "View all" && (currentPrice)) && (
             <Box
               sx={{
                 ml: isMobile ? 2 : 0,
@@ -130,30 +119,28 @@ const BarDetailsDrawer = () => {
               }}
             >
               <Typography variant="body2" sx={{ color: '#b57edc' }}>
-                {defaultDrink}
+                {getHappyHourPrice() ? getHappyHourPrice()?.drinkName : getNormalPrice()?.drinkName}
               </Typography>
               <Typography
                 variant="h4"
                 sx={{
                   color:
-                    isHappyHourNow() && getHappyHourPrice(defaultDrink)
+                    activeHappyHour && getHappyHourPrice()
                       ? 'rgb(70, 234, 70)'
                       : theme.palette.primary.contrastText,
                   fontWeight: 'bold',
                 }}
               >
-                {isHappyHourNow() && getHappyHourPrice(defaultDrink)
-                  ? getHappyHourPrice(defaultDrink)
-                  : getNormalPrice(defaultDrink)}
+                {` ${currentPrice.price.toFixed(2)} €`}
               </Typography>
-              {isHappyHourNow() && happyHour && (
+              {activeHappyHour && (
                 <>
                   <Typography variant="caption" sx={{ color: '#E6BE8A' }}>
                     Happy Hour!
                   </Typography>
                   <Typography>
                     <strong>Until: </strong>
-                    {happyHour.endTime.slice(0, -3)}
+                    {activeHappyHour.endTime.slice(0, -3)}
                   </Typography>
                 </>
               )}
@@ -162,7 +149,7 @@ const BarDetailsDrawer = () => {
         </Box>
 
         {/* More Button */}
-        <Link to={`/bar/details/${bar.id}`} style={{ textDecoration: 'none' }}>
+        <Link to={`details`} style={{ textDecoration: 'none' }}>
           <Button
             variant="outlined"
             sx={{
@@ -183,10 +170,10 @@ const BarDetailsDrawer = () => {
 
         {/* Meta Info */}
         <Typography variant="caption" display="block">
-          Created by {bar.createdBy ? bar.createdBy.username : "Unknown user"} at {new Date(bar.createdAt).toLocaleString()}
+          Created by {bar.createdBy ? bar.createdBy : "Unknown user"} at {new Date(bar.createdAt).toLocaleString()}
         </Typography>
         <Typography variant="caption" display="block">
-          Last updated by {bar.updatedBy ? bar.updatedBy.username : "Unknown user"} at {new Date(bar.updatedAt).toLocaleString()}
+          Last updated by {bar.updatedBy ? bar.updatedBy : "Unknown user"} at {new Date(bar.updatedAt).toLocaleString()}
         </Typography>
       </Box>
 
