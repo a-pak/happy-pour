@@ -39,6 +39,8 @@ public class AuthController {
     public ResponseEntity<UserDetailsDTO> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
+        System.out.println("\n ---------------------------" + loginRequest.getEmail()+ ", " + loginRequest.getPassword());
+
         try {
             if (userService.authenticate(email, password)) {
                 User user = userService.getByEmail(email);
