@@ -56,6 +56,7 @@ public class AuthController {
                 return ResponseEntity.status(401).build();
             }
         } catch (Exception e) {
+            System.out.println("BAD REQUEST: " + e.toString());
                 return ResponseEntity.badRequest().build();
         }
     }
