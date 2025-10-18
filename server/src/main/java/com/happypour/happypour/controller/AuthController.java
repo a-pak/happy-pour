@@ -126,7 +126,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateToken(user.getUsername(), 48 * 60))
         .httpOnly(true)
         .path("/")
-        .sameSite(debugMode ? "Lax" : "None")
+        .sameSite("None") // debugMode ? "Lax" : "None"
         .maxAge(Duration.ofHours(48))
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
@@ -138,7 +138,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("token", jwtUtil.generateToken(user.getUsername(), 15))
         .httpOnly(true)
         .path("/")
-        .sameSite(debugMode ? "Lax" : "None")
+        .sameSite("None") // debugMode ? "Lax" : "None"
         .maxAge(Duration.ofMinutes(15))
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
