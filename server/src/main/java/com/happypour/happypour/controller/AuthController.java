@@ -133,6 +133,7 @@ public class AuthController {
         .path("/")
         .sameSite("None") // debugMode ? "Lax" : "None"
         .maxAge(Duration.ofHours(48))
+        .secure(true)
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
 
@@ -145,6 +146,7 @@ public class AuthController {
         .path("/")
         .sameSite("None") // debugMode ? "Lax" : "None"
         .maxAge(Duration.ofMinutes(15))
+        .secure(true)
         .build();
         response.addHeader("Set-Cookie", cookie.toString());
 
