@@ -44,11 +44,13 @@ public class AuthController {
         try {
             if (userService.authenticate(email, password)) {
                 User user = userService.getByEmail(email);
-
+                System.out.println("USER AUTHENTICATEd!!!!" + user);
                 response = applyRefreshCookie(response, user);
                 response = applyAccessCookie(response, user);
-
-                return ResponseEntity.ok(new UserDetailsDTO(user));
+                System.out.println("APPLIED COOKIES!");
+                UserDetailsDTO userDto = new UserDetailsDTO(user);
+                System.out.println(userDto);
+                return ResponseEntity.ok(userDto);
 
             } else {
                 return ResponseEntity.status(401).build();
