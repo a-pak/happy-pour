@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "https://happy-pour-be.onrender.com",
+                        "http://79.76.55.167",
+                        "http://10.200.200.1",
                         "http://localhost:8080",
                         "http://localhost:5173",
                         "http://localhost:3000"
