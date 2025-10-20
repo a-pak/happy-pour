@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.time.Duration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class AuthController {
     private String HAPPYPOUR_APP_ADDRESS;
     private final UserService userService;
     private final JWTUtil jwtUtil;
-    @Autowired
+
     public AuthController(UserService us, JWTUtil jt){
         this.userService = us;
         this.jwtUtil = jt;
@@ -110,10 +109,12 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
         System.out.println("\nREFRESH!");
+        // Validate refresh token structure and expiration
         if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
             return ResponseEntity.status(401).body("Unauthorized");
         
         }
+        // Extract username and check if user exists in the database
         String username = jwtUtil.extractUsername(refreshToken);
         User user = userService.getByUsername(username);
         
@@ -126,7 +127,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .body("Token refreshed successfully!");
     }
-
+    // Helper methods to apply cookies
     private HttpServletResponse applyRefreshCookie(HttpServletResponse response, User user) {
         ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateToken(user.getUsername(), 48 * 60))
         .httpOnly(true)
