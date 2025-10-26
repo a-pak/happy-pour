@@ -28,13 +28,13 @@ public class DrinkService {
     @Autowired
     private UserService userService;
 
-    public List<Drink> getAllDrinks() {
+    protected List<Drink> getAllDrinks() {
         return drinkRepository.findAll();
     }
 
     public List<DrinkDTO> getAllDTOs() {
         List<Drink> drinks = drinkRepository.findAll();
-        if(drinks.isEmpty()) return null;
+        if(drinks.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no drinks found");
 
         List<DrinkDTO> drinkDTOs = drinks.stream().map(drink -> new DrinkDTO(drink)).toList();
         return drinkDTOs;
@@ -42,13 +42,12 @@ public class DrinkService {
     
     public DrinkDTO getDtoById(Long id) {
         Optional<Drink> drink = drinkRepository.findById(id);
-        if(drink.isPresent()) {
-            return new DrinkDTO(drink.get());
-        }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink not found");
+        if(drink.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink with id "+ id +" not found");
+        
+        return new DrinkDTO(drink.get());
     }
 
-    public Drink getById(Long id) {
+    protected Drink getById(Long id) {
         Optional<Drink> drink = drinkRepository.findById(id);
         if(drink.isPresent()) {
             return drink.get();
@@ -80,10 +79,15 @@ public class DrinkService {
             BeanUtils.copyProperties(drinkDto, existingDrink.get(), "id", "createdBy", "createdAt");
             Drink updatedDrink = drinkRepository.save(existingDrink.get());
             return new DrinkDTO(updatedDrink);
-        }
-        return null;
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink with id "+ drinkId +" not found");
     }
+    
     public void deleteDrink(Long drinkId) {
-        drinkRepository.deleteById(drinkId);
+        try {
+            getById(drinkId);
+            drinkRepository.deleteById(drinkId);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

@@ -5,8 +5,9 @@ import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -30,7 +31,10 @@ public class BarService {
 
     public BarDTO createBar(BarDTO barDTO) {
         User user = userService.getById(barDTO.getCreatorId());
-        if(user == null) throw new IllegalArgumentException("No user with id " + barDTO.getCreatorId() + " found.");
+        if(user == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "No user with id " + barDTO.getCreatorId() + " found."
+        );
 
         Bar bar = Bar.builder()
             .id(null)
@@ -55,20 +59,16 @@ public class BarService {
             BeanUtils.copyProperties(barDTO, existingBar.get(), "id", "createdBy", "createdAt");
             Bar updatedBar = barRepository.save(existingBar.get());
             return new BarDTO(updatedBar);
-        }
-        return null;
+        
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+barId+" not found.");
+        
     }
 
     public void removeBar(Long id) {
         if(barRepository.existsById(id)) {
-            try {
-                barRepository.deleteById(id);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Error deleting bar with id " + id);
-            }
+            barRepository.deleteById(id);     
         } else {
-            throw new IllegalArgumentException("No bar with id " + id + " found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+id+" not found.");
         }
     }
 }

@@ -56,30 +56,14 @@ public class HappyHourController {
     
     @PutMapping
     public ResponseEntity<String> updateHappyHour(@PathVariable Long id, @RequestBody HappyHourDTO dto) {
-        try {
-            HappyHour updatedHappyHour = happyHourService.updateHappyHour(id, dto);
-            if(updatedHappyHour == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok("Happy hour updated with id: " + updatedHappyHour.getId());
-        } catch (Exception e) {
-            System.err.println("ERROR: \n");
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+        happyHourService.updateHappyHour(id, dto);
+        return ResponseEntity.ok("Happy hour updated with id: " + id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteHappyHour(@PathVariable Long id) {
-        if(happyHourService.getById(id) == null) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            happyHourService.deleteHappyHour(id);
-            return ResponseEntity.ok().body("Happy hour with id " + id + " deleted succesfully.");
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        happyHourService.deleteHappyHour(id);
+        return ResponseEntity.ok().body("Happy hour with id " + id + " deleted succesfully.");
     }
 
 }

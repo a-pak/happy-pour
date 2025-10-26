@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Reactin index.html ja muut staattiset resurssit
+                        // React Index and static resources
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -40,11 +40,14 @@ public class SecurityConfig {
                                 "/static/**"     // tai /static-pathisi
                         ).permitAll()
 
-                        // Julkiset API:t
+                        // Public APIs
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/bars/**").permitAll()
 
-                        // Kaikki muu vaatii autentikaation
+                        // Error path so requests get correct response and not blocked by security
+                        .requestMatchers("/error").permitAll()
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
@@ -54,16 +57,4 @@ public class SecurityConfig {
         ;
         return http.build();
     }
-//     @Bean
-//         public CorsConfigurationSource corsConfigurationSource() {
-//         CorsConfiguration config = new CorsConfiguration();
-//         config.setAllowedOriginPatterns(List.of("*")); // kehityksessä kaikki sallitaan
-//         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//         config.setAllowedHeaders(List.of("*"));
-//         config.setAllowCredentials(true);
-
-//         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//         source.registerCorsConfiguration("/**", config);
-//         return source;
-//         }
 }

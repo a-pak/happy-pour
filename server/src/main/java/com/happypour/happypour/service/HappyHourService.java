@@ -5,8 +5,9 @@ import com.happypour.happypour.model.*;
 
 import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.BeanUtils;
 
 import java.time.LocalTime;
@@ -32,24 +33,21 @@ public class HappyHourService {
     public List<HappyHour> getAll() {
         return happyHourRepository.findAll();
     }
-    public HappyHour getById(Long id) {
-        if (id == null) return null;
+    protected HappyHour getById(Long id) {
         return happyHourRepository.findById(id).orElse(null);
     }
-    public List<HappyHour> findByBarId(Long barId) {
-        if (barId == null) return null;
+    protected List<HappyHour> findByBarId(Long barId) {
         return happyHourRepository.findByBarId(barId);
     }
     public HappyHourDTO getHappyHourDTOById(Long id) {
-        if (id == null) return null;
         Optional<HappyHour> happyHour = happyHourRepository.findById(id);
-        if(happyHour.isPresent()) return new HappyHourDTO(happyHour.get());
-
-        return null;
+        if(happyHour.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+ id +" not found");
+        
+        return new HappyHourDTO(happyHour.get());
     }
     public List<HappyHourDTO> getDTOsByBarId(Long barId) {
         List<HappyHour> happyHours = happyHourRepository.findByBarId(barId);
-        if(happyHours.isEmpty()) return null;
+        if(happyHours.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hours with bar id "+ barId +" not found");
 
         List<HappyHourDTO> happyHourDTOs = new ArrayList<>();
         happyHours.forEach(happyHour -> happyHourDTOs.add(new HappyHourDTO(happyHour)));
@@ -58,10 +56,10 @@ public class HappyHourService {
 
     public HappyHour createHappyHour(HappyHourDTO happyHourDTO) {
         Bar bar = barService.getById(happyHourDTO.getBarId());
-        if(bar == null) throw new RuntimeException("Bar not found");
+        if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
 
         User user = userService.getById(happyHourDTO.getCreatorId());
-        if(user == null) throw new RuntimeException("User not found");
+        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found");
 
         HappyHour happyHour = HappyHour.builder()
                 .id(null)
@@ -75,16 +73,16 @@ public class HappyHourService {
         return happyHourRepository.save(happyHour);
     }
 
-    public HappyHour updateHappyHour(Long hhId, HappyHourDTO updatedHappyHour) {
-        return happyHourRepository.findById(hhId)
-                .map(existingHappyHour -> {
-                    BeanUtils.copyProperties(updatedHappyHour, existingHappyHour, "id", "bar");
-                    return happyHourRepository.save(existingHappyHour);
-                })
-                .orElse(null);
+    public void updateHappyHour(Long id, HappyHourDTO updatedHappyHour) {
+        Optional<HappyHour> existingHappyHour = happyHourRepository.findById(id);
+        if(existingHappyHour.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+ id +" not found");
+        
+        BeanUtils.copyProperties(updatedHappyHour, existingHappyHour, "id", "bar");
+        happyHourRepository.save(existingHappyHour.get());
     }
 
     public void deleteHappyHour(Long id) {
+        if(!happyHourRepository.existsById(id)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+ id +" not found");
         happyHourRepository.deleteById(id);
     }
 }

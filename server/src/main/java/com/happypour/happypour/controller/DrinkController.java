@@ -23,41 +23,25 @@ public class DrinkController {
    
     @GetMapping
     public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
-        try {
-            List<DrinkDTO> dtos = drinkService.getAllDTOs();
-            return ResponseEntity.ok(dtos);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        List<DrinkDTO> dtos = drinkService.getAllDTOs();
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
     public ResponseEntity<String> postDrinks(@RequestBody List<DrinkDTO> drinkPostRequest) {
-        try {
-            drinkService.createDrink(drinkPostRequest);
-            return ResponseEntity.ok("Drinks added successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(400).build();
-        }
+        drinkService.createDrink(drinkPostRequest);
+        return ResponseEntity.ok("Drinks added successfully!");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateDrinks(@PathVariable Long id, @RequestBody DrinkDTO drinkDto) {
-        try {
-            drinkService.updateDrink(id, drinkDto);
-            return ResponseEntity.ok("Drinks updated Successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("Update failed: " + e.getMessage());
-        }
+        drinkService.updateDrink(id, drinkDto);
+        return ResponseEntity.ok("Drinks updated Successfully!");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDrinks(@PathVariable Long drinkId) {
-        try {
-            drinkService.deleteDrink(drinkId);
-            return ResponseEntity.ok("Drinks deleted succesfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("FAIL: Deletion of drinks failed!" + e.getMessage());
-        }
+        drinkService.deleteDrink(drinkId);
+        return ResponseEntity.ok("Drinks deleted succesfully!");
     }
 }

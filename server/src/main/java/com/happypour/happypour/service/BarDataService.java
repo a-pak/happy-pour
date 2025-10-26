@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.BarDTO;
 import com.happypour.happypour.dto.BarDataDTO;
@@ -68,7 +70,7 @@ public class BarDataService {
 
     public BarDataDTO getDataDtoById(Long id) {
         Bar bar = barService.getById(id);
-        if (bar == null) return null;
+        if (bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+id+" not found");
 
         BarDataDTO barDataDto = new BarDataDTO();
         BarDTO barDto = new BarDTO(bar);

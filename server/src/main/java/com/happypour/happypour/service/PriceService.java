@@ -49,7 +49,9 @@ public class PriceService {
 
     public List<PriceDTO> getDTOsByBarId(Long barId) {
         List<Price> prices = priceRepository.findByBar(barId);
-        if(prices.isEmpty()) return null;
+        if(prices.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "No prices found for bar id " + barId);
 
         List<PriceDTO> priceDTOs = new ArrayList<>();
         prices.forEach(price -> priceDTOs.add(new PriceDTO(price)));
@@ -58,7 +60,9 @@ public class PriceService {
 
     public List<PriceDTO> getDtoByHappyHourId(Long happyHourId) {
         List<Price> prices = priceRepository.findByHappyHourId(happyHourId);
-        if(prices.isEmpty()) return null;
+        if(prices.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "No prices found for happy hour id " + happyHourId);
 
         List<PriceDTO> priceDTOs = new ArrayList<>();
         prices.forEach(price -> priceDTOs.add(new PriceDTO(price)));
@@ -80,6 +84,8 @@ public class PriceService {
             }
 
             Drink drink = drinkService.getById(dto.getDrinkId());
+            if(drink == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink not found");
+            
             HappyHour happyHour = dto.getHappyHourId() != null ? 
                     happyHourService.getById(dto.getHappyHourId()) : null;
 
@@ -96,7 +102,7 @@ public class PriceService {
         }
     }
     
-    public Price updatePrice(PriceDTO priceDTO) {
+    public void updatePrice(PriceDTO priceDTO) {
         Optional<Price> existingPrice = priceRepository.findById(priceDTO.getId());
         if (existingPrice.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Price not found");
 
@@ -106,8 +112,13 @@ public class PriceService {
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         
         existingPrice.get().setUpdatedBy(user);
-        priceRepository.save(existingPrice.get());
-        return priceRepository.findById(priceDTO.getId()).get();
+
+        try {
+            priceRepository.save(existingPrice.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public void deleteById(Long id) {
