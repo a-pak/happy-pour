@@ -47,7 +47,7 @@ public class HappyHourService {
     }
     public List<HappyHourDTO> getDTOsByBarId(Long barId) {
         List<HappyHour> happyHours = happyHourRepository.findByBarId(barId);
-        if(happyHours.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hours with bar id "+ barId +" not found");
+        if(happyHours.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hours for bar id "+ barId +" not found");
 
         List<HappyHourDTO> happyHourDTOs = new ArrayList<>();
         happyHours.forEach(happyHour -> happyHourDTOs.add(new HappyHourDTO(happyHour)));

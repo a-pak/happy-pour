@@ -3,6 +3,11 @@ import api from '../utils/axiosInstance';
 
 const HAPPY_HOUR_URL : string = "/happyhours";
 
+export const getHappyHoursByBar = async (barId: number) => {
+    const response = await api.get(HAPPY_HOUR_URL + `/by-bar/${barId}`);
+    return response.data;
+}
+
 export const getHappyHour = async (id : number) => {
     const response = await api.get(HAPPY_HOUR_URL + `/${id}`);
     return response.data;
