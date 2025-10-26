@@ -13,11 +13,13 @@ import {
   Grid2,
   Card
 } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {HappyHourDTO, WeekDay } from '../model/IHappyHourInterface'
 import { createHappyHour } from '../services/happyhours'; // Adjust import path
 import { useUserStore } from '../store/userStore';
 import { useErrorStore } from '../store/errorStore';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import theme from '../Theme';
 
 const weekDays: WeekDay[] = [
   'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',
@@ -61,15 +63,31 @@ const HappyHourSubmitPage: React.FC = () => {
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 3, mt: 3}}>
-        
-        {/*Raksalla 👷*/}
-        <Card sx={{ bgcolor: 'yellow' }}>
-            <Typography padding="10px"variant="h5" gutterBottom color='black'>
+      
+      
+      {/*Raksalla 👷*/}
+        <Card sx={{ bgcolor: 'yellow', marginTop: '20px'}}>
+            <Typography padding="10px"variant="h5" gutterBottom color='black' align='center'>
                 🚧 Page under construcion! 🚧
             </Typography>
         </Card>
+      
+      
+      
+      <Paper
+        elevation={4}
+        sx={{
+          maxWidth: 500,
+          margin: "4vh auto",
+          padding: 4,
+          position: "relative",
+          borderRadius: 4,
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
         
+       
+        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Map </Button>
         <Typography variant="h5" gutterBottom>
           When is the Happy Hour? 
         </Typography>

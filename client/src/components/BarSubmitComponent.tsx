@@ -13,11 +13,12 @@ import Bar from "../model/IbarInterface";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../store/userStore.ts";
 import { useErrorStore } from '../store/errorStore.ts';
 import theme from "../Theme";
 import { getAddress } from "../services/geocode.ts";
+import { ArrowBack } from "@mui/icons-material";
 
 type Props = {
   barId?: number | null;
@@ -152,20 +153,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <IconButton
-          onClick={() => navigate("/")}
-          sx={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            color: theme.palette.grey[700],
-            "&:hover": {
-              color: theme.palette.error.main,
-            },
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Map </Button>
 
         <Typography variant="h5" fontWeight={600} gutterBottom>
           {barId ? "Update Bar" : "Add Bar"}
