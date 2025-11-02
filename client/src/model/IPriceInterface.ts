@@ -4,9 +4,9 @@ export interface PriceDTO {
   barId: number;
   happyHourId?: number;
   drinkId: number;
-  drinkName: string;
-  drinkType: string;
-  drinkSize: number;
+  drinkName?: string;
+  drinkType?: string;
+  drinkSize?: number;
   createdBy?: string;
   createdAt?: string;
   updatedBy?: string;
