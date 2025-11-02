@@ -3,8 +3,8 @@ FROM maven:3.9.2-eclipse-temurin AS build
 WORKDIR /app
 COPY server/pom.xml ./pom.xml
 COPY server/src ./src
-
-RUN mvn clean package -DskipTests
+# -DskipTests
+RUN mvn clean package
 
 #### Runtime Stage ####
 FROM eclipse-temurin:20-jre-jammy
