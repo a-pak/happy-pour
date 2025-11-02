@@ -10,6 +10,12 @@ const getAll = async (): Promise<BarData[]> => {
     return response.data;
 }
 
+const getByLocation = async (lat: number, lon: number): Promise<BarData[]> => {
+    console.log(import.meta.env.BASE_URL + BARS_URL + `/by-location?lat=${lat}&lon=${lon}`);
+    const response = await api.get(BARS_URL + `/by-location?lat=${lat}&lon=${lon}`);
+    return response.data;
+}
+
 const create = async (newBar: Bar): Promise<Bar> => {
     try {
         const response = await api.post(BARS_URL, newBar);
@@ -53,6 +59,7 @@ const deleteById = async (id: number) => {
 
 export default {
     getAll,
+    getByLocation,
     create,
     update,
     getById,

@@ -67,7 +67,50 @@ public class BarDataService {
 
         return barDataDTOs;
     }
+    public List<BarDataDTO> getBarsByLocation(double lat, double lon) {
+        System.out.println("2. BARDATA: Fetching bars near location: lat=" + lat + ", lon=" + lon);
+        List<Bar> bars = barService.getByLocation(lat, lon);
+        List<HappyHour> happyHours = happyHourService.getAll();
+        List<Price> prices = priceService.getAllPrices();
 
+        List<BarDataDTO> barDataDTOs = new ArrayList<>();
+
+        for (Bar b : bars) {
+            BarDataDTO barDataDto = new BarDataDTO();
+            BarDTO barDto = new BarDTO(b);
+            barDataDto.setBar(barDto);
+            
+            // Get Happy hours associated with this bar
+            for (HappyHour hh : happyHours) {
+                if(hh.getBar().getId() == b.getId()) {
+                    HappyHourDTO hhDto = new HappyHourDTO(hh);
+                    
+                    // Get Happy hour prices associated with this happy hour
+                    for (Price price : prices) {
+                        if(price.getHappyHour() == null) continue; // Skip price if no happy hour
+
+                        if(price.getHappyHour().getId() == hh.getId()) {
+                            PriceDTO priceDTO = new PriceDTO(price);
+                            hhDto.getPrices().add(priceDTO);
+                        }
+                    }
+                    barDataDto.getHappyHours().add(hhDto);
+                }
+            }
+            
+            // Get Normal prices associated with this bar
+            prices.forEach(p -> {
+                if(p.getHappyHour() == null) {
+                    
+                    if(p.getBar() == b) barDataDto.getPrices().add(new PriceDTO(p));
+                }
+            });
+            barDataDTOs.add(barDataDto);
+        }
+
+        return barDataDTOs;
+    }
+    
     public BarDataDTO getDataDtoById(Long id) {
         Bar bar = barService.getById(id);
         if (bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+id+" not found");

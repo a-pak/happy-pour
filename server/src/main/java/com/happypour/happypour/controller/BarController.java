@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/bars")
@@ -24,7 +27,11 @@ public class BarController {
     public List<BarDataDTO> getBars() {
         return barDataService.getAllBars();
     }
-
+    @GetMapping("/by-location")
+    public List<BarDataDTO> getMethodName(@RequestParam double lat, @RequestParam double lon) {
+        return barDataService.getBarsByLocation(lat, lon);
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<BarDataDTO> getBar(@PathVariable Long id) {
         BarDataDTO barDataDTO = barDataService.getDataDtoById(id);

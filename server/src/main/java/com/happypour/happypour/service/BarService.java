@@ -25,6 +25,17 @@ public class BarService {
         return barRepository.findAll();
     }
 
+    public List<Bar> getByLocation(double lat, double lon) {
+        System.out.println("3. BARSERVICE: Fetching bars near lat: " + lat + ", lon: " + lon);
+        List<Bar> bars = barRepository.findByLocation(lat, lon);
+        if(bars.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "No bars found near the provided location."
+        );
+        System.out.println("After!!");
+        return bars;
+    }
+
     public Bar getById(Long id) {
         return barRepository.findById(id).orElse(null);
     }
@@ -71,4 +82,6 @@ public class BarService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+id+" not found.");
         }
     }
+
+    
 }
