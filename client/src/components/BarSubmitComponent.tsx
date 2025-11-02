@@ -4,10 +4,8 @@ import {
   Button,
   Box,
   Typography,
-  IconButton,
   Paper
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import barService from "../services/bars";
 import Bar from "../model/IbarInterface";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
