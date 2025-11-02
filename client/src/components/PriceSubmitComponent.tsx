@@ -25,16 +25,16 @@ import theme from '../Theme.tsx';
 interface PriceSubmitComponentProps { barId: number; happyHourId?: number;}
 
 const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happyHourId}) => {
+  const { user } = useUserStore();
+  const { showNotification } = useErrorStore.getState();
+  const navigate = useNavigate();
+  // ---------- State ----------
   const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>('');
   const [selectedHappyHourId, setSelectedHappyHourId] = useState<number | ''>(happyHourId ?? '');
-  const [price, setPrice] = useState<number | ''>('');
-  const { user } = useUserStore();
-  const navigate = useNavigate();
-  const { showNotification } = useErrorStore.getState();
-
-  const [drinks, setDrinks] = useState<DrinkDTO[]>();
-  const [existingPrices, setExistingPrices] = useState<PriceDTO[]>();
-  const [happyhours, setHappyhours] = useState<HappyHourDTO[]>();
+  const [amount, setAmount] = useState<number | ''>('');
+  const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
+  const [existingPrices, setExistingPrices] = useState<PriceDTO[]>([]);
+  const [happyhours, setHappyhours] = useState<HappyHourDTO[]>([]);
 
   useEffect(() => {
     const fetchDrinks = async () => {
@@ -50,55 +50,65 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
       const data = await getHappyHoursByBar(barId);
       setHappyhours(data);
     }
-    fetchDrinks();
     fetchPrices();
+    fetchDrinks();
     fetchHappyHours();
   }, [barId])
 
-  const selectedDrink = drinks ? drinks.find((drink) => drink.id === selectedDrinkId) : null;
-  const selectedHappyHour = happyhours ? happyhours.find(h => h.id === selectedHappyHourId) : null;
+  // ---------- Selected Drink / HappyHour ----------
+  const selectedDrink = selectedDrinkId !== '' ? drinks.find(d => d.id === Number(selectedDrinkId)) : null;
+  const selectedHappyHour = selectedHappyHourId !== '' ? happyhours.find(h => h.id === Number(selectedHappyHourId)) : null;
 
-  const setExistingPrice = (drinkId : number | '', hhId: number | '') => {
-    const existingPriceDto = existingPrices?.find(
-      (p : PriceDTO) => (p.drinkId === drinkId && (p.happyHourId ?? null) == (hhId ?? null)));
-    
-    console.log('Existing price lookup:', { drinkId, hhId, found: existingPriceDto })
-    setPrice(existingPriceDto ? existingPriceDto.price : '');
-  }
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedDrink || price === '') return;
-
-    let newPriceId : number = -1;
-
-    // Check if a price exists for drink.
-    existingPrices?.forEach(p => {
-      if(p.drinkId === selectedDrink.id && (p.happyHourId ?? null) == (selectedHappyHourId ?? null)) {
-        newPriceId = p.id;
-      }
-    })
-
-    const priceDto: PriceDTO = {
-      id: newPriceId,
-      price: Number(price),
-      barId,
-      happyHourId: selectedHappyHourId === '' ? undefined : selectedHappyHourId,
-      drinkId: selectedDrink.id,
-      drinkName: selectedDrink.name,
-      drinkType: selectedDrink.type,
-      drinkSize: selectedDrink.size,
-      creatorId: user?.id
-    };
-    try {
-      createPrice([priceDto]);
-      navigate("/")
-      showNotification("Price Submitted succesfully!", "success")
-    } catch (error) {
-      console.error("Error submitting orice: ", error);
-      showNotification("Error submitting price", "error")
+  // ---------- Update price input when selection changes ----------
+  useEffect(() => {
+    if (!selectedDrinkId) {
+      setAmount('');
+      return;
     }
+
+    const drinkIdNumber = Number(selectedDrinkId);
+    const happyHourIdNumber = selectedHappyHourId === '' ? undefined : Number(selectedHappyHourId);
+
+    const existingPrice = existingPrices.find(
+      p => p.drinkId === drinkIdNumber && (p.happyHourId ?? undefined) === happyHourIdNumber
+    );
+
+    setAmount(existingPrice ? existingPrice.price : '');
+  }, [selectedDrinkId, selectedHappyHourId, existingPrices]);
+
+  // ---------- Submit Handler ----------
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!selectedDrink || amount === '') return;
+
+  const drinkIdNumber = Number(selectedDrinkId);
+  const happyHourIdNumber = selectedHappyHourId === '' ? undefined : Number(selectedHappyHourId);
+
+  const existingPrice = existingPrices.find(
+    p => p.drinkId === drinkIdNumber && (p.happyHourId ?? undefined) === happyHourIdNumber
+  );
+
+  const priceDto: PriceDTO = {
+    id: existingPrice ? existingPrice.id : -1,
+    price: Number(amount),
+    barId,
+    happyHourId: happyHourIdNumber,
+    drinkId: drinkIdNumber,
+    drinkName: selectedDrink.name,
+    drinkType: selectedDrink.type,
+    drinkSize: selectedDrink.size,
+    creatorId: user?.id
   };
+
+  try {
+    await createPrice([priceDto]);
+    navigate("/");
+    showNotification("Price submitted successfully!", "success");
+  } catch (error) {
+    console.error("Error submitting price:", error);
+    showNotification("Error submitting price", "error");
+  }
+}
 
   return (
     <Paper
@@ -124,7 +134,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
           onChange={(e) => {
             const newDrinkId = Number(e.target.value);
             setSelectedDrinkId(newDrinkId);
-            setExistingPrice(newDrinkId, selectedHappyHourId);
+            // setExistingPrice(newDrinkId, selectedHappyHourId);
           }}
           displayEmpty // <-- Key to show placeholder
           renderValue={(selected) => {
@@ -159,7 +169,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
           onChange={(e) => {
             const newHhId = Number(e.target.value) === 0 ? 0 : Number(e.target.value);
             setSelectedHappyHourId(newHhId === 0 ? 0 : newHhId);
-            setExistingPrice(selectedDrinkId, newHhId === 0 ? 0 : newHhId);
+            // setExistingPrice(selectedDrinkId, newHhId === 0 ? 0 : newHhId);
           }}
           displayEmpty
           renderValue={(selected) => {
@@ -204,8 +214,8 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
             margin="normal"
             label="Price"
             inputProps={{ min: 0, step: 0.01 }}
-            value={price}
-            onChange={(e) => setPrice(e.target.value === '' ? '' : Number(e.target.value))}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
             required
           />
           
@@ -224,6 +234,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
     </Paper>
   );
 };
+
 
 export default PriceSubmitComponent;
 // ...existing code...
