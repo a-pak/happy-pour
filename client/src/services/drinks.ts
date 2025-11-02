@@ -5,7 +5,6 @@ import api from '../utils/axiosInstance';
 const DRINKS_URL : string = "/drinks";
 
 export const getAllDrinks = async (): Promise<DrinkDTO[]> => {
-    console.log(import.meta.env.BASE_URL + DRINKS_URL);
     const response = await api.get(DRINKS_URL);
     return response.data;
 }
