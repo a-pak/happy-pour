@@ -8,8 +8,9 @@ import {
   Card,
   CardContent,
   Divider,
+  Button,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import { BarData } from '../model/IbarInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
@@ -127,6 +128,7 @@ const BarDetailsPage: React.FC = () => {
                       </ListItem>
                     ))}
                   </List>
+                  <Link to={`/bars/${bar.id}/happy-hours/update/${hh.id}`}><Button>Edit! ✏️</Button></Link>
                   <Divider sx={{ marginY: 2 }} />
                 </Box>
               ))
@@ -160,6 +162,14 @@ const BarDetailsPage: React.FC = () => {
             </List>
           </CardContent>
         </Card>
+        <Box>
+          <Button component={Link} 
+            to={`/bars/${bar.id}/delete`} 
+            variant="outlined"
+            sx={{ mt: 2 }}>
+            Delete Bar 🗑️
+          </Button>
+        </Box>
       </Box>
     </>
   );

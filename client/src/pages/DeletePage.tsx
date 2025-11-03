@@ -5,6 +5,7 @@ import { BarData } from "../model/IbarInterface";
 import { useErrorStore } from "../store/errorStore";
 import { Typography, Box, Button, List, ListItemText, ListItem, Grid, IconButton, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'; // 👈 Add this line
+import { PriceDTO } from "../model/IPriceInterface";
 
 
 const DeletePage : React.FC = () => {
@@ -42,10 +43,14 @@ const DeletePage : React.FC = () => {
     const handleCancel = () => {
         navigate(-1);
     }
-    const getDrinkPrice = (drinkName: string) => {
-      if (!barData) return 'N/A';
-      const normalDrink = barData.prices.find((d: any) => d.name === drinkName);
-      return normalDrink ? `${normalDrink.price} €` : 'N/A';
+
+    const getDrinkPrice = (drinkNameOrType: string) => {
+      if (!barData || !Array.isArray(barData.prices)) return 'N/A';
+      const p = barData.prices.find((d: any) =>
+        (d.drinkType && d.drinkType === drinkNameOrType) ||
+        (d.name && d.name === drinkNameOrType)
+      );
+      return p ? `${p.price} €` : 'N/A';
     };
     if (!barData) {
         return (
@@ -85,30 +90,42 @@ const DeletePage : React.FC = () => {
           {barData.bar.address}
         </Typography>
         <List>
-          {barData.prices.map((drink: any) => (
-            <ListItem key={drink.id} disablePadding sx={{ color: '#e0cfff' }}>
-              <ListItemText
-                primary={drink.name}
-                secondary={getDrinkPrice(drink.name)}
-                primaryTypographyProps={{ sx: { fontWeight: 'bold' } }}
-              />
-            </ListItem>
-          ))}
-          {/*
-          <ListItem disablePadding>
-            <ListItemText primary="Entry Fee" secondary={`${barData.bar.entryFee} €`} />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemText primary="Cloakroom Fee" secondary={`${barData.bar.cloakroomFee} €`} />
-          </ListItem>
-          */}
-          {barData.happyHours && (
+          {Array.isArray(barData.prices) && barData.prices.length > 0 ? (
+            barData.prices.map((p: PriceDTO) => (
+              <ListItem key={p.id ?? `${p.drinkType ?? p.drinkName}-${p.price}`} disablePadding sx={{ color: '#e0cfff' }}>
+                <ListItemText
+                  primary={p.drinkName ?? 'Unknown drink'}
+                  secondary={p.price != null ? `${p.price} €` : 'N/A'}
+                  primaryTypographyProps={{ sx: { fontWeight: 'bold' } }}
+                />
+              </ListItem>
+            ))
+          ) : (
             <ListItem disablePadding>
-              <ListItemText
-                primary="Happy Hour"
-                secondary={`${barData.happyHours} - ${barData.happyHours}`}
-              />
+              <ListItemText primary="No price data available" />
             </ListItem>
+          )}
+          {/* Happy hours (if present as array of HappyHourDTO) */}
+          {Array.isArray(barData.happyHours) && barData.happyHours.length > 0 && (
+            <>
+              <ListItem disablePadding sx={{ mt: 1 }}>
+                <ListItemText primary="Happy Hours" primaryTypographyProps={{ sx: { fontWeight: 'bold' } }} />
+              </ListItem>
+              {barData.happyHours.map((hh: any) => {
+                const start = hh.startTime ? hh.startTime.replace(/:00$/,'') : '';
+                const end = hh.endTime ? hh.endTime.replace(/:00$/,'') : '';
+                const days = hh.weekDays ? (Array.isArray(hh.weekDays) ? hh.weekDays.join(', ') : String(hh.weekDays)) : '';
+                return (
+                  <ListItem key={hh.id ?? `${start}-${end}`} disablePadding>
+                    <ListItemText
+                      primary={`${start} - ${end}`}
+                      secondary={days || 'Days not specified'}
+                      sx={{ color: '#e0cfff' }}
+                    />
+                  </ListItem>
+                );
+              })}
+            </>
           )}
         </List>
 
