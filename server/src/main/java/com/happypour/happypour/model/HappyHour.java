@@ -42,6 +42,7 @@ public class HappyHour {
     @ElementCollection(targetClass = WeekDay.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "weekdays", joinColumns = @JoinColumn(name = "happy_hour_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE) // ensure DB FK uses ON DELETE CASCADE
     @Column(name = "weekday")
     private Set<WeekDay> weekDays;
 
