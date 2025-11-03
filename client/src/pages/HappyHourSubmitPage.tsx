@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormGroup,
-  FormControlLabel,
-  TextField,
   Typography,
   Container,
-  Paper,
   Grid2,
-  Card
+  TextField,
+  useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { MobileTimePicker, DesktopTimePicker } from '@mui/x-date-pickers';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { HappyHourDTO, WeekDay } from '../model/IHappyHourInterface'
-import { createHappyHour } from '../services/happyhours'; // Adjust import path
+import { createHappyHour, getHappyHour, updateHappyHour } from '../services/happyhours'; // added fetch/update
 import { useUserStore } from '../store/userStore';
 import { useErrorStore } from '../store/errorStore';
 import ArrowBack from '@mui/icons-material/ArrowBack';
-import theme from '../Theme';
-import { BorderColor } from '@mui/icons-material';
-import { TimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import { PriceDTO } from '../model/IPriceInterface';
 
 const weekDays: WeekDay[] = [
   'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',
 ];
 
 const HappyHourSubmitPage: React.FC = () => {
-  const { barId } = useParams<{ barId: string }>();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { barId, hhId } = useParams<{ barId: string; hhId?: string }>();
   const [selectedDays, setSelectedDays] = useState<WeekDay[]>([]);
   const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(dayjs());
   const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs());
+  const [prices, setPrices] = useState<PriceDTO[]>([]);
   const { user } = useUserStore();
   const { showNotification } = useErrorStore();
   const navigate = useNavigate();
-  // Add state for prices if needed
+
+  useEffect(() => {
+    if (!hhId) return;
+    (async () => {
+      try {
+        const hh = await getHappyHour(Number(hhId));
+        setSelectedDays(hh.weekDays || []);
+        setStartTime(hh.startTime ? dayjs(hh.startTime, 'HH:mm:ss') : null);
+        setEndTime(hh.endTime ? dayjs(hh.endTime, 'HH:mm:ss') : null);
+        setPrices(hh.prices || []);
+      } catch (err) {
+        showNotification('Failed to load happy hour', 'error');
+        console.error(err);
+      }
+    })();
+  }, [hhId, showNotification]);
 
   const handleDayChange = (day: WeekDay) => {
     setSelectedDays(prev =>
@@ -58,40 +71,34 @@ const HappyHourSubmitPage: React.FC = () => {
       return;
     }
 
-    if (barId || startTime || endTime) {
+    const isEditing = Boolean(hhId);
+
+    if (barId && startTime && endTime) {
       const happyHour: HappyHourDTO = {
-        id: 0, // Will be set by backend
+        id: isEditing ? Number(hhId) : -1, // backend will set id when creating
         weekDays: selectedDays,
         startTime: startTime.format('HH:mm:ss'),
         endTime: endTime.format('HH:mm:ss'),
         barId: Number(barId),
-        prices: [], // Populate as needed
+        prices: prices,
         creatorId: user?.id,
       };
       try {
-        await createHappyHour(happyHour);
-        showNotification("Happy hour submitted successfully", "success")
+        if (isEditing) {
+          await updateHappyHour(happyHour);
+          showNotification('Happy hour updated successfully', 'success');
+        } else {
+          await createHappyHour(happyHour);
+          showNotification('Happy hour submitted successfully', 'success');
+        }
         navigate(-1);
       } catch (error) {
-        showNotification('Failed to create happy hour', "error");
+        showNotification(isEditing ? 'Failed to update happy hour' : 'Failed to create happy hour', 'error');
       }
     } else {
-      showNotification('Please fill all fields correctly', "warning");
+      showNotification('Please fill all fields correctly', 'warning');
     }
   };
-
-  function pageUnderConstruction() {
-    return (
-      <>
-        {/* Raksalla 👷*/}
-        <Card sx={{ bgcolor: 'yellow', marginTop: '20px' }}>
-          <Typography padding="10px" variant="h5" gutterBottom color='black' align='center'>
-            🚧 Page under construcion! 🚧
-          </Typography>
-        </Card> 
-      </>
-    )
-  }
 
   return (
     <Container maxWidth="md">
@@ -107,10 +114,13 @@ const HappyHourSubmitPage: React.FC = () => {
           Back to Map
         </Button>
         <Typography variant="h5" gutterBottom>
-          When is the Happy Hour?
+          {hhId ? 'Edit Happy Hour' : 'When is the Happy Hour?'}
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid2 container spacing={2}>
+            <Typography gutterBottom sx={{mt:'15px', mb:'-15px'}}>
+              Select days when the Happy Hour takes place:
+            </Typography>
             <Grid2 container spacing={0} sx={{ overflowX: 'auto', flexWrap: 'nowrap', py: 1, mb: 2 }}>
               {weekDays.map(day => (
                 <Box
@@ -120,7 +130,7 @@ const HappyHourSubmitPage: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    width: { xs: 40, sm: 60 }, // Smaller on mobile (xs), normal on sm+
+                    width: { xs: 42, sm: 69.9 }, // Smaller on mobile (xs), normal on sm+
                     borderRadius: 2,
                     overflow: "hidden",
                     boxShadow: 1,
@@ -128,7 +138,7 @@ const HappyHourSubmitPage: React.FC = () => {
                       boxShadow: 3,
                       cursor: "pointer",
                     },
-                    marginRight: 0.3,
+                    marginRight: 0.2,
                     flexShrink: 0,
                   }}
                 >
@@ -179,22 +189,44 @@ const HappyHourSubmitPage: React.FC = () => {
                 </Box>
               ))}
             </Grid2>
-
+              <Typography gutterBottom sx={{mt:'-5px'}}>
+              Enter the start and end times for the Happy Hour:
+            </Typography>
             <Grid2 container spacing={1} alignItems="center">
               <Grid2 container spacing={1}>
                 <Grid2 size={{ xs: 6 }}>
-                  <TimePicker
-                    label="Start Time"
-                    value={startTime}
-                    onChange={(newValue) => setStartTime(newValue)}
-                  />
+                  {isMobile ? (
+                    <MobileTimePicker
+                      label="Start Time"
+                      ampm={false}
+                      value={startTime}
+                      onChange={(newValue) => setStartTime(newValue)}
+                    />
+                  ) : (
+                    <DesktopTimePicker
+                      label="Start Time"
+                      ampm={false}
+                      value={startTime}
+                      onChange={(newValue) => setStartTime(newValue)}
+                    />
+                  )}
                 </Grid2>
                 <Grid2 size={{ xs: 6 }}>
-                  <TimePicker
-                    label="End Time"
-                    value={endTime}
-                    onChange={(newValue) => setEndTime(newValue)}
-                  />
+                  {isMobile ? (
+                    <MobileTimePicker
+                      label="End Time"
+                      ampm={false}
+                      value={endTime}
+                      onChange={(newValue) => setEndTime(newValue)}
+                    />
+                  ) : (
+                    <DesktopTimePicker
+                      label="End Time"
+                      ampm={false}
+                      value={endTime}
+                      onChange={(newValue) => setEndTime(newValue)}
+                    />
+                  )}
                 </Grid2>
               </Grid2>
               <Grid2 size={12}>

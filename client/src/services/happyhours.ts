@@ -19,8 +19,8 @@ export const createHappyHour = async (happyHour: HappyHourDTO) => {
     return response.data;
 }
 
-export const updateHappyHour = async (happyHour: HappyHourDTO) => {
+export const updateHappyHour = async ( happyHour: HappyHourDTO) => {
     console.log(happyHour);
-    const response = await api.put(HAPPY_HOUR_URL, happyHour);
+    const response = await api.put(`${HAPPY_HOUR_URL}/${happyHour.id}`, happyHour);
     return response.data;
 }
