@@ -8,6 +8,7 @@ import {
   Typography,
   FormControl,
   Paper,
+  Container,
 } from '@mui/material';
 import { DrinkDTO } from '../model/IdrinkInterface.ts';
 import { PriceDTO } from '../model/IPriceInterface.ts';
@@ -16,7 +17,7 @@ import { useErrorStore } from '../store/errorStore.ts';
 import { getAllDrinks } from '../services/drinks.ts';
 import { getByBarId, createPrice } from '../services/prices.ts';
 import { getHappyHoursByBar } from '../services/happyhours.ts';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { HappyHourDTO } from '../model/IHappyHourInterface.ts';
 import { ArrowBack } from '@mui/icons-material';
 import theme from '../Theme.tsx';
@@ -25,6 +26,8 @@ import theme from '../Theme.tsx';
 interface PriceSubmitComponentProps { barId: number; happyHourId?: number;}
 
 const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happyHourId}) => {
+  const [searchParams] = useSearchParams();
+  const happyHourParam = searchParams.get("hhId")
   const { user } = useUserStore();
   const { showNotification } = useErrorStore.getState();
   const navigate = useNavigate();
@@ -53,6 +56,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
     fetchPrices();
     fetchDrinks();
     fetchHappyHours();
+    if(happyHourParam) setSelectedHappyHourId(Number(happyHourParam));
   }, [barId])
 
   // ---------- Selected Drink / HappyHour ----------
@@ -111,20 +115,17 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
 }
 
   return (
-    <Paper
-      elevation={4}
+    <Container
       sx={{
         maxWidth: 500,
         margin: "4vh auto",
         padding: 4,
-        position: "relative",
-        borderRadius: 4,
-        backgroundColor: theme.palette.background.default,
+        position: "relative"
       }}
     ><Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Bar </Button>
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Submit Price
+        Submit Price 💶
       </Typography>
       {/* Drink picker */}
       <FormControl fullWidth margin="normal">
@@ -231,7 +232,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
         </>
       )}
     </Box>
-    </Paper>
+    </Container>
   );
 };
 
