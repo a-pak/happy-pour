@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +23,8 @@ import com.happypour.happypour.model.enums.WeekDay;
 public class HappyHourDTO {
     private Long id;
     private Set<WeekDay> weekDays;
-    private String startTime;
-    private String endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private Long barId;
     private String createdBy;
     private String createdAt;
@@ -37,8 +38,8 @@ public class HappyHourDTO {
         this.id = happyHour.getId();
         this.barId = happyHour.getBar().getId();
         this.weekDays = happyHour.getWeekDays(); // Convert Set<WeekDay> to String[]
-        this.startTime = happyHour.getStartTime().toString();
-        this.endTime = happyHour.getEndTime().toString();
+        this.startTime = happyHour.getStartTime();
+        this.endTime = happyHour.getEndTime();
         this.createdBy = happyHour.getCreatedBy().getUsername();
         this.createdAt = happyHour.getCreatedAt().toString();
         this.creatorId = happyHour.getCreatedBy().getId();

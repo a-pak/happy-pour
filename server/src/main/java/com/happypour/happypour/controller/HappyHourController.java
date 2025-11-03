@@ -46,7 +46,7 @@ public class HappyHourController {
         return ResponseEntity.ok("Happy hour created with id: " + createdHappyHour.getId());
     }
     
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateHappyHour(@PathVariable Long id, @RequestBody HappyHourDTO dto) {
         happyHourService.updateHappyHour(id, dto);
         return ResponseEntity.ok("Happy hour updated with id: " + id);

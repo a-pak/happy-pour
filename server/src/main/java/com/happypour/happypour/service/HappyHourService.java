@@ -64,8 +64,8 @@ public class HappyHourService {
         HappyHour happyHour = HappyHour.builder()
                 .id(null)
                 .bar(bar)
-                .startTime(LocalTime.parse(happyHourDTO.getStartTime()))
-                .endTime(LocalTime.parse(happyHourDTO.getEndTime()))
+                .startTime(happyHourDTO.getStartTime())
+                .endTime(happyHourDTO.getEndTime())
                 .weekDays(happyHourDTO.getWeekDays())
                 .createdBy(user)
                 .updatedBy(user)
@@ -77,8 +77,31 @@ public class HappyHourService {
         Optional<HappyHour> existingHappyHour = happyHourRepository.findById(id);
         if(existingHappyHour.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+ id +" not found");
         
-        BeanUtils.copyProperties(updatedHappyHour, existingHappyHour, "id", "bar");
-        happyHourRepository.save(existingHappyHour.get());
+        HappyHour existing = existingHappyHour.get();
+        
+        // Map simple fields from DTO -> entity (only allowed/meaningful fields)
+        if (updatedHappyHour.getStartTime() != null) {
+            existing.setStartTime(updatedHappyHour.getStartTime());
+        }
+        if (updatedHappyHour.getEndTime() != null) {
+            existing.setEndTime(updatedHappyHour.getEndTime());
+        }
+        if (updatedHappyHour.getWeekDays() != null) {
+            existing.setWeekDays(updatedHappyHour.getWeekDays());
+        }
+        
+        // If caller provided a user id for the updater, set updatedBy
+        if (updatedHappyHour.getCreatorId() != null) {
+            User updater = userService.getById(updatedHappyHour.getCreatorId());
+            if (updater == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            existing.setUpdatedBy(updater);
+        }
+        
+        // TODO: map prices list if your domain requires updating Price entities here.
+        // e.g. priceService.updatePricesForHappyHour(existing, updatedHappyHour.getPrices());
+        
+        System.out.println("Updating Happy hour: "+ existing.toString());
+        happyHourRepository.save(existing);
     }
 
     public void deleteHappyHour(Long id) {
