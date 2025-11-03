@@ -7,7 +7,6 @@ import {
   TextField,
   Typography,
   FormControl,
-  Paper,
   Container,
 } from '@mui/material';
 import { DrinkDTO } from '../model/IdrinkInterface.ts';
@@ -20,7 +19,6 @@ import { getHappyHoursByBar } from '../services/happyhours.ts';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { HappyHourDTO } from '../model/IHappyHourInterface.ts';
 import { ArrowBack } from '@mui/icons-material';
-import theme from '../Theme.tsx';
 
 // ...existing code...
 interface PriceSubmitComponentProps { barId: number; happyHourId?: number;}
