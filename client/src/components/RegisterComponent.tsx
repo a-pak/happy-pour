@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { registerAPI } from "../services/auth";
 import RegisterPayload from "../model/IRegisterPayloadInterface";
-import {useNavigate} from "react-router-dom";
-import { useErrorStore } from '../store/errorStore.ts';
+import { useNavigate } from "react-router-dom";
+import { useErrorStore } from '../store/errorStore';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Paper
+} from '@mui/material';
 
 const RegisterComponent = () => {
     const { showNotification } = useErrorStore.getState();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState(''); // 1. Add state for confirm password
+    const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -60,59 +68,97 @@ const RegisterComponent = () => {
     }
 
     return (
-        <div className="wrapper margin-top">
-            <h2>Create a new account</h2>
-            <form onSubmit={handleSubmit} className="form">
-                <div className="wrapper">
-                    <input
-                        className="form-item"
-                        type="text"
-                        id="username"
-                        placeholder="Enter username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="wrapper">
-                    <input
-                        className="form-item"
-                        type="email"
-                        id="email"
-                        placeholder="Enter email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="wrapper">
-                    <input
-                        className="form-item"
-                        type="password"
-                        id="password"
-                        value={password}
-                        placeholder="Enter password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                {/* 2. Add Input Field for Confirm Password */}
-                <div className="wrapper">
-                    <input
-                        className="form-item"
-                        type="password"
-                        id="confirmPassword"
-                        value={confirmPassword}
-                        placeholder="Confirm password"
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="wrapper">
-                    <button className="form-item" type="submit">Register</button>
-                </div>
-            </form>
-        </div>
+        <Container maxWidth="sm">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Paper
+                    elevation={3}
+                    sx={{
+                        p: 4,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        width: '100%',
+                    }}
+                >
+                    <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                        Create a new account
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="username"
+                            label="Username"
+                            name="username"
+                            autoComplete="username"
+                            autoFocus
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            id="confirmPassword"
+                            autoComplete="new-password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            sx={{ mb: 3 }}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{
+                                mt: 2,
+                                mb: 2,
+                                height: '45px'
+                            }}
+                        >
+                            Register
+                        </Button>
+                    </Box>
+                </Paper>
+            </Box>
+        </Container>
     );
 };
+
 export default RegisterComponent;
