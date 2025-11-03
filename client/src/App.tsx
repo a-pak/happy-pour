@@ -32,11 +32,12 @@ function App() {
               <Routes>
                 <Route element={<LayoutComponent />}>
                   <Route path='' element={<LandingPage />}>
+                    <Route path="/bars" element={<BarListPage />} />
                     <Route path="bars/:id" element={<BarDetailsDrawer />} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
 
-                  <Route path="/bars" element={<BarListPage />} />
+                  
                   <Route path="/bars/:id/details" element={<BarDetailsPage />} />
 
                   <Route path="/login" element={<LogInPage />} />
@@ -52,6 +53,7 @@ function App() {
                     <Route path='/drinks/update' element={<DrinkPage/>}/>
                     <Route path='/bars/delete' element={<DeletePage />} />
                     <Route path='bars/:barId/happy-hours/create' element={<HappyHourSubmitPage />} />
+                    <Route path='bars/:barId/happy-hours/update/:hhId' element={<HappyHourSubmitPage />} />
                     <Route path='/bars/:barId/prices/update' element={<PriceSubmitPage />} />
                     <Route path='/bars/:barId/happy-hours/:hhId/prices/update' element={<PriceSubmitPage />} />
                   </Route>
