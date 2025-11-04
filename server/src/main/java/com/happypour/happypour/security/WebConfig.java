@@ -14,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
+                        "https://happypour.duckdns.org",
                         "http://79.76.55.167",
                         "http://10.200.200.1",
                         "http://localhost:8080",

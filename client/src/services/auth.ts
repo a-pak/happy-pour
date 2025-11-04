@@ -35,7 +35,9 @@ export const registerAPI = async (registerPayload: RegisterPayload) => {
 
     return await axios.post(
         BASE_URL + "/register",
-        registerPayload
+        registerPayload, {
+          withCredentials: true
+        }
     );
 
 };
