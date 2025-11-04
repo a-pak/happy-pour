@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BarService from "../services/bars";
 import { BarData } from "../model/IbarInterface";
 import { useErrorStore } from "../store/errorStore";
-import { Typography, Box, Button, List, ListItemText, ListItem, Grid, IconButton, Paper } from '@mui/material';
+import { Typography, Box, Button, List, ListItemText, ListItem, IconButton, Paper, Grid2 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'; // 👈 Add this line
 import { PriceDTO } from "../model/IPriceInterface";
 
@@ -44,14 +44,6 @@ const DeletePage : React.FC = () => {
         navigate(-1);
     }
 
-    const getDrinkPrice = (drinkNameOrType: string) => {
-      if (!barData || !Array.isArray(barData.prices)) return 'N/A';
-      const p = barData.prices.find((d: any) =>
-        (d.drinkType && d.drinkType === drinkNameOrType) ||
-        (d.name && d.name === drinkNameOrType)
-      );
-      return p ? `${p.price} €` : 'N/A';
-    };
     if (!barData) {
         return (
           <Box sx={{ color: '#b57edc', textAlign: 'center', mt: 4 }}>
@@ -73,18 +65,18 @@ const DeletePage : React.FC = () => {
           margin: '0 auto',
         }}
       >
-        <Grid container spacing={1} alignItems="center">
-          <Grid item xs={10}>
+        <Grid2 container spacing={1} alignItems="center">
+          <Grid2>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#d1b3ff' }}>
               {barData.bar.name}
             </Typography>
-          </Grid>
-          <Grid item xs={2} sx={{ textAlign: 'right' }}>
+          </Grid2>
+          <Grid2 sx={{ textAlign: 'right' }}>
             <IconButton onClick={() => navigate('/')} sx={{ color: '#b57edc' }}>
               <CloseIcon />
             </IconButton>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
         <Typography variant="subtitle1" sx={{ color: '#d1b3ff', mt: 1 }}>
           {barData.bar.address}

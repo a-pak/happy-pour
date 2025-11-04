@@ -1,6 +1,5 @@
 import LoginComponent from "../components/LoginComponent"
 import { Link, useLocation } from "react-router-dom"
-import "./styles/Auth.css";
 import { useErrorStore } from "../store/errorStore.ts";
 import { useEffect } from "react";
 

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import RegisterComponent from '../components/RegisterComponent';
-import './styles/Auth.css';
 const RegisterPage: React.FC = () => {
     return (
 

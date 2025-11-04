@@ -1,39 +1,64 @@
-import {useUserStore} from "../store/userStore.ts";
+import { useUserStore } from "../store/userStore.ts";
 import { useNavigate } from "react-router-dom";
 import { useErrorStore } from "../store/errorStore.ts";
-import "./styles/Auth.css";
+import { Box, Typography, Button, Container } from '@mui/material';
 
 export const ProfilePage = () => {
-    const {user, setUser} = useUserStore();
+    const { user, setUser } = useUserStore();
     const navigate = useNavigate();
-    const {showNotification} = useErrorStore.getState();
+    const { showNotification } = useErrorStore.getState();
     
     function handleLogout() {
         setUser(null);
         showNotification("You have logged out successfully.", "success");
 
-        // Give React a moment to unmount the protected route
         setTimeout(() => {
-                navigate('/');
-        }, 0); // or 10–50ms if needed
+            navigate('/');
+        }, 0);
     }
-
     
-    return user === null ? (
-        <div className="wrapper">
-            <h1>Profile Settings</h1>
-            <p>No user is logged in. Please Login to access profile settings!</p>
-            <div className="wrapper">
-              <button className="form-item" onClick={() => navigate('/login')}>Log in</button>
-          </div>
-        </div>
-      ) : (
-        <div className="wrapper">
-            <h1>Profile Settings</h1>
-            <p>This is where {user!==null ? user.username : 'user'}`s profile settings are going to be.</p>
-            <div className="wrapper">
-                <button className="form-item" onClick={handleLogout}>Log out</button>
-            </div>
-        </div>
-      );
-}
+    return (
+        <Container maxWidth="sm">
+            <Box sx={{ 
+                mt: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 3
+            }}>
+                <Typography variant="h4" component="h1">
+                    Profile Settings
+                </Typography>
+                
+                {user === null ? (
+                    <>
+                        <Typography variant="body1">
+                            No user is logged in. Please Login to access profile settings!
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate('/login')}
+                            size="large"
+                        >
+                            Log in
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Typography variant="body1">
+                            This is where {user.username}'s profile settings are going to be.
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={handleLogout}
+                            size="large"
+                        >
+                            Log out
+                        </Button>
+                    </>
+                )}
+            </Box>
+        </Container>
+    );
+};
