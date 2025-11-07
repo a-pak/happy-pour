@@ -47,15 +47,15 @@ export const ContactPage = () => {
           Have feedback, questions, or partnership ideas?
           <br /><br />
           📧 Email us at:{' '}
-          <MuiLink href="mailto:hello@happypour.app" underline="hover" sx={{ color: '#b57edc' }}>
-            hello@happypour.app
+          <MuiLink href="mailto:kuivalainenap@gmail.com" underline="hover" sx={{ color: '#b57edc' }}>
+              kuivalainenap@gmail.com
           </MuiLink>
           <br /><br />
           📍 Based in Helsinki, Finland.
           <br /><br />
-          Follow us on Instagram:{' '}
-          <MuiLink href="https://instagram.com/happypour" target="_blank" underline="hover" sx={{ color: '#b57edc' }}>
-            @happypour
+          Follow the project at {' '}
+          <MuiLink href="https://github.com/a-pak/happypour" target="_blank" underline="hover" sx={{ color: '#b57edc' }}>
+            GitHub
           </MuiLink>
         </Typography>
       </Paper>
