@@ -1,0 +1,38 @@
+/* background, text, padding, rounded corners */
+.leaflet-tooltip.marker-tooltip {
+  background: white; /* dark background */
+  color: green;
+  border-color: green !important;
+  border-style: double;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 1;
+  box-shadow: none; /* remove default shadow */
+  border: none; /* remove default border */
+}
+
+/* remove default margins inside content */
+.leaflet-tooltip.marker-tooltip .leaflet-tooltip-content {
+  margin: 0;
+  line-height: 1;
+}
+
+/* if Leaflet's tooltip arrow needs color override (depends on Leaflet version),
+   override the pseudo-element (use !important only if necessary) */
+.leaflet-tooltip.marker-tooltip::after {
+  /* Make the arrow the same color as the tooltip background */
+  border-top-color: green;
+  border-bottom-color: green;
+  border-right-color: green;
+  border-left-color: green;
+  border-width: 12px !important; /* Make arrow more visible */
+  box-shadow: none !important;
+}
+
+/* smaller inner element if you want different spacing */
+.marker-tooltip__content {
+  display: inline-block;
+  white-space: nowrap;
+} 
