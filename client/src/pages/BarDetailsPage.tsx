@@ -9,16 +9,22 @@ import {
   CardContent,
   Divider,
   Button,
+  IconButton,
+  Collapse,
 } from '@mui/material';
+import { Edit as EditIcon } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
 import { BarData } from '../model/IbarInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import FloatingEditMenu from '../components/FloatingEditMenu.tsx';
+import theme from '../Theme.tsx';
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [barData, setBarData] = useState<BarData | null>(null);
+    const [showHH, setShowHH] = useState(false);
+
 
   useEffect(() => {
     if (id) {
@@ -70,17 +76,37 @@ const BarDetailsPage: React.FC = () => {
 
         {/* Active Happy Hour */}
         {activeHH && (
-          <Card sx={{ marginBottom: 4 }}>
+          <Card sx={{ marginBottom: 4, backgroundColor: theme.palette.secondary.light }}>
             <CardContent>
-              <Typography variant="h5" gutterBottom sx={{ color: 'success.main' }}>
-                🎉 Happy Hour!
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h5" gutterBottom sx={{ color: 'success.main' }}>
+                  🎉 Happy Hour!
+                </Typography>
+                <IconButton
+                  component={Link}
+                  to={`/bars/${bar.id}/happy-hours/update/${activeHH.id}`}
+                  sx={{ color: 'white' }}
+                  size="small"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Box>
+
               <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
                 {activeHH.startTime} to {activeHH.endTime}
               </Typography>
+
               <List>
                 {activeHH.prices.map(price => (
-                  <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
+                  <ListItem
+                    key={price.id}
+                    sx={{
+                      paddingY: 0.5,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
                     <ListItemText
                       primary={
                         <Typography variant="body1">
@@ -93,6 +119,14 @@ const BarDetailsPage: React.FC = () => {
                         </Typography>
                       }
                     />
+                          <IconButton
+                            component={Link}
+                            to={`/bars/${bar.id}/prices/update/${price.id}`}
+                            sx={{ color: 'white' }}
+                            size="small"
+                          >
+                            <EditIcon />
+                          </IconButton>
                   </ListItem>
                 ))}
               </List>
@@ -100,43 +134,6 @@ const BarDetailsPage: React.FC = () => {
           </Card>
         )}
 
-        {/* All Happy Hours */}
-        <Card sx={{ marginBottom: 4 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>🍻 Happy Hours</Typography>
-            {happyHours && happyHours.length > 0 ? (
-              happyHours.map(hh => (
-                <Box key={hh.id} sx={{ marginBottom: 3 }}>
-                  <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-                    {hh.weekDays.join(', ')} — {hh.startTime} to {hh.endTime}
-                  </Typography>
-                  <List>
-                    {hh.prices.map(price => (
-                      <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1">
-                              {price.drinkName} ({price.drinkType}, {price.drinkSize}l)
-                            </Typography>
-                          }
-                          secondary={
-                            <Typography variant="body2" color="text.secondary">
-                              {price.price.toFixed(2)}€
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                  <Link to={`/bars/${bar.id}/happy-hours/update/${hh.id}`}><Button>Edit! ✏️</Button></Link>
-                  <Divider sx={{ marginY: 2 }} />
-                </Box>
-              ))
-            ) : (
-              <Typography variant="body2">No happy hours available.</Typography>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Regular Prices */}
         <Card>
@@ -144,7 +141,15 @@ const BarDetailsPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>🥂 Regular Prices</Typography>
             <List>
               {prices.map(price => (
-                <ListItem key={price.id} sx={{ paddingY: 0.5 }}>
+                <ListItem
+                  key={price.id}
+                  sx={{
+                    paddingY: 0.5,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
                   <ListItemText
                     primary={
                       <Typography variant="body1">
@@ -157,16 +162,130 @@ const BarDetailsPage: React.FC = () => {
                       </Typography>
                     }
                   />
+                  <IconButton
+                    component={Link}
+                    to={`/bars/${bar.id}/prices/update/${price.id}`}
+                    sx={{ color: 'grey' }}
+                    size="small"
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </ListItem>
               ))}
             </List>
+            {activeHH && (
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">🎉 Happy Hour is active!</Typography>
+                  <Typography variant="body2">
+                    {activeHH.startTime} — {activeHH.endTime}
+                  </Typography>
+                </CardContent>
+              </Card>
+            )}
+            <Box>
+              {!activeHH && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ mt: 2 }}
+                  onClick={() => setShowHH((prev) => !prev)}
+                >
+                  {showHH ? 'Hide Happy Hour Prices' : 'View Happy Hour Prices!'}
+                </Button>
+
+              )}
+             
+            <Collapse in={showHH}>
+        <Card sx={{ marginTop: 3, marginBottom: 4 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              🍻 Happy Hours
+            </Typography>
+
+            {happyHours && happyHours.length > 0 ? (
+              happyHours.map((hh) => (
+                <Box key={hh.id} sx={{ marginBottom: 3 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+                      {Array.isArray(hh.weekDays)
+                        ? hh.weekDays.join(', ')
+                        : Array.from(hh.weekDays).join(', ')}{' '}
+                      — {hh.startTime} to {hh.endTime}
+                    </Typography>
+
+                    <IconButton
+                      component={Link}
+                      to={`/bars/${bar.id}/happy-hours/update/${hh.id}`}
+                      sx={{ color: 'white' }}
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
+
+                  <List>
+                    {hh.prices?.map((price) => (
+                      <ListItem
+                        key={price.id}
+                        sx={{
+                          paddingY: 0.5,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography variant="body1">
+                              {price.drinkName} ({price.drinkType}, {price.drinkSize}l)
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography variant="body2" color="text.secondary">
+                              {price.price.toFixed(2)}€
+                            </Typography>
+                          }
+                        />
+                        <IconButton
+                          component={Link}
+                          to={`/bars/${bar.id}/prices/update/${price.id}`}
+                          sx={{ color: 'white' }}
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </List>
+
+                  <Divider sx={{ marginY: 2 }} />
+                </Box>
+              ))
+            ) : (
+              <Typography variant="body2">No happy hours available.</Typography>
+            )}
           </CardContent>
         </Card>
+      </Collapse>
+            </Box>
+          </CardContent>
+        </Card>
+
+        
         <Box>
-          <Button component={Link} 
-            to={`/bars/${bar.id}/delete`} 
+          <Button
+            component={Link}
+            to={`/bars/${bar.id}/delete`}
             variant="outlined"
-            sx={{ mt: 2 }}>
+            sx={{ mt: 2 }}
+          >
             Delete Bar 🗑️
           </Button>
         </Box>
