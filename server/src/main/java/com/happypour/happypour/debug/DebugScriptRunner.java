@@ -82,7 +82,7 @@ public class DebugScriptRunner implements CommandLineRunner {
         Bar bar2 = new Bar(
             null,
             "Xanadu",
-            24.9496176,
+            24.9488176,
             60.1714748,
             "Talontie 2",
             LocalTime.of(12, 30),
@@ -94,8 +94,72 @@ public class DebugScriptRunner implements CommandLineRunner {
             null,
             null
         );
+        Bar bar3 = new Bar(
+            null,
+            "Limelight",
+            24.9496196,
+            60.1724648,
+            "Tervatie 1",
+            LocalTime.of(12, 30),
+            LocalTime.of(1, 30),
+            0,
+            0,
+            user2,
+            user2,
+            null,
+            null
+        );
+        Bar bar4 = new Bar(
+            null,
+            "Bar 2112",
+            24.9501196,
+            60.1719768,
+            "Teuvotie 1",
+            LocalTime.of(12, 30),
+            LocalTime.of(1, 30),
+            0,
+            0,
+            user2,
+            user2,
+            null,
+            null
+        );
+        Bar bar5 = new Bar(
+            null,
+            "Time Stand Still",
+            24.9511196,
+            60.1739768,
+            "Turbotie 1",
+            LocalTime.of(12, 30),
+            LocalTime.of(1, 30),
+            0,
+            0,
+            user2,
+            user2,
+            null,
+            null
+        );
+        Bar bar6 = new Bar(
+            null,
+            "La Villa Strangiato",
+            24.9521196,
+            60.1749768,
+            "Turbotie 1",
+            LocalTime.of(12, 30),
+            LocalTime.of(1, 30),
+            0,
+            0,
+            user2,
+            user2,
+            null,
+            null
+        );
         barRepository.save(bar1);
         barRepository.save(bar2);
+        barRepository.save(bar3);
+        barRepository.save(bar4);
+        barRepository.save(bar5);
+        barRepository.save(bar6);
 
         Drink drink1 = Drink.builder()
             .name("Karhu III")
@@ -172,13 +236,48 @@ public class DebugScriptRunner implements CommandLineRunner {
             .createdBy(user1)
             .updatedBy(user1)
             .build();
+        Price price6 = Price.builder()
+            .bar(bar3)
+            .drink(drink1)
+            .price(new BigDecimal(7).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(null)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price7 = Price.builder()
+            .bar(bar4)
+            .drink(drink1)
+            .price(new BigDecimal(12).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(null)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price8 = Price.builder()
+            .bar(bar5)
+            .drink(drink1)
+            .price(new BigDecimal(13).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(null)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
+        Price price9 = Price.builder()
+            .bar(bar6)
+            .drink(drink1)
+            .price(new BigDecimal(11).setScale(2, RoundingMode.UNNECESSARY))
+            .happyHour(null)
+            .createdBy(user1)
+            .updatedBy(user1)
+            .build();
 
         priceRepository.save(price1);
         priceRepository.save(price2);
         priceRepository.save(price3);
         priceRepository.save(price4);
         priceRepository.save(price5);
-
+        priceRepository.save(price6);
+        priceRepository.save(price7);
+        priceRepository.save(price8);
+        priceRepository.save(price9);
 
         barRepository.findAll().forEach(bar -> System.out.println(bar));
     }

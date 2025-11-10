@@ -9,7 +9,7 @@ import barsService from '../services/bars.ts';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import { PriceDTO } from '../model/IPriceInterface.ts';
-import { getCheapestPrice } from '../utils/priceUtil.ts';
+import { getCheapestPrice, getPriceAverage, getPriceRank, PriceRank } from '../utils/priceUtil.ts';
 import '../App.css';
 
 const customIcon = L.icon({
@@ -36,7 +36,6 @@ export const LocationMarkerComponent: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const defaultDrink = useDrinkStore((state) => state.defaultDrink);
     const navigate = useNavigate();
-    
 
     useEffect(() => {
         barsService
@@ -70,23 +69,27 @@ export const LocationMarkerComponent: React.FC = () => {
 
 
                     if (!hasDrink && !showAll) return null;
-
-                    if(getCurrentHappyHour(barEntity)) {
-                        return (
-                            <ThemeProvider theme={theme} key={barEntity.bar.id}>
-                            {/* Use invisibleIcon here so the marker itself is not visible but still clickable
-                                Tooltip will be the visible element with downward-pointing angle (direction='top') */}
-                            <Marker 
-                                position={[barEntity.bar.coordLat, barEntity.bar.coordLong]} 
-                                icon={customIcon}
-                                eventHandlers={{
-                                    click: () => navigate(`/bars/${barEntity.bar.id}`)
-                                }}>
-                            </Marker>
-                        </ThemeProvider>
-                        );
-                    }
-
+                    const cheapestPrice = getCheapestPrice(barEntity, defaultDrink);
+                    /* Set color of marker tooltip to indicate affordability of price
+                     compared to average */
+                    let colorClass;
+                    if(cheapestPrice){
+                        switch (getPriceRank(bars, cheapestPrice, defaultDrink)) {
+                            case (PriceRank.LOW) :
+                                colorClass = "marker-tt-green"
+                                console.log(cheapestPrice + "€ :" +" GREEN!");
+                                break;
+                            case (PriceRank.MIDDLE) :
+                                colorClass = "marker-tt-yellow"
+                                console.log(cheapestPrice + "€ :" +" YELLOW!");
+                                break;
+                            default:
+                                colorClass = "marker-tt-red"
+                                console.log(cheapestPrice + "€ :" +" RED!");
+                                break;
+                        }
+                    if(activeHappyHour) colorClass = (colorClass + " marker-tt-glow");
+                    console.log(colorClass)
                     return (
                         <ThemeProvider theme={theme} key={barEntity.bar.id}>
                             <Marker 
@@ -96,18 +99,19 @@ export const LocationMarkerComponent: React.FC = () => {
                                 click: () => navigate(`/bars/${barEntity.bar.id}`)
                             }}>
                                 <Tooltip
-                                    className="marker-tooltip"
+                                    className={`${colorClass} marker-tooltip`}
                                     direction="top"
                                     offset={[0, 10]}
                                     permanent
                                     >
-                                    {getCheapestPrice(barEntity, defaultDrink)}€
+                                    {cheapestPrice ? `${cheapestPrice}€` : "🍸"}
                                 </Tooltip>
                                 
                             </Marker>
                         </ThemeProvider>
                     );
-                })}
+                }})
+            }    
         </>
     );
 };
