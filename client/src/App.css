@@ -1,38 +1,46 @@
+/* --- STYLING FOR LEAFLET MARKER TOOLTIPS --- */
 /* background, text, padding, rounded corners */
 .leaflet-tooltip.marker-tooltip {
-  background: white; /* dark background */
-  color: green;
-  border-color: green !important;
-  border-style: double;
-  border-radius: 6px;
-  padding: 6px 10px;
+  /* Variable background color for tooltip */
+  background: var(--marker-tt-bg, #380374);
+  border-radius: 16px !important;
   font-weight: 600;
   font-size: 0.9rem;
-  opacity: 1;
-  box-shadow: none; /* remove default shadow */
-  border: none; /* remove default border */
+  color:  var(--marker-tt-tx-color, white);
+  opacity: 1 !important;
+  box-shadow: none !important; /* remove default shadow */
+  border-style:solid;
+  border-color: var(--marker-tt-bd-color, #380374);
+  border-width: 3px;
 }
-
+/* Low Price */
+.leaflet-tooltip.marker-tt-green { 
+  --marker-tt-bg: linear-gradient(rgb(5, 223, 5), rgb(5, 150, 24));
+  --marker-tt-bd-color : rgb(78, 185, 66);
+}
+/* Medium Price */
+.leaflet-tooltip.marker-tt-yellow { 
+  --marker-tt-bg: linear-gradient(rgb(212, 226, 17), rgb(149, 172, 18));
+  --marker-tt-bd-color : rgb(232, 235, 101);
+}
+/* High Price */
+.leaflet-tooltip.marker-tt-red { 
+  --marker-tt-bg: linear-gradient(#8a1b07, rgb(219, 57, 57));
+  --marker-tt-bd-color : rgb(168, 56, 41);
+}
+/* Color for Happy Hour */
+.leaflet-tooltip.marker-tt-glow { 
+  background-image: url('/happy-hour-bg.png'), linear-gradient(rgb(231, 9, 202), rgb(71, 2, 92));
+  --marker-tt-bd-color : rgb(129, 36, 133);
+  --marker-tt-tx-color : rgb(253, 253, 253);
+}
 /* remove default margins inside content */
 .leaflet-tooltip.marker-tooltip .leaflet-tooltip-content {
   margin: 0;
   line-height: 1;
 }
 
-/* if Leaflet's tooltip arrow needs color override (depends on Leaflet version),
-   override the pseudo-element (use !important only if necessary) */
-.leaflet-tooltip.marker-tooltip::after {
-  /* Make the arrow the same color as the tooltip background */
-  border-top-color: green;
-  border-bottom-color: green;
-  border-right-color: green;
-  border-left-color: green;
-  border-width: 12px !important; /* Make arrow more visible */
+.leaflet-popup-tip {
+  background: #1e1e1e !important;
   box-shadow: none !important;
 }
-
-/* smaller inner element if you want different spacing */
-.marker-tooltip__content {
-  display: inline-block;
-  white-space: nowrap;
-} 
