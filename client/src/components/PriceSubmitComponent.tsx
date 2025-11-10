@@ -8,6 +8,7 @@ import {
   Typography,
   FormControl,
   Container,
+  CircularProgress,
 } from '@mui/material';
 import { DrinkDTO } from '../model/IdrinkInterface.ts';
 import { PriceDTO } from '../model/IPriceInterface.ts';
@@ -32,10 +33,12 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
   // ---------- State ----------
   const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>('');
   const [selectedHappyHourId, setSelectedHappyHourId] = useState<number | ''>(happyHourId ?? '');
-  const [amount, setAmount] = useState<number | ''>('');
+  const [amount, setAmount] = useState<string>('');
   const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
   const [existingPrices, setExistingPrices] = useState<PriceDTO[]>([]);
   const [happyhours, setHappyhours] = useState<HappyHourDTO[]>([]);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
 
   useEffect(() => {
     const fetchDrinks = async () => {
@@ -75,13 +78,20 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
       p => p.drinkId === drinkIdNumber && (p.happyHourId ?? undefined) === happyHourIdNumber
     );
 
-    setAmount(existingPrice ? existingPrice.price : '');
+    setAmount(existingPrice ? String(existingPrice.price) : '');
   }, [selectedDrinkId, selectedHappyHourId, existingPrices]);
 
   // ---------- Submit Handler ----------
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+  setIsSubmitting(true);
   if (!selectedDrink || amount === '') return;
+  
+  const finalAmount : number = Number(amount);
+  if(Number.isNaN(finalAmount)) {
+    showNotification("Please insert a valid number", "warning");
+    return;
+  } 
 
   const drinkIdNumber = Number(selectedDrinkId);
   const happyHourIdNumber = selectedHappyHourId === '' ? undefined : Number(selectedHappyHourId);
@@ -92,7 +102,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
 
   const priceDto: PriceDTO = {
     id: existingPrice ? existingPrice.id : -1,
-    price: Number(amount),
+    price: finalAmount,
     barId,
     happyHourId: happyHourIdNumber,
     drinkId: drinkIdNumber,
@@ -212,9 +222,10 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
             fullWidth
             margin="normal"
             label="Price"
+            type='number'
             inputProps={{ min: 0, step: 0.01 }}
             value={amount}
-            onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => setAmount(e.target.value)}
             required
           />
           
@@ -223,10 +234,13 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
             color="primary"
             type="submit"
             fullWidth
+            disabled={isSubmitting}
+            startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
             sx={{ mt: 2 }}
           >
-            Submit Price
+            {isSubmitting ? 'Submitting...' : 'Submit Price'}
           </Button>
+
         </>
       )}
     </Box>
