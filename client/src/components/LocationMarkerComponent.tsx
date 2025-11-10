@@ -34,8 +34,9 @@ const invisibleIcon = L.divIcon({
 export const LocationMarkerComponent: React.FC = () => {
     const [bars, setBars] = useState<BarData[] | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const defaultDrink = useDrinkStore((state) => state.defaultDrink);
+    const {defaultDrink} = useDrinkStore();
     const navigate = useNavigate();
+    const showAll = defaultDrink === "View all";
 
     useEffect(() => {
         barsService
@@ -46,17 +47,13 @@ export const LocationMarkerComponent: React.FC = () => {
           .catch((err) => {
             setError(`Can't find any bars: ${err}`);
         });
-      }, []);
-
+    }, []);
     if (error) return <p>{error}</p>;
-
     return (
         <>
             {bars &&
                 bars.map((barEntity) => {
                     let hasDrink = false;
-                    // Jos drinkki on 'View all', näytetään baari joka tapauksessa
-                    const showAll = defaultDrink === "View all";
                     // Check normal prices
                     barEntity.prices.some((price) => {
                         if (price.drinkType === defaultDrink) hasDrink = true;    
@@ -67,29 +64,34 @@ export const LocationMarkerComponent: React.FC = () => {
                         if (activeHappyHour.prices.find((p : PriceDTO) => (p.drinkType === defaultDrink))) hasDrink = true;
                     }
 
-
+                    console.log("Show all: "+showAll +" has drink: "+ hasDrink)
                     if (!hasDrink && !showAll) return null;
-                    const cheapestPrice = getCheapestPrice(barEntity, defaultDrink);
                     /* Set color of marker tooltip to indicate affordability of price
                      compared to average */
-                    let colorClass;
-                    if(cheapestPrice){
+                    let colorClass = [];
+                    const cheapestPrice = getCheapestPrice(barEntity, defaultDrink);
+                    
+                    // Only apply price-based coloring if not in "View All" mode
+                    if (!showAll && cheapestPrice) {
                         switch (getPriceRank(bars, cheapestPrice, defaultDrink)) {
-                            case (PriceRank.LOW) :
-                                colorClass = "marker-tt-green"
-                                console.log(cheapestPrice + "€ :" +" GREEN!");
+                            case PriceRank.LOW:
+                                colorClass.push("marker-tt-green");
                                 break;
-                            case (PriceRank.MIDDLE) :
-                                colorClass = "marker-tt-yellow"
-                                console.log(cheapestPrice + "€ :" +" YELLOW!");
+                            case PriceRank.MIDDLE:
+                                colorClass.push("marker-tt-yellow");
                                 break;
-                            default:
-                                colorClass = "marker-tt-red"
-                                console.log(cheapestPrice + "€ :" +" RED!");
+                            case PriceRank.HIGH:
+                                colorClass.push("marker-tt-red");
                                 break;
                         }
-                    if(activeHappyHour) colorClass = (colorClass + " marker-tt-glow");
-                    console.log(colorClass)
+                    }
+                    
+                    // Add glow effect for happy hour
+                    if (activeHappyHour) {
+                        colorClass.push("marker-tt-glow");
+                    }
+                    
+                    // Join classes with space, or use empty string if no classes
                     return (
                         <ThemeProvider theme={theme} key={barEntity.bar.id}>
                             <Marker 
@@ -99,18 +101,25 @@ export const LocationMarkerComponent: React.FC = () => {
                                 click: () => navigate(`/bars/${barEntity.bar.id}`)
                             }}>
                                 <Tooltip
-                                    className={`${colorClass} marker-tooltip`}
+                                    className={`${colorClass.join(" ")} marker-tooltip`}
                                     direction="top"
                                     offset={[0, 10]}
                                     permanent
                                     >
-                                    {cheapestPrice ? `${cheapestPrice}€` : "🍸"}
+                                        <div className="tooltip-container">
+                                        <div className="emoji-background">
+                                            {activeHappyHour ? "🎉" : ""}
+                                        </div>
+                                        <div className="price-text">
+                                            {hasDrink ? `${cheapestPrice}€` : "🍺"}
+                                        </div>
+                                    </div>
                                 </Tooltip>
                                 
                             </Marker>
                         </ThemeProvider>
                     );
-                }})
+                })
             }    
         </>
     );

@@ -1,4 +1,4 @@
-import Bar, { BarData } from "../model/IbarInterface";
+import { BarData } from "../model/IbarInterface";
 import { getCurrentHappyHour } from "./happyHourUtil";
 
 // NOTE: Hooks cannot be called at module scope. This util accepts the
@@ -8,14 +8,14 @@ export function getCheapestPrice(bar: BarData, defaultDrink: string): number | n
     let cheapestPrice = Number.MAX_VALUE;
 
     bar.prices.forEach((price) => {
-        if (price.price < cheapestPrice && (price.drinkType === defaultDrink || defaultDrink === "View all")) {
+        if (price.price < cheapestPrice && (price.drinkType === defaultDrink)) {
             cheapestPrice = price.price;
         }
     });
     const activeHappyHour = getCurrentHappyHour(bar);
     if (activeHappyHour) {
         activeHappyHour.prices.forEach((price) => {
-            if (price.price < cheapestPrice && (price.drinkType === defaultDrink || defaultDrink === "View all")) {
+            if (price.price < cheapestPrice && (price.drinkType === defaultDrink)) {
                 cheapestPrice = price.price;
             }
         });

@@ -1,9 +1,11 @@
 /* --- STYLING FOR LEAFLET MARKER TOOLTIPS --- */
-/* background, text, padding, rounded corners */
+.leaflet-tooltip-top:before {
+  border-top-color: var(--marker-tt-bd-color, #380374); 
+}
 .leaflet-tooltip.marker-tooltip {
   /* Variable background color for tooltip */
-  background: var(--marker-tt-bg, #380374);
-  border-radius: 16px !important;
+  background: var(--marker-tt-bg, linear-gradient(#3c2eb6,#0f087a));
+  border-radius: 13px !important;
   font-weight: 600;
   font-size: 0.9rem;
   color:  var(--marker-tt-tx-color, white);
@@ -11,27 +13,32 @@
   box-shadow: none !important; /* remove default shadow */
   border-style:solid;
   border-color: var(--marker-tt-bd-color, #380374);
-  border-width: 3px;
+  border-width: 1px;
+  border:none;
+  min-width: 27px;
+  text-align: center;
 }
 /* Low Price */
 .leaflet-tooltip.marker-tt-green { 
-  --marker-tt-bg: linear-gradient(rgb(5, 223, 5), rgb(5, 150, 24));
-  --marker-tt-bd-color : rgb(78, 185, 66);
+  --marker-tt-bg: linear-gradient(rgb(55, 231, 79), #658C58 );
+  --marker-tt-bd-color : #658C58;
 }
 /* Medium Price */
 .leaflet-tooltip.marker-tt-yellow { 
-  --marker-tt-bg: linear-gradient(rgb(212, 226, 17), rgb(149, 172, 18));
-  --marker-tt-bd-color : rgb(232, 235, 101);
+  --marker-tt-bg: linear-gradient(#FFD97D, rgb(163, 177, 82));
+  --marker-tt-bd-color : rgb(163, 177, 82);
+  --marker-tt-tx-color : rgb(253, 253, 253);
 }
 /* High Price */
 .leaflet-tooltip.marker-tt-red { 
-  --marker-tt-bg: linear-gradient(#8a1b07, rgb(219, 57, 57));
-  --marker-tt-bd-color : rgb(168, 56, 41);
+  --marker-tt-bg: linear-gradient(#FF9B85, #f3725b);
+  --marker-tt-bd-color : #f3725b;
+  --marker-tt-tx-color : rgb(253, 253, 253);
 }
 /* Color for Happy Hour */
 .leaflet-tooltip.marker-tt-glow { 
-  background-image: url('/happy-hour-bg.png'), linear-gradient(rgb(231, 9, 202), rgb(71, 2, 92));
-  --marker-tt-bd-color : rgb(129, 36, 133);
+  background-image: linear-gradient(rgb(231, 9, 202), rgb(71, 2, 92));
+  --marker-tt-bd-color : rgb(71, 2, 92); /* from the background image */
   --marker-tt-tx-color : rgb(253, 253, 253);
 }
 /* remove default margins inside content */
@@ -43,4 +50,26 @@
 .leaflet-popup-tip {
   background: #1e1e1e !important;
   box-shadow: none !important;
+}
+
+/* Tooltip content styling */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  padding: 0.2em 0.5em;
+}
+
+.emoji-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.price-text {
+  position: relative;
+  z-index: 1;
 }
