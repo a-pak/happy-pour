@@ -21,7 +21,6 @@ const getByBarId = async (barId: number): Promise<PriceDTO[]> => {
 
 const createPrice = async (priceData: PriceDTO[]): Promise<void> => {
     try {
-        console.log("Creating prices with data:", priceData);
         const response = await api.post(PRICES_URL, priceData);
         return response.data;
     } catch (error) {

@@ -64,7 +64,6 @@ export const LocationMarkerComponent: React.FC = () => {
                         if (activeHappyHour.prices.find((p : PriceDTO) => (p.drinkType === defaultDrink))) hasDrink = true;
                     }
 
-                    console.log("Show all: "+showAll +" has drink: "+ hasDrink)
                     if (!hasDrink && !showAll) return null;
                     /* Set color of marker tooltip to indicate affordability of price
                      compared to average */

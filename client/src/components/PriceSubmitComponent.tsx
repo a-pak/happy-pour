@@ -48,7 +48,6 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
     const fetchPrices = async () => {
       const data = await getByBarId(barId);
       setExistingPrices(data);
-      console.log("Prices: " + data)
     };
     const fetchHappyHours = async () => {
       const data = await getHappyHoursByBar(barId);
