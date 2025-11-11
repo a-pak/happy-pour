@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
-import Bar, { BarData } from '../model/IbarInterface.ts';
+import { BarData } from '../model/IbarInterface.ts';
 import { Marker, Tooltip } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import L from 'leaflet';
