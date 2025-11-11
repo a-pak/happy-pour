@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import locationService from '../services/location';
 import { LocationMarkerComponent } from './LocationMarkerComponent';
 import MapEffect from './MapEffect';
-
+import { useDrinkStore } from '../store/drinkStore';
 interface MapEventsHandlerProps {
   handleMapClick: (event: L.LeafletMouseEvent) => void;
 }
@@ -18,6 +18,7 @@ const MapsComponent: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
+  const {defaultDrink} = useDrinkStore();
 
   useEffect(() => {
     locationService
@@ -121,7 +122,7 @@ const MapsComponent: React.FC = () => {
           </Popup>
         )}
 
-        {error ? <p>{error}</p> : <LocationMarkerComponent />}
+        {error ? <p>{error}</p> : <LocationMarkerComponent key={defaultDrink} />}
         <MapEffect />
       </MapContainer>
       </Box>

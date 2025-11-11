@@ -24,7 +24,7 @@ export function getCheapestPrice(bar: BarData, defaultDrink: string): number | n
     return cheapestPrice === Number.MAX_VALUE ? null : cheapestPrice;
 }
 
-export enum PriceRank {HIGH, MIDDLE, LOW}
+export enum PriceRank {HIGH, MIDDLE, LOW, DEFAULT}
 export function getPriceRank(bars : BarData[], price : number, defaultDrink: string) : PriceRank {
     let priceArray : number[] = [];
     bars.forEach((bar) => {

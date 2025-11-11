@@ -1,10 +1,10 @@
 /* --- STYLING FOR LEAFLET MARKER TOOLTIPS --- */
 .leaflet-tooltip-top:before {
-  border-top-color: var(--marker-tt-bd-color, #380374); 
+  border-top-color: var(--marker-tt-bd-color, #a059db); 
 }
 .leaflet-tooltip.marker-tooltip {
   /* Variable background color for tooltip */
-  background: var(--marker-tt-bg, linear-gradient(#3c2eb6,#0f087a));
+  background: var(--marker-tt-bg, linear-gradient(#b284d8,#a059db));
   border-radius: 13px !important;
   font-weight: 600;
   font-size: 0.9rem;
@@ -18,9 +18,10 @@
   min-width: 27px;
   text-align: center;
 }
+
 /* Low Price */
 .leaflet-tooltip.marker-tt-green { 
-  --marker-tt-bg: linear-gradient(rgb(55, 231, 79), #658C58 );
+  --marker-tt-bg: linear-gradient(rgb(66, 179, 81), #658C58 );
   --marker-tt-bd-color : #658C58;
 }
 /* Medium Price */

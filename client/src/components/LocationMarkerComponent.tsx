@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
-import { BarData } from '../model/IbarInterface.ts';
+import Bar, { BarData } from '../model/IbarInterface.ts';
 import { Marker, Tooltip } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import L from 'leaflet';
@@ -48,6 +48,22 @@ export const LocationMarkerComponent: React.FC = () => {
             setError(`Can't find any bars: ${err}`);
         });
     }, []);
+
+    function getBarColor(bar: Bar): PriceRank {
+        const RANKS = [PriceRank.HIGH, PriceRank.MIDDLE, PriceRank.LOW];
+        // Use a stable property — id is best, name as fallback
+        const key = bar.id.toString() + bar.name;
+
+        // Simple hash function
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = key.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        // Pick one of the three colors
+        const colorIndex = Math.abs(hash) % 3;
+        return RANKS[colorIndex];
+    }
     if (error) return <p>{error}</p>;
     return (
         <>
@@ -71,8 +87,10 @@ export const LocationMarkerComponent: React.FC = () => {
                     const cheapestPrice = getCheapestPrice(barEntity, defaultDrink);
                     
                     // Only apply price-based coloring if not in "View All" mode
+                    let priceRank : PriceRank = PriceRank.DEFAULT;
                     if (!showAll && cheapestPrice) {
-                        switch (getPriceRank(bars, cheapestPrice, defaultDrink)) {
+                        priceRank = getPriceRank(bars, cheapestPrice, defaultDrink)
+                        switch (priceRank) {
                             case PriceRank.LOW:
                                 colorClass.push("marker-tt-green");
                                 break;
@@ -82,8 +100,13 @@ export const LocationMarkerComponent: React.FC = () => {
                             case PriceRank.HIGH:
                                 colorClass.push("marker-tt-red");
                                 break;
+                            default:
+                                break;
                         }
                     }
+                    //  else if (showAll) 
+                    //     priceRank = getBarColor(barEntity.bar)
+                    
                     
                     // Add glow effect for happy hour
                     if (activeHappyHour) {
@@ -110,7 +133,7 @@ export const LocationMarkerComponent: React.FC = () => {
                                             {activeHappyHour ? "🎉" : ""}
                                         </div>
                                         <div className="price-text">
-                                            {hasDrink ? `${cheapestPrice}€` : "🍺"}
+                                            {hasDrink ? `${cheapestPrice}€` : `${barEntity.bar.name.substring(0,1)}`}
                                         </div>
                                     </div>
                                 </Tooltip>
