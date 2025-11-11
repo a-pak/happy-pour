@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
-import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
-import EuroIcon from '@mui/icons-material/Euro';
 import theme from '../Theme';
 import CloseIcon from '@mui/icons-material/Close';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import LiquorIcon from '@mui/icons-material/Liquor';
 
 
 const FloatingEditMenu: React.FC<{ barId: number }> = ({ barId }) => {
@@ -15,12 +14,12 @@ const FloatingEditMenu: React.FC<{ barId: number }> = ({ barId }) => {
   const actions = [
     {
       label: 'Update Happy Hours',
-      icon: <LocalDrinkIcon />,
+      icon: <MoreTimeIcon />,
       link: `/bars/${barId}/happy-hours/create`,
     },
     {
-      label: 'Update Prices',
-      icon: <EuroIcon />,
+      label: 'Submit Drink Prices',
+      icon: <LiquorIcon />,
       link: `/bars/${barId}/prices/update`,
     },
     {
@@ -61,8 +60,28 @@ const FloatingEditMenu: React.FC<{ barId: number }> = ({ barId }) => {
               {action.icon}
             </Link>
           }
-          tooltipTitle={action.label} // 🔹 teksti näkyy tooltipissa
-          tooltipOpen={false}          // tooltip näkyy oletusarvoisesti hoverilla
+          slotProps={{
+            tooltip: {
+              title: action.label,
+              open: false,
+              placement: 'left',
+              sx: {
+                '& .MuiTooltip-tooltip': {
+                  whiteSpace: 'nowrap',
+                  fontSize: '12px',
+                  backgroundColor: theme.palette.primary.dark,
+                  color: theme.palette.primary.contrastText,
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '250px',
+                },
+              },
+            },
+          }}
+
           FabProps={{
             sx: {
               background: 'transparent',

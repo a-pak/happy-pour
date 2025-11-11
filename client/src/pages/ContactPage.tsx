@@ -54,7 +54,7 @@ export const ContactPage = () => {
           📍 Based in Helsinki, Finland.
           <br /><br />
           Follow the project at {' '}
-          <MuiLink href="https://github.com/a-pak/happypour" target="_blank" underline="hover" sx={{ color: '#b57edc' }}>
+          <MuiLink href="https://github.com/a-pak/happy-pour" target="_blank" underline="hover" sx={{ color: '#b57edc' }}>
             GitHub
           </MuiLink>
         </Typography>
