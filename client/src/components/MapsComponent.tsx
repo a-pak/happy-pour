@@ -8,12 +8,19 @@ import locationService from '../services/location';
 import { LocationMarkerComponent } from './LocationMarkerComponent';
 import MapEffect from './MapEffect';
 import { useDrinkStore } from '../store/drinkStore';
+import { useLocationStore } from '../store/locationStore';
+import { useMapStore } from '../store/mapStore';
+import { useErrorStore } from '../store/errorStore';
 interface MapEventsHandlerProps {
   handleMapClick: (event: L.LeafletMouseEvent) => void;
+  handleMapMoveEnd: (center: [lat : number, lng: number], zoom:number) => void;
 }
 
 const MapsComponent: React.FC = () => {
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);  
+  const {mapCenter, mapZoom, setMapPosition} = useMapStore();
+  const {userLocation, setUserLocation} = useLocationStore();
+  const {showNotification} = useErrorStore();
+  const [refreshLocation, setRefreshLocation] = useState<"REFRESH" | "DEFAULT">("DEFAULT"); 
   const [error, setError] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -21,29 +28,52 @@ const MapsComponent: React.FC = () => {
   const {defaultDrink} = useDrinkStore();
 
   useEffect(() => {
-    locationService
-      .getUserLocation()
-      .then((location) => {
-        setUserLocation(location);
-      })
-      .catch((err: string) => {
-        setError(err);
-        console.error(err);
-      });
+    if (!userLocation) {   
+      locationService
+        .getUserLocation()
+        .then((location) => {
+          setUserLocation({latitude: location[0], longitude: location[1]});
+          setMapPosition({latitude: location[0], longitude: location[1]}, 15);
+          setRefreshLocation("REFRESH");
+        })
+        .catch((err: string) => {
+          setError(err);
+          console.error(err);
+        });
+    }
   }, []);
 
+  /* --- Map Event Handlers --- */
   const handleMapClick = (e: L.LeafletMouseEvent) => {
     const { lat, lng } = e.latlng;
     setPopupPosition([lat, lng]);
   };
-
+  const handleMapMoveEnd = (center: [number, number], zoom:number) => {
+    setMapPosition({latitude: center[0], longitude: center[1]}, zoom);
+    console.log('Map moved to:', center);
+  };
   const MapEventsHandler: React.FC<MapEventsHandlerProps> = ({ handleMapClick }) => {
     useMapEvents({
       dblclick: (e) => handleMapClick(e),
+      moveend: (e) => {
+        const map = e.target;
+        const center = map.getCenter();
+        const zoom = map.getZoom();
+        handleMapMoveEnd([center.lat, center.lng], zoom);   
+    },
     });
     return null;
   };
-
+  /* To be used for centering the map on user location.*/
+  // const centerMapToUser = () => {
+  //   if(userLocation) {
+  //     setMapPosition(userLocation, mapZoom);
+  //     setRefreshLocation("REFRESH");
+  //   } else {
+  //     showNotification("Please allow the browser to use your location","warning");
+  //     
+  //   }
+  // }
   const openAddBarWindow = () => {
     if (popupPosition) {
       const [lat, lng] = popupPosition;
@@ -60,8 +90,9 @@ const MapsComponent: React.FC = () => {
         }}
       >
         <MapContainer
-          center={userLocation || [60.192059, 24.945841]}
-          zoom={13}
+          key={refreshLocation}
+          center={mapCenter ? [mapCenter.latitude, mapCenter?.longitude] : [60.192059, 24.945841]}
+          zoom={mapZoom ? mapZoom : 15}
           className="leaflet-container"
           style={{ height: '100%', width: '100%' }}
         >
@@ -69,10 +100,10 @@ const MapsComponent: React.FC = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MapEventsHandler handleMapClick={handleMapClick}/>
+        <MapEventsHandler handleMapClick={handleMapClick} handleMapMoveEnd={handleMapMoveEnd}/>
 
         {userLocation && (
-          <Marker zIndexOffset={1000} position={userLocation} icon={L.icon({
+          <Marker zIndexOffset={1000} position={[userLocation?.latitude, userLocation?.longitude]} icon={L.icon({
             iconUrl: "/user.png",
             iconSize: [40, 40],
             iconAnchor: [20, 20],

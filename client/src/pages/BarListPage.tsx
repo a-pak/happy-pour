@@ -18,16 +18,17 @@ import barsService from '../services/bars';
 import { useTheme } from '@mui/material/styles';
 import { useDrinkStore } from '../store/drinkStore';
 import { BarData } from '../model/IbarInterface';
-import { PriceDTO } from '../model/IPriceInterface';
-import { getCurrentHappyHour } from '../utils/happyHourUtil';
+import { getCheapestPrice } from '../utils/priceUtil';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { useLocationStore } from '../store/locationStore';
+import { calculateDistance } from '../utils/locationUtil';
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<BarData[]>([]);
   const navigate = useNavigate();
   const theme = useTheme();
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const userLocation = useLocationStore();
 
   useEffect(() => {
     barsService
@@ -38,20 +39,17 @@ const BarListPage: React.FC = () => {
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
 
-  const getDrinkPrice = (bar: BarData) => {
-    const drinkPrice = bar.prices.find((d: PriceDTO) => d.drinkType === defaultDrink);
-    const hh = getCurrentHappyHour(bar);
-    let happyHourPrice = hh ? hh.prices.find(hhPrice => hhPrice.drinkType === defaultDrink) : null;
-      
-    if (happyHourPrice) return happyHourPrice.price;
-    return drinkPrice ? drinkPrice.price : null;
-  };
-
-  const sortedBars = [...bars].sort((a, b) => {
-    const priceA = getDrinkPrice(a) || Infinity;
-    const priceB = getDrinkPrice(b) || Infinity;
+  const filteredBars = defaultDrink == "View all" ? bars : bars.filter((bar) => (getCheapestPrice(bar, defaultDrink) != null));
+  const sortedBars = filteredBars.sort((a, b) => {
+    const priceA = getCheapestPrice(a, defaultDrink) || Infinity;
+    const priceB = getCheapestPrice(b, defaultDrink) || Infinity;
     return priceA - priceB;
   });
+  console.log(userLocation.mapLocation)
+  // TODO: make fallback location be the center of map view.
+  const currentLocation = userLocation.mapLocation ? userLocation.mapLocation : {latitude: 60.1707286, longitude: 24.9424787};
+
+  const showAll = defaultDrink == "View all";
 
   const handleClose = () => {
     navigate("/");
@@ -94,7 +92,7 @@ const BarListPage: React.FC = () => {
                   Bar Name
                 </TableCell>
                 <TableCell align="right" sx={{ color: theme.palette.secondary.contrastText }}>
-                  {defaultDrink} Price (€)
+                  {showAll ? `Distance (km)` : `${defaultDrink} Price (€)`}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -112,7 +110,11 @@ const BarListPage: React.FC = () => {
                 >
                   <TableCell>{bar.bar.name}</TableCell>
                   <TableCell align="right">
-                    {getDrinkPrice(bar) ? getDrinkPrice(bar)?.toFixed(2) : 'N/A'}
+                    {
+                      getCheapestPrice(bar, defaultDrink) ? 
+                      `${getCheapestPrice(bar, defaultDrink)?.toFixed(2)} €` : 
+                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km`
+                    }
                   </TableCell>
                 </TableRow>
               ))}

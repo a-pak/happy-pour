@@ -42,7 +42,7 @@ const BarDetailsDrawer = () => {
     }
 
     const { bar, prices } = barData;
-    flyTo(bar.coordLat, bar.coordLong, 15);
+    flyTo(bar.coordLat, bar.coordLong);
 
     const activeHappyHour = getCurrentHappyHour(barData);
 
