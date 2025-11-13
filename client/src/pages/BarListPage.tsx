@@ -41,6 +41,7 @@ const BarListPage: React.FC = () => {
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
   const showAll = defaultDrink.toLowerCase() === "View all".toLowerCase();
+  
   // --- TODO: 🍝 Mamma Mia! This spaghetti has been in my family for generations! 🍝 ---
   
   // Filter NaN prices
@@ -48,20 +49,20 @@ const BarListPage: React.FC = () => {
   
   // Sort by location
   const currentLocation = userLocation ? userLocation : mapCenter;
-  const barsSortedByLocation = filteredBars.sort((a,b) => {
+  const barsSortedByLocation = [...bars].sort((a,b) => {
     const distanceA = calculateDistance(currentLocation, {latitude: a.bar.coordLat, longitude: a.bar.coordLong})
     const distanceB = calculateDistance(currentLocation, {latitude: b.bar.coordLat, longitude: b.bar.coordLong})
     return distanceA - distanceB;
   })
 
-   // sort by price
-  const barsSortedByPrice = filteredBars.sort((a, b) => {
+   // Sort by price
+  const barsSortedByPrice = [...filteredBars].sort((a, b) => {
     const priceA = getCheapestPrice(a, defaultDrink) || Infinity;
     const priceB = getCheapestPrice(b, defaultDrink) || Infinity;
     return priceA - priceB;
   });
 
-  // If show all then show all bars sorted by location.
+  // If show all, then show all bars sorted by location.
   const barsSorted = showAll ? barsSortedByLocation : barsSortedByPrice;
   
   const handleClose = () => {
@@ -125,7 +126,8 @@ const BarListPage: React.FC = () => {
                   <TableCell align="right">
                     {
                       showAll ? 
-                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km` :
+                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km` 
+                      :
                       `${getCheapestPrice(bar, defaultDrink)?.toFixed(2)} €`
                     }
                   </TableCell>
