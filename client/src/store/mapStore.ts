@@ -7,7 +7,7 @@ import { Location } from '../utils/locationUtil';
 */
 type MapStore = {
   map: Map | null;
-  mapCenter: Location | null;
+  mapCenter: Location;
   mapZoom: number;
 
   setMap: (map: Map) => void;
@@ -17,7 +17,7 @@ type MapStore = {
 
 export const useMapStore = create<MapStore>((set, get) => ({
   map: null,
-  mapCenter: null,
+  mapCenter: {latitude: 60.1707485, longitude: 24.9416647},
   mapZoom: 15,
   setMap: (mapInstance) => set({ map: mapInstance }),
   setMapPosition(newLocation, zoom) {

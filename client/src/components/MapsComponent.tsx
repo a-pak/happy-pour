@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, Popup, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import NearMeIcon from '@mui/icons-material/NearMe';
 import theme from '../Theme';
 import { useNavigate } from 'react-router-dom';
 import locationService from '../services/location';
@@ -11,6 +12,7 @@ import { useDrinkStore } from '../store/drinkStore';
 import { useLocationStore } from '../store/locationStore';
 import { useMapStore } from '../store/mapStore';
 import { useErrorStore } from '../store/errorStore';
+
 interface MapEventsHandlerProps {
   handleMapClick: (event: L.LeafletMouseEvent) => void;
   handleMapMoveEnd: (center: [lat : number, lng: number], zoom:number) => void;
@@ -50,7 +52,6 @@ const MapsComponent: React.FC = () => {
   };
   const handleMapMoveEnd = (center: [number, number], zoom:number) => {
     setMapPosition({latitude: center[0], longitude: center[1]}, zoom);
-    console.log('Map moved to:', center);
   };
   const MapEventsHandler: React.FC<MapEventsHandlerProps> = ({ handleMapClick }) => {
     useMapEvents({
@@ -64,16 +65,25 @@ const MapsComponent: React.FC = () => {
     });
     return null;
   };
-  /* To be used for centering the map on user location.*/
-  // const centerMapToUser = () => {
-  //   if(userLocation) {
-  //     setMapPosition(userLocation, mapZoom);
-  //     setRefreshLocation("REFRESH");
-  //   } else {
-  //     showNotification("Please allow the browser to use your location","warning");
-  //     
-  //   }
-  // }
+
+  const centerMapToUser = () => {
+    if (!userLocation) {   
+      locationService
+        .getUserLocation()
+        .then((location) => {
+          setUserLocation({latitude: location[0], longitude: location[1]});
+        })
+        .catch((err: string) => {
+          console.error(err);
+        });
+    }
+    if(userLocation) {
+      setMapPosition(userLocation, 15);
+      refreshLocation=="DEFAULT" ? setRefreshLocation("REFRESH") : setRefreshLocation("DEFAULT");
+    } else {
+      showNotification("Please allow the browser to use your location","warning");
+    }
+  }
   const openAddBarWindow = () => {
     if (popupPosition) {
       const [lat, lng] = popupPosition;
@@ -89,6 +99,23 @@ const MapsComponent: React.FC = () => {
           width: '100%',
         }}
       >
+          <Button 
+          onClick={centerMapToUser} 
+          variant='contained'
+          sx={{
+            backgroundColor: 'white',
+            zIndex: 1000, 
+            marginTop: '80px', 
+            marginLeft: '4px',
+            position: 'absolute', 
+            width: '5px',
+            minHeight: '50px',
+            borderRadius: '5px',
+          }}>
+            <NearMeIcon fontSize='medium' color='primary'/>
+        </Button>
+        
+
         <MapContainer
           key={refreshLocation}
           center={mapCenter ? [mapCenter.latitude, mapCenter?.longitude] : [60.192059, 24.945841]}
@@ -152,8 +179,8 @@ const MapsComponent: React.FC = () => {
             </Box>
           </Popup>
         )}
-
-        {error ? <p>{error}</p> : <LocationMarkerComponent key={defaultDrink} />}
+        
+        <LocationMarkerComponent key={defaultDrink} />
         <MapEffect />
       </MapContainer>
       </Box>

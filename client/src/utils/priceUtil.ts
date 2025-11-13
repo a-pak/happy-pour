@@ -8,14 +8,14 @@ export function getCheapestPrice(bar: BarData, defaultDrink: string): number | n
     let cheapestPrice = Number.MAX_VALUE;
 
     bar.prices.forEach((price) => {
-        if (price.price < cheapestPrice && (price.drinkType === defaultDrink)) {
+        if (price.price < cheapestPrice && (price.drinkType?.toLowerCase() === defaultDrink.toLowerCase())) {
             cheapestPrice = price.price;
         }
     });
     const activeHappyHour = getCurrentHappyHour(bar);
     if (activeHappyHour) {
         activeHappyHour.prices.forEach((price) => {
-            if (price.price < cheapestPrice && (price.drinkType === defaultDrink)) {
+            if (price.price < cheapestPrice && (price.drinkType?.toLowerCase() === defaultDrink.toLowerCase())) {
                 cheapestPrice = price.price;
             }
         });

@@ -22,13 +22,15 @@ import { getCheapestPrice } from '../utils/priceUtil';
 import CloseIcon from '@mui/icons-material/Close';
 import { useLocationStore } from '../store/locationStore';
 import { calculateDistance } from '../utils/locationUtil';
+import { useMapStore } from '../store/mapStore';
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<BarData[]>([]);
   const navigate = useNavigate();
   const theme = useTheme();
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const userLocation = useLocationStore();
+  const {userLocation} = useLocationStore();
+  const {mapCenter} = useMapStore();
 
   useEffect(() => {
     barsService
@@ -38,19 +40,30 @@ const BarListPage: React.FC = () => {
       })
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
+  const showAll = defaultDrink.toLowerCase() === "View all".toLowerCase();
+  // --- TODO: 🍝 Mamma Mia! This spaghetti has been in my family for generations! 🍝 ---
+  
+  // Filter NaN prices
+  const filteredBars = showAll ? bars : bars.filter((bar) => (getCheapestPrice(bar, defaultDrink) != null));
+  
+  // Sort by location
+  const currentLocation = userLocation ? userLocation : mapCenter;
+  const barsSortedByLocation = filteredBars.sort((a,b) => {
+    const distanceA = calculateDistance(currentLocation, {latitude: a.bar.coordLat, longitude: a.bar.coordLong})
+    const distanceB = calculateDistance(currentLocation, {latitude: b.bar.coordLat, longitude: b.bar.coordLong})
+    return distanceA - distanceB;
+  })
 
-  const filteredBars = defaultDrink == "View all" ? bars : bars.filter((bar) => (getCheapestPrice(bar, defaultDrink) != null));
-  const sortedBars = filteredBars.sort((a, b) => {
+   // sort by price
+  const barsSortedByPrice = filteredBars.sort((a, b) => {
     const priceA = getCheapestPrice(a, defaultDrink) || Infinity;
     const priceB = getCheapestPrice(b, defaultDrink) || Infinity;
     return priceA - priceB;
   });
-  console.log(userLocation.mapLocation)
-  // TODO: make fallback location be the center of map view.
-  const currentLocation = userLocation.mapLocation ? userLocation.mapLocation : {latitude: 60.1707286, longitude: 24.9424787};
 
-  const showAll = defaultDrink == "View all";
-
+  // If show all then show all bars sorted by location.
+  const barsSorted = showAll ? barsSortedByLocation : barsSortedByPrice;
+  
   const handleClose = () => {
     navigate("/");
   };
@@ -97,7 +110,7 @@ const BarListPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedBars.map((bar) => (
+              {barsSorted.map((bar) => (
                 <TableRow
                   key={bar.bar.id}
                   hover
@@ -111,9 +124,9 @@ const BarListPage: React.FC = () => {
                   <TableCell>{bar.bar.name}</TableCell>
                   <TableCell align="right">
                     {
-                      getCheapestPrice(bar, defaultDrink) ? 
-                      `${getCheapestPrice(bar, defaultDrink)?.toFixed(2)} €` : 
-                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km`
+                      showAll ? 
+                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km` :
+                      `${getCheapestPrice(bar, defaultDrink)?.toFixed(2)} €`
                     }
                   </TableCell>
                 </TableRow>
