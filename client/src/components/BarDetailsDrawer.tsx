@@ -46,19 +46,34 @@ const BarDetailsDrawer = () => {
 
     const activeHappyHour = getCurrentHappyHour(barData);
 
-    const getNormalPrice = () => {
-      const normalPrice = prices.find((p: PriceDTO) => (p.drinkType === defaultDrink && p.happyHourId === null));
-      const drinkPrice = normalPrice ? normalPrice : null;
-      return drinkPrice ? drinkPrice : null;
+    const getNormalPrice = () : PriceDTO | null => {
+      let normalPrice : PriceDTO | null = null;
+      let cheapestAmount = Number.MAX_VALUE;
+      prices.forEach(p => {      
+        if(p.drinkType === defaultDrink 
+          && p.happyHourId === null 
+          && p.price < cheapestAmount) {
+            normalPrice = p;
+            cheapestAmount = p.price;
+        }
+      });
+      return normalPrice ? normalPrice : null;
     };
 
-    const getHappyHourPrice = () => {
-      let drinkPrice;
+    const getHappyHourPrice = () : PriceDTO | null => {
+      let happyHourPrice : PriceDTO | null = null;
       if(activeHappyHour) {
-        const happyHourPrice = activeHappyHour.prices.find((p: PriceDTO) => (p.drinkType === defaultDrink));
-        drinkPrice = happyHourPrice ? happyHourPrice : null;
+        let cheapestAmount = Number.MAX_VALUE;
+        activeHappyHour.prices.forEach(p => {
+          if(p.drinkType === defaultDrink 
+            && p.happyHourId === activeHappyHour.id 
+            && p.price < cheapestAmount) {
+              happyHourPrice = p;
+              cheapestAmount = p.price;
+          }
+        })
       }
-      return drinkPrice ? drinkPrice : null;
+      return happyHourPrice ? happyHourPrice : null;
     }
 
     const currentPrice : PriceDTO | null = getHappyHourPrice() ? getHappyHourPrice() : getNormalPrice();  
@@ -103,7 +118,7 @@ const BarDetailsDrawer = () => {
             <Box sx={{ p: 1 }}>
               <Typography variant="h6">{bar.name}</Typography>
               <Typography><strong>Address:</strong> {bar.address}</Typography>
-              <Typography><strong>Open:</strong> {bar.openFrom.slice(0, -3)} - {bar.openTo.slice(0, -3)}</Typography>
+              <Typography><strong>Open:</strong> {bar.openFrom} - {bar.openTo}</Typography>
             </Box>
           </Box>
 
@@ -119,7 +134,7 @@ const BarDetailsDrawer = () => {
               }}
             >
               <Typography variant="body2" sx={{ color: '#b57edc' }}>
-                {getHappyHourPrice() ? getHappyHourPrice()?.drinkName : getNormalPrice()?.drinkName}
+                {currentPrice.drinkName}
               </Typography>
               <Typography
                 variant="h4"
