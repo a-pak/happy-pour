@@ -23,7 +23,6 @@ const MapsComponent: React.FC = () => {
   const {userLocation, setUserLocation} = useLocationStore();
   const {showNotification} = useErrorStore();
   const [refreshLocation, setRefreshLocation] = useState<"REFRESH" | "DEFAULT">("DEFAULT"); 
-  const [error, setError] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
@@ -39,7 +38,6 @@ const MapsComponent: React.FC = () => {
           setRefreshLocation("REFRESH");
         })
         .catch((err: string) => {
-          setError(err);
           console.error(err);
         });
     }
