@@ -49,21 +49,6 @@ export const LocationMarkerComponent: React.FC = () => {
         });
     }, []);
 
-    // function getBarColor(bar: Bar): PriceRank {
-    //     const RANKS = [PriceRank.HIGH, PriceRank.MIDDLE, PriceRank.LOW];
-    //     // Use a stable property — id is best, name as fallback
-    //     const key = bar.id.toString() + bar.name;
-
-    //     // Simple hash function
-    //     let hash = 0;
-    //     for (let i = 0; i < key.length; i++) {
-    //         hash = key.charCodeAt(i) + ((hash << 5) - hash);
-    //     }
-
-    //     // Pick one of the three colors
-    //     const colorIndex = Math.abs(hash) % 3;
-    //     return RANKS[colorIndex];
-    // }
     if (error) return <p>{error}</p>;
     return (
         <>
