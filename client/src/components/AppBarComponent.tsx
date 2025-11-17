@@ -42,7 +42,7 @@ const AppBarComponent: React.FC = () => {
 
   return (
     <AppBar 
-      position="relative"
+      position="sticky"
       color='secondary'
       sx={{
         zIndex: (theme) => theme.zIndex.appBar
