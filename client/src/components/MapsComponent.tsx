@@ -76,7 +76,7 @@ const MapsComponent: React.FC = () => {
         });
     }
     if(userLocation) {
-      setMapPosition(userLocation, 15);
+      setMapPosition(userLocation, 16);
       refreshLocation=="DEFAULT" ? setRefreshLocation("REFRESH") : setRefreshLocation("DEFAULT");
     } else {
       showNotification("Please allow the browser to use your location","warning");
@@ -98,20 +98,22 @@ const MapsComponent: React.FC = () => {
         }}
       >
           <Button 
-          onClick={centerMapToUser} 
-          variant='contained'
-          sx={{
-            backgroundColor: 'white',
-            zIndex: 1000, 
-            marginTop: '80px', 
-            marginLeft: '4px',
-            position: 'absolute', 
-            width: '5px',
-            minHeight: '50px',
-            borderRadius: '5px',
-          }}>
+            onClick={centerMapToUser} 
+            variant='contained'
+            sx={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',           // <-- stick to right edge
+              backgroundColor: 'white',
+              zIndex: 1000,
+              width: '5px',
+              minHeight: '50px',
+              borderRadius: '5px',
+            }}
+          >
             <NearMeIcon fontSize='medium' color='primary'/>
-        </Button>
+          </Button>
+
         
 
         <MapContainer
