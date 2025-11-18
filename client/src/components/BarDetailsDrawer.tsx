@@ -118,12 +118,13 @@ const BarDetailsDrawer = () => {
             <Box sx={{ p: 1 }}>
               <Typography variant="h6">{bar.name}</Typography>
               <Typography><strong>Address:</strong> {bar.address}</Typography>
-              <Typography><strong>Open:</strong> {bar.openFrom} - {bar.openTo}</Typography>
+              <Typography><strong>Open:</strong> 
+              <br/>
+              {bar.openFrom} - {bar.openTo}</Typography>
             </Box>
           </Box>
 
           {/* Drink Info */}
-          {(defaultDrink !== "View all" && (currentPrice)) && (
             <Box
               sx={{
                 ml: isMobile ? 2 : 0,
@@ -133,24 +134,26 @@ const BarDetailsDrawer = () => {
                 textAlign: 'left',
               }}
             >
+                <>
               <Typography variant="body2" sx={{ color: '#b57edc' }}>
-                {currentPrice.drinkName}
+                {currentPrice ? currentPrice.drinkName : ''}
               </Typography>
               <Typography
-                variant="h4"
-                sx={{
-                  color:
-                    activeHappyHour && getHappyHourPrice()
-                      ? 'rgb(70, 234, 70)'
-                      : theme.palette.primary.contrastText,
-                  fontWeight: 'bold',
-                }}
-              >
-                {` ${currentPrice.price.toFixed(2)} €`}
+                  variant="h4"
+                  sx={{
+                    color:
+                      activeHappyHour && getHappyHourPrice()
+                        ? 'rgb(70, 234, 70)'
+                        : theme.palette.primary.contrastText,
+                    fontWeight: 'bold',
+                  }}
+                >
+                {currentPrice ? `${currentPrice.price.toFixed(2)} €` : ''}
               </Typography>
+              </>
               {activeHappyHour && (
                 <>
-                  <Typography variant="caption" sx={{ color: '#E6BE8A' }}>
+                  <Typography variant= {currentPrice ? "caption" : 'h6'} sx={{ color: '#E6BE8A', marginRight: '20px'}}>
                     Happy Hour!
                   </Typography>
                   <Typography>
@@ -160,7 +163,6 @@ const BarDetailsDrawer = () => {
                 </>
               )}
             </Box>
-          )}
         </Box>
 
         {/* More Button */}
@@ -213,28 +215,28 @@ const BarDetailsDrawer = () => {
             disableEnforceFocus: true,
             disableScrollLock: true
           }}
-  PaperProps={{
-    sx: {
-      width: '100%',            // add this to fill the screen width
-      maxHeight: '90vh',
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      backgroundColor: 'primary.main',
-      overflow: 'auto',
-      boxSizing: 'border-box',  // ensure padding is included
-    },
-  }}
-  sx={{
-    '& .MuiDrawer-paper': {
-      touchAction: 'pan-y pinch-zoom',
-      overflowY: 'auto',
-      WebkitOverflowScrolling: 'touch',
-      '& > *': {
-        overscrollBehaviorY: 'contain'
-      }
-    }
-  }}
->
+          PaperProps={{
+            sx: {
+              width: '100%',            // add this to fill the screen width
+              maxHeight: '90vh',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              backgroundColor: 'primary.main',
+              overflow: 'auto',
+              boxSizing: 'border-box',  // ensure padding is included
+            },
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              touchAction: 'pan-y pinch-zoom',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              '& > *': {
+                overscrollBehaviorY: 'contain'
+              }
+            }
+          }}
+        >
   {renderDrawerContent()}
 </Drawer>
       )}
