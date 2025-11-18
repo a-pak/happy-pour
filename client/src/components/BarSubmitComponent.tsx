@@ -32,29 +32,23 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [openFrom, setOpenFrom] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
-  const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("14:30", "HH:mm"));
+  const [openTo, setOpenTo] = useState<Dayjs | null>(dayjs("02:00", "HH:mm"));
+  const [latitude, setLatitude] = useState<number>(lat ? lat : 0);
+  const [longitude, setLongitude] = useState<number>(lng ? lng : 0);
   //const [entryFee, setEntryFee] = useState(0.0);
   //const [cloakroomFee, setCloakroomFee] = useState(0.0);
 
   useEffect(() => {
-    if (barId) {
-      barService.getById(barId).then((bar) => {
-        setName(bar.bar.name);
-        setAddress(bar.bar.address);
-        setOpenFrom(dayjs(bar.bar.openFrom, "HH:mm:ss"));
-        setOpenTo(dayjs(bar.bar.openTo, "HH:mm:ss"));
-      });
-    } else {
-      const fetchAddress = async () => {
+    const fetchAddress = async () => {
         try {
-          const response = await getAddress(lat, lng);
-          if(response) {
+          await getAddress(lat, lng).then((res) => {
+            if(res) {
 
-            if (response.status != 200 || !response.data) {
-              console.error('Request failed:', response.status);
+            if (res.status != 200 || !res.data) {
+              console.error('Request failed:', res.status);
               throw new Error('Reverse geocoding failed');
             }
-            const data = response.data
+            const data = res.data
     
             if (data && data.address) {
               const addr = data.address;
@@ -73,10 +67,21 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
               console.warn("Address not found from Nominatimista.");
             }
           }
-         } catch (error) {
-          console.error("Nominatim-error:", error);
-        }      
+         });    
+      } catch (error) {
+        console.error("Error fetching address:", error);
       }
+    }
+    if (barId) {
+      barService.getById(barId).then((bar) => {
+        setName(bar.bar.name);
+        setAddress(bar.bar.address);
+        setOpenFrom(dayjs(bar.bar.openFrom, "HH:mm"));
+        setOpenTo(dayjs(bar.bar.openTo, "HH:mm"));
+        setLatitude(bar.bar.coordLat);
+        setLongitude(bar.bar.coordLong);
+      });
+    } else {
       fetchAddress();
     }
   }, [barId, lat, lng]);
@@ -98,11 +103,11 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
     const bar: Bar = {
       id: barId ?? 0,
       name,
-      coordLong: lng,
-      coordLat: lat,
+      coordLong: longitude,
+      coordLat: latitude,
       address,
-      openFrom: openFrom.format("HH:mm:ss"),
-      openTo: openTo.format("HH:mm:ss"),
+      openFrom: openFrom.format("HH:mm"),
+      openTo: openTo.format("HH:mm"),
       //entryFee,
       //cloakroomFee,
       createdBy: user.username,
@@ -111,13 +116,15 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       updatedAt: now,
       creatorId: user.id
     };
-
+    console.log("Submitting bar:", bar);
     try {
       if (barId) {
+        console.log("UPDATE");
         await barService.update(barId, bar);
         navigate("/bars/" + barId);
         showNotification("Bar updated successfully!", "success");
       } else {
+        console.log("CREATE");
         const response = await barService.create(bar);
         if (response) {
           navigate("/bars/" + response.id);
@@ -174,12 +181,14 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
 
           <TimePicker
             label="Open from"
+            ampm={false}
             value={openFrom}
             onChange={(newValue) => setOpenFrom(newValue)}
           />
 
           <TimePicker
             label="Open to"
+            ampm={false}
             value={openTo}
             onChange={(newValue) => setOpenTo(newValue)}
           />

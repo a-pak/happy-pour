@@ -52,6 +52,7 @@ function App() {
 
                   <Route element={<ProtectedRoutes />}>
                     <Route path='/bars/create' element={<BarSubmitPage />} />
+                    <Route path='/bars/:barId/update' element={<BarSubmitPage />} />
                     <Route path='/bars/:id/delete' element={<DeletePage />} />
                     <Route path='/drinks/update' element={<DrinkPage/>}/>
                     <Route path='/bars/delete' element={<DeletePage />} />
