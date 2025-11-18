@@ -22,8 +22,11 @@ import NotFoundPage from './pages/NotFoundPage.tsx'
 import BarDetailsDrawer from './components/BarDetailsDrawer.tsx'
 import DrinkPage from './pages/DrinkPage.tsx'
 import HappyHourSubmitPage from './pages/HappyHourSubmitPage.tsx'
+import { useDrinkStore } from './store/drinkStore.ts'
+
 
 function App() {
+  const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -32,7 +35,7 @@ function App() {
               <Routes>
                 <Route element={<LayoutComponent />}>
                   <Route path='' element={<LandingPage />}>
-                    <Route path="/bars" element={<BarListPage />} />
+                    <Route path="/bars" element={<BarListPage key={defaultDrink} />} />
                     <Route path="bars/:id" element={<BarDetailsDrawer />} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
@@ -49,6 +52,7 @@ function App() {
 
                   <Route element={<ProtectedRoutes />}>
                     <Route path='/bars/create' element={<BarSubmitPage />} />
+                    <Route path='/bars/:barId/update' element={<BarSubmitPage />} />
                     <Route path='/bars/:id/delete' element={<DeletePage />} />
                     <Route path='/drinks/update' element={<DrinkPage/>}/>
                     <Route path='/bars/delete' element={<DeletePage />} />

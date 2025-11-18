@@ -65,9 +65,28 @@ public class BarService {
     }
 
     public BarDTO updateBar(Long barId, BarDTO barDTO) {
+        User user = userService.getById(barDTO.getCreatorId());
+        if(user == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "No user with id " + barDTO.getCreatorId() + " found."
+        );
+        Bar newBar = Bar.builder()
+            .id(null)
+            .name(barDTO.getName())
+            .address(barDTO.getAddress())
+            .coordLat(barDTO.getCoordLat())
+            .coordLong(barDTO.getCoordLong())
+            .openFrom(java.time.LocalTime.parse(barDTO.getOpenFrom()))
+            .openTo(java.time.LocalTime.parse(barDTO.getOpenTo()))
+            .cloakroomFee(0)
+            .entryFee(0)
+            .createdBy(user)
+            .updatedBy(user)
+            .build();
+
         Optional<Bar> existingBar = barRepository.findById(barId);
         if (existingBar.isPresent()) {
-            BeanUtils.copyProperties(barDTO, existingBar.get(), "id", "createdBy", "createdAt");
+            BeanUtils.copyProperties(newBar, existingBar.get(), "id", "createdBy", "createdAt");
             Bar updatedBar = barRepository.save(existingBar.get());
             return new BarDTO(updatedBar);
         

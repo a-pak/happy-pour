@@ -42,23 +42,38 @@ const BarDetailsDrawer = () => {
     }
 
     const { bar, prices } = barData;
-    flyTo(bar.coordLat, bar.coordLong, 15);
+    flyTo(bar.coordLat, bar.coordLong);
 
     const activeHappyHour = getCurrentHappyHour(barData);
 
-    const getNormalPrice = () => {
-      const normalPrice = prices.find((p: PriceDTO) => (p.drinkType === defaultDrink && p.happyHourId === null));
-      const drinkPrice = normalPrice ? normalPrice : null;
-      return drinkPrice ? drinkPrice : null;
+    const getNormalPrice = () : PriceDTO | null => {
+      let normalPrice : PriceDTO | null = null;
+      let cheapestAmount = Number.MAX_VALUE;
+      prices.forEach(p => {      
+        if(p.drinkType === defaultDrink 
+          && p.happyHourId === null 
+          && p.price < cheapestAmount) {
+            normalPrice = p;
+            cheapestAmount = p.price;
+        }
+      });
+      return normalPrice ? normalPrice : null;
     };
 
-    const getHappyHourPrice = () => {
-      let drinkPrice;
+    const getHappyHourPrice = () : PriceDTO | null => {
+      let happyHourPrice : PriceDTO | null = null;
       if(activeHappyHour) {
-        const happyHourPrice = activeHappyHour.prices.find((p: PriceDTO) => (p.drinkType === defaultDrink));
-        drinkPrice = happyHourPrice ? happyHourPrice : null;
+        let cheapestAmount = Number.MAX_VALUE;
+        activeHappyHour.prices.forEach(p => {
+          if(p.drinkType === defaultDrink 
+            && p.happyHourId === activeHappyHour.id 
+            && p.price < cheapestAmount) {
+              happyHourPrice = p;
+              cheapestAmount = p.price;
+          }
+        })
       }
-      return drinkPrice ? drinkPrice : null;
+      return happyHourPrice ? happyHourPrice : null;
     }
 
     const currentPrice : PriceDTO | null = getHappyHourPrice() ? getHappyHourPrice() : getNormalPrice();  
@@ -103,12 +118,13 @@ const BarDetailsDrawer = () => {
             <Box sx={{ p: 1 }}>
               <Typography variant="h6">{bar.name}</Typography>
               <Typography><strong>Address:</strong> {bar.address}</Typography>
-              <Typography><strong>Open:</strong> {bar.openFrom.slice(0, -3)} - {bar.openTo.slice(0, -3)}</Typography>
+              <Typography><strong>Open:</strong> 
+              <br/>
+              {bar.openFrom} - {bar.openTo}</Typography>
             </Box>
           </Box>
 
           {/* Drink Info */}
-          {(defaultDrink !== "View all" && (currentPrice)) && (
             <Box
               sx={{
                 ml: isMobile ? 2 : 0,
@@ -118,24 +134,26 @@ const BarDetailsDrawer = () => {
                 textAlign: 'left',
               }}
             >
+                <>
               <Typography variant="body2" sx={{ color: '#b57edc' }}>
-                {getHappyHourPrice() ? getHappyHourPrice()?.drinkName : getNormalPrice()?.drinkName}
+                {currentPrice ? currentPrice.drinkName : ''}
               </Typography>
               <Typography
-                variant="h4"
-                sx={{
-                  color:
-                    activeHappyHour && getHappyHourPrice()
-                      ? 'rgb(70, 234, 70)'
-                      : theme.palette.primary.contrastText,
-                  fontWeight: 'bold',
-                }}
-              >
-                {` ${currentPrice.price.toFixed(2)} €`}
+                  variant="h4"
+                  sx={{
+                    color:
+                      activeHappyHour && getHappyHourPrice()
+                        ? 'rgb(70, 234, 70)'
+                        : theme.palette.primary.contrastText,
+                    fontWeight: 'bold',
+                  }}
+                >
+                {currentPrice ? `${currentPrice.price.toFixed(2)} €` : ''}
               </Typography>
+              </>
               {activeHappyHour && (
                 <>
-                  <Typography variant="caption" sx={{ color: '#E6BE8A' }}>
+                  <Typography variant= {currentPrice ? "caption" : 'h6'} sx={{ color: '#E6BE8A', marginRight: '20px'}}>
                     Happy Hour!
                   </Typography>
                   <Typography>
@@ -145,7 +163,6 @@ const BarDetailsDrawer = () => {
                 </>
               )}
             </Box>
-          )}
         </Box>
 
         {/* More Button */}
@@ -198,28 +215,28 @@ const BarDetailsDrawer = () => {
             disableEnforceFocus: true,
             disableScrollLock: true
           }}
-  PaperProps={{
-    sx: {
-      width: '100%',            // add this to fill the screen width
-      maxHeight: '90vh',
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      backgroundColor: 'primary.main',
-      overflow: 'auto',
-      boxSizing: 'border-box',  // ensure padding is included
-    },
-  }}
-  sx={{
-    '& .MuiDrawer-paper': {
-      touchAction: 'pan-y pinch-zoom',
-      overflowY: 'auto',
-      WebkitOverflowScrolling: 'touch',
-      '& > *': {
-        overscrollBehaviorY: 'contain'
-      }
-    }
-  }}
->
+          PaperProps={{
+            sx: {
+              width: '100%',            // add this to fill the screen width
+              maxHeight: '90vh',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              backgroundColor: 'primary.main',
+              overflow: 'auto',
+              boxSizing: 'border-box',  // ensure padding is included
+            },
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              touchAction: 'pan-y pinch-zoom',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              '& > *': {
+                overscrollBehaviorY: 'contain'
+              }
+            }
+          }}
+        >
   {renderDrawerContent()}
 </Drawer>
       )}

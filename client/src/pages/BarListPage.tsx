@@ -18,16 +18,19 @@ import barsService from '../services/bars';
 import { useTheme } from '@mui/material/styles';
 import { useDrinkStore } from '../store/drinkStore';
 import { BarData } from '../model/IbarInterface';
-import { PriceDTO } from '../model/IPriceInterface';
-import { getCurrentHappyHour } from '../utils/happyHourUtil';
+import { getCheapestPrice } from '../utils/priceUtil';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { useLocationStore } from '../store/locationStore';
+import { calculateDistance } from '../utils/locationUtil';
+import { useMapStore } from '../store/mapStore';
 const BarListPage: React.FC = () => {
   const [bars, setBars] = useState<BarData[]>([]);
   const navigate = useNavigate();
   const theme = useTheme();
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const {userLocation} = useLocationStore();
+  const {mapCenter} = useMapStore();
 
   useEffect(() => {
     barsService
@@ -37,22 +40,31 @@ const BarListPage: React.FC = () => {
       })
       .catch((err) => console.error('Failed to fetch bars:', err));
   }, []);
+  const showAll = defaultDrink.toLowerCase() === "View all".toLowerCase();
+  
+  // --- TODO: 🍝 Mamma Mia! This spaghetti has been in my family for generations! 🍝 ---
+  
+  // Filter NaN prices
+  const filteredBars = showAll ? bars : bars.filter((bar) => (getCheapestPrice(bar, defaultDrink) != null));
+  
+  // Sort by location
+  const currentLocation = userLocation ? userLocation : mapCenter;
+  const barsSortedByLocation = [...bars].sort((a,b) => {
+    const distanceA = calculateDistance(currentLocation, {latitude: a.bar.coordLat, longitude: a.bar.coordLong})
+    const distanceB = calculateDistance(currentLocation, {latitude: b.bar.coordLat, longitude: b.bar.coordLong})
+    return distanceA - distanceB;
+  })
 
-  const getDrinkPrice = (bar: BarData) => {
-    const drinkPrice = bar.prices.find((d: PriceDTO) => d.drinkType === defaultDrink);
-    const hh = getCurrentHappyHour(bar);
-    let happyHourPrice = hh ? hh.prices.find(hhPrice => hhPrice.drinkType === defaultDrink) : null;
-      
-    if (happyHourPrice) return happyHourPrice.price;
-    return drinkPrice ? drinkPrice.price : null;
-  };
-
-  const sortedBars = [...bars].sort((a, b) => {
-    const priceA = getDrinkPrice(a) || Infinity;
-    const priceB = getDrinkPrice(b) || Infinity;
+   // Sort by price
+  const barsSortedByPrice = [...filteredBars].sort((a, b) => {
+    const priceA = getCheapestPrice(a, defaultDrink) || Infinity;
+    const priceB = getCheapestPrice(b, defaultDrink) || Infinity;
     return priceA - priceB;
   });
 
+  // If show all, then show all bars sorted by location.
+  const barsSorted = showAll ? barsSortedByLocation : barsSortedByPrice;
+  
   const handleClose = () => {
     navigate("/");
   };
@@ -94,12 +106,12 @@ const BarListPage: React.FC = () => {
                   Bar Name
                 </TableCell>
                 <TableCell align="right" sx={{ color: theme.palette.secondary.contrastText }}>
-                  {defaultDrink} Price (€)
+                  {showAll ? `Distance (km)` : `${defaultDrink} Price (€)`}
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedBars.map((bar) => (
+              {barsSorted.map((bar) => (
                 <TableRow
                   key={bar.bar.id}
                   hover
@@ -112,7 +124,12 @@ const BarListPage: React.FC = () => {
                 >
                   <TableCell>{bar.bar.name}</TableCell>
                   <TableCell align="right">
-                    {getDrinkPrice(bar) ? getDrinkPrice(bar)?.toFixed(2) : 'N/A'}
+                    {
+                      showAll ? 
+                      `${calculateDistance(currentLocation, {latitude: bar.bar.coordLat, longitude: bar.bar.coordLong}).toPrecision(3)} km` 
+                      :
+                      `${getCheapestPrice(bar, defaultDrink)?.toFixed(2)} €`
+                    }
                   </TableCell>
                 </TableRow>
               ))}
