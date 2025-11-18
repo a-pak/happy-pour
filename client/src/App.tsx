@@ -55,7 +55,10 @@ function App() {
                     <Route path='bars/:barId/happy-hours/create' element={<HappyHourSubmitPage />} />
                     <Route path='bars/:barId/happy-hours/update/:hhId' element={<HappyHourSubmitPage />} />
                     <Route path='/bars/:barId/prices/update' element={<PriceSubmitPage />} />
-                    <Route path='/bars/:barId/happy-hours/:hhId/prices/update' element={<PriceSubmitPage />} />
+
+                    <Route path='/bars/:barId/prices/update/:priceDrinkId' element={<PriceSubmitPage />} />
+                    {//<Route path='/bars/:barId/happy-hours/:hhId/prices/update/:priceDinkId' element={<PriceSubmitPage />} />
+}
                   </Route>
                 </Route>
               </Routes>

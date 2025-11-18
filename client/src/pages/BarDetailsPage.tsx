@@ -164,7 +164,7 @@ const BarDetailsPage: React.FC = () => {
                   />
                   <IconButton
                     component={Link}
-                    to={`/bars/${bar.id}/prices/update/${price.id}`}
+                    to={`/bars/${bar.id}/prices/update/${price.drinkId}`}
                     sx={{ color: 'grey' }}
                     size="small"
                   >

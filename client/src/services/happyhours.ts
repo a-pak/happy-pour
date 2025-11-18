@@ -1,11 +1,24 @@
 import {HappyHourDTO} from '../model/IHappyHourInterface'
+import axios, { AxiosError } from 'axios';
 import api from '../utils/axiosInstance';
 
 const HAPPY_HOUR_URL : string = "/happyhours";
 
 export const getHappyHoursByBar = async (barId: number) => {
-    const response = await api.get(HAPPY_HOUR_URL + `/by-bar/${barId}`);
-    return response.data;
+    try {
+        const response = await api.get(HAPPY_HOUR_URL + `/by-bar/${barId}`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;            
+            if (axiosError.response?.status === 404) {
+                console.log(`No happy hours found for bar ${barId}. Returning empty array.`);
+                return []; 
+            }
+        }
+
+        throw error;
+    }
 }
 
 export const getHappyHour = async (id : number) => {

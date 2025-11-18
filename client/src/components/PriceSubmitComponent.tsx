@@ -22,16 +22,16 @@ import { HappyHourDTO } from '../model/IHappyHourInterface.ts';
 import { ArrowBack } from '@mui/icons-material';
 
 // ...existing code...
-interface PriceSubmitComponentProps { barId: number; happyHourId?: number;}
+interface PriceSubmitComponentProps { barId: number; priceDrinkId?: number; happyHourId?: number;}
 
-const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happyHourId}) => {
+const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, priceDrinkId, happyHourId}) => {
   const [searchParams] = useSearchParams();
   const happyHourParam = searchParams.get("hhId")
   const { user } = useUserStore();
   const { showNotification } = useErrorStore.getState();
   const navigate = useNavigate();
   // ---------- State ----------
-  const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>('');
+  const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>(priceDrinkId ?? '');
   const [selectedHappyHourId, setSelectedHappyHourId] = useState<number | ''>(happyHourId ?? '');
   const [amount, setAmount] = useState<string>('');
   const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
@@ -132,7 +132,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
     ><Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Bar </Button>
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Submit Price 💶
+        Submit Price
       </Typography>
       {/* Drink picker */}
       <FormControl fullWidth margin="normal">
@@ -249,4 +249,3 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, happy
 
 
 export default PriceSubmitComponent;
-// ...existing code...
