@@ -97,22 +97,31 @@ const MapsComponent: React.FC = () => {
           width: '100%',
         }}
       >
-          <Button 
+          <button 
             onClick={centerMapToUser} 
-            variant='contained'
-            sx={{
+            style={{
               position: 'absolute',
-              top: '12px',
-              right: '12px',           // <-- stick to right edge
-              backgroundColor: 'white',
-              zIndex: 1000,
-              width: '5px',
-              minHeight: '50px',
-              borderRadius: '5px',
+              zIndex: '5000', 
+              width: '30px',
+              height: '30px', 
+              marginLeft: '12px',
+              marginTop: '80px',
+              paddingTop: '6px',
+              display: 'block',              
+              lineHeight: '26px',
+              backgroundColor: "white", 
+              borderRadius: '3px', 
+              border: 'none',
+              backgroundClip: 'padding-box',
+              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.52)',
+              cursor:'pointer'
             }}
           >
-            <NearMeIcon fontSize='medium' color='primary'/>
-          </Button>
+            <NearMeIcon fontSize="small" color='primary' 
+            sx={{
+              width:'17px'
+            }}/>
+          </button>
 
         
 
