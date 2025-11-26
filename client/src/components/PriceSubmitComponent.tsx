@@ -209,7 +209,7 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
           <Box mt={2}>
             <Typography variant="body1"><strong>Drink Name:</strong> {selectedDrink.name}</Typography>
             <Typography variant="body1"><strong>Type:</strong> {selectedDrink.type}</Typography>
-            <Typography variant="body1"><strong>Size:</strong> {selectedDrink.size} ml</Typography>
+            <Typography variant="body1"><strong>Size:</strong> {selectedDrink.size} l</Typography>
             {selectedHappyHour && (
               <Typography variant="body2" sx={{ mt: 1 }}>
                 <strong>Happy Hour:</strong> {selectedHappyHour.weekDays.join(', ')} {selectedHappyHour.startTime}-{selectedHappyHour.endTime}
