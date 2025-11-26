@@ -43,6 +43,7 @@ public class SecurityConfig {
                         // Public APIs
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/bars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/drinks/**").permitAll()
 
                         // Error path so requests get correct response and not blocked by security
                         .requestMatchers("/error").permitAll()
