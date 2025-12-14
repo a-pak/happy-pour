@@ -1,0 +1,52 @@
+package com.happypour.happypour.mapper;
+import java.math.BigDecimal;
+
+import com.happypour.happypour.dto.PriceDTO;
+import com.happypour.happypour.model.Bar;
+import com.happypour.happypour.model.Drink;
+import com.happypour.happypour.model.Price;
+import com.happypour.happypour.model.User;
+import com.happypour.happypour.model.enums.DrinkType;
+
+public class PriceMapper {
+
+    public static Price toEntity(PriceDTO dto, Bar bar, Drink drink, User createdBy, User updatedBy) {
+        return Price.builder()
+            .price(dto.getPrice())
+            .bar(bar)
+            .drink(drink)
+            .createdBy(createdBy)
+            .updatedBy(updatedBy)
+            .build();
+    }
+
+    public static PriceDTO toDTO(Price price) {
+        Long happyHourId = price.getHappyHour() != null ? price.getHappyHour().getId() : null;
+        Long barId = price.getBar() != null ? price.getBar().getId() : null;
+        
+        Long drinkId = price.getDrink() != null ? price.getDrink().getId() : null;
+        String drinkName = price.getDrink() != null ? price.getDrink().getName() : null;
+        DrinkType drinkType = price.getDrink() != null ? price.getDrink().getType() : null;
+        BigDecimal drinkSize = price.getDrink() != null ? price.getDrink().getSize() : null;
+        
+        String createdByUsername = price.getCreatedBy() != null ? price.getCreatedBy().getUsername() : null;
+        String updatedByUsername = price.getUpdatedBy() != null ? price.getUpdatedBy().getUsername() : null;
+        Long creatorId = price.getCreatedBy() != null ? price.getCreatedBy().getId() : null;
+
+        return PriceDTO.builder()
+            .id(price.getId())
+            .price(price.getPrice())
+            .barId(barId)
+            .happyHourId(happyHourId)
+            .drinkId(drinkId)
+            .drinkName(drinkName)
+            .drinkType(drinkType)
+            .drinkSize(drinkSize)
+            .createdBy(createdByUsername)
+            .updatedBy(updatedByUsername)
+            .updatedAt(price.getUpdatedAt().toString())
+            .createdAt(price.getCreatedAt().toString())
+            .creatorId(creatorId)
+            .build();
+    }
+}

@@ -30,28 +30,46 @@ class PriceServiceTest {
 
     @Spy
     @InjectMocks
-    private PriceService priceService;
+    PriceService priceService;
 
     @Mock
-    private PriceRepository priceRepository;
+    PriceRepository priceRepository;
     @Mock
-    private UserService userService;
+    UserService userService;
     @Mock
-    private BarService barService;
+    BarService barService;
     @Mock
-    private DrinkService drinkService;
+    DrinkService drinkService;
     @Mock
-    private HappyHourService happyHourService;
+    HappyHourService happyHourService;
 
-    private PriceDTO dto;
+    PriceDTO dto;
+    Price price;
+    Bar bar;
+    Drink drink;
+    User user;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        dto = new PriceDTO();
-        dto.setBarId(1L);
-        dto.setBarId(1L);
-        dto.setPrice(new BigDecimal("5.00"));
+        bar = Bar.builder().id(1L).build();
+        drink = Drink.builder().id(1L).type(DrinkType.BEER).build();
+        user = User.builder().id(1l).build();
+        dto = PriceDTO.builder()
+            .id(1L)
+            .creatorId(1L)
+            .drinkId(1L)
+            .barId(1L)
+            .price(new BigDecimal("5.00"))
+            .build();
+        price = Price.builder()
+            .id(1L)
+            .bar(bar)
+            .drink(drink)
+            .createdBy(user).updatedBy(user)
+            .createdAt(new Timestamp(0))
+            .updatedAt(new Timestamp(0))
+            .build();
     }
 
     @Test
@@ -61,28 +79,17 @@ class PriceServiceTest {
 
         List<Price> result = priceService.getAllPrices();
 
-        assertEquals(1, result.size());
+        assertEquals(1, result.size(), "List of prices was not the expected length.");
         assertEquals(1L, result.get(0).getId());
     }
 
     @Test
     void testGetAllPriceDTOs_returnsDTOs() {
-        Bar bar = Bar.builder().id(1L).build();
-        Drink drink = Drink.builder().id(1L).type(DrinkType.BEER).build();
-        User user = User.builder().id(1l).build();
-        Price price = Price.builder()
-            .id(1L)
-            .bar(bar)
-            .drink(drink)
-            .createdBy(user).updatedBy(user)
-            .createdAt(new Timestamp(0))
-            .updatedAt(new Timestamp(0))
-            .build();
-        
+        // --- Given ---     
         when(priceRepository.findAll()).thenReturn(List.of(price));
-
+        // ---When ---
         List<PriceDTO> dtos = priceService.getAllPriceDTOs();
-
+        // --- Then ---
         assertEquals(1, dtos.size());
         assertEquals(1L, dtos.get(0).getId());
     }
@@ -95,54 +102,28 @@ class PriceServiceTest {
     }
 
     @Test
-    void testGetDTOsByBarId_found() {
-        // --- Setup mock entities ---
-        Bar bar = Bar.builder().id(1L).build();
-        Drink drink = Drink.builder().id(1L).type(DrinkType.BEER).build();
-        User user = User.builder().id(1L).build();
-        Price price = Price.builder()
-            .id(1L)
-            .bar(bar)
-            .createdBy(user)
-            .updatedBy(user)
-            .createdAt(new Timestamp(0))
-            .updatedAt(new Timestamp(0))
-            .drink(drink)
-            .build();
-        
-        // --- Mock repository calls ---
+    void testGetDTOsByBarId_found() {   
+        // --- Given ---
         when(priceRepository.findByBar(1L)).thenReturn(List.of(price));
-        // --- Execute ---
+        // --- When ---
         List<PriceDTO> dtos = priceService.getDTOsByBarId(1L);
-        // --- Assert ---
+        // --- Then ---
         assertEquals(1, dtos.size());
     }
 
     @Test
-    void testGetDTOsByBarId_notFound() {
-        // --- Setup mock methods
+    void testGetDTOsByBarId_throwsNotFound() {
+        // --- Given
         when(priceRepository.findByBar(1L)).thenReturn(Collections.emptyList());
-
-        // --- Execute and Assert 404 exception ---
+        // --- When ---
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> priceService.getDTOsByBarId(1L));
+        // --- Then ---
         assertEquals("404 NOT_FOUND \"No prices found for bar id 1\"", exception.getMessage());
     }
 
     @Test
-    void testCreatePrice_success() {
-        // --- Setup mock entities ---
-        User user = User.builder().id(1L).build();
-        Bar bar = Bar.builder().id(1L).build();
-        Drink drink = Drink.builder().id(1L).build();
-        
-        // --- Setup DTOs ---
-        PriceDTO dto = new PriceDTO();
-        dto.setCreatorId(1L);
-        dto.setDrinkId(1L);
-        dto.setBarId(1L);
-        dto.setPrice(new BigDecimal("5.00"));
-        
+    void testCreatePrice_success() { 
         // --- Mock service and repository calls ---
         when(userService.getById(1L)).thenReturn(user);
         when(barService.getById(1L)).thenReturn(bar);
@@ -157,11 +138,6 @@ class PriceServiceTest {
 
     @Test
     void testCreatePrice_userNotFound_throwsException() {
-        // --- Setup dtos ---
-        PriceDTO dto = new PriceDTO();
-        dto.setBarId(1L);
-        dto.setCreatorId(1L);
-        dto.setPrice(new BigDecimal("5.00"));
         // --- Mock methods ---
         when(userService.getById(1L)).thenReturn(null);
         // --- Execute and Assert exception ---
@@ -172,27 +148,16 @@ class PriceServiceTest {
 
     @Test
     void testDoesntCreateDuplicatePrice() {
-        // --- Setup mock entities ---
-        User user = User.builder().id(1L).build();
-        Bar bar = Bar.builder().id(1L).build();
-        Drink drink = Drink.builder().id(1L).build();
         Price existingPrice = Price.builder().id(1L).build();
         Optional<Price> optionalPrice = Optional.of(existingPrice);
 
-        // --- Setup DTOs ---
-        PriceDTO dto = new PriceDTO();
-        dto.setId(1L); // important for update
-        dto.setBarId(1L);
-        dto.setDrinkId(1L);
-        dto.setCreatorId(1L);
-        dto.setPrice(new BigDecimal("5.00"));
-
+        // --- Given ---
+        
         // Add duplicate DTO to simulate duplicate creation
         List<PriceDTO> dtoList = new ArrayList<>();
         dtoList.add(dto);
         dtoList.add(dto);
 
-        // --- Mock service calls ---
         when(userService.getById(1L)).thenReturn(user);
         when(barService.getById(1L)).thenReturn(bar);
         when(drinkService.getById(1L)).thenReturn(drink);
@@ -202,15 +167,13 @@ class PriceServiceTest {
                 .thenReturn(Optional.of(existingPrice));
         // findById returns the existing price
         when(priceRepository.findById(1L)).thenReturn(optionalPrice);
-        // --- Execute ---
+        // --- When ---
         priceService.createPrice(dtoList);
 
-        // --- Verify ---  
-        // 1. updatePrice should have been called twice for duplicate DTOs
-        //    meaning save() is called twice on the existing price
+        // --- Then ---  
+        // To save the duplicate prices, repository.save() should have been calles 2 times.
         verify(priceRepository, times(2)).save(existingPrice);
-
-        // 2. No new Price objects should have been created
+        // Verify that no new Price objects have been created
         verify(priceRepository, never()).save(argThat(p -> p != existingPrice));
     }
 
@@ -218,22 +181,12 @@ class PriceServiceTest {
     @DisplayName("Test that updatePrice is called for duplicate PriceDTOs")
     void testUpdatePriceCalledForDuplicate() {
         // --- Setup entities ---
-        User user = User.builder().id(1L).build();
-        Bar bar = Bar.builder().id(1L).build();
-        Drink drink = Drink.builder().id(1L).build();
         Price existingPrice = Price.builder().id(1L).build();
-
-        // --- Setup DTOs ---
-        PriceDTO dto = new PriceDTO();
-        dto.setId(1L);  // important: matches existing Price
-        dto.setBarId(1L);
-        dto.setDrinkId(1L);
-        dto.setCreatorId(1L);
-        dto.setPrice(new BigDecimal("5.00"));
-
+        
+        // Add duplicate DTO to simulate duplicate creation
         List<PriceDTO> dtoList = new ArrayList<>();
         dtoList.add(dto);
-        dtoList.add(dto); // duplicate
+        dtoList.add(dto);
 
         // --- Mock dependencies ---
         when(userService.getById(1L)).thenReturn(user);
@@ -249,7 +202,7 @@ class PriceServiceTest {
         priceService.createPrice(dtoList);
 
         // --- Verify updatePrice() called for each duplicate ---
-        verify(priceService, times(2)).updatePrice(dto);
+        verify(priceService, times(2)).updatePrice(1L, dto);
 
         // --- Verify save() called on existing price ---
         verify(priceRepository, times(2)).save(existingPrice);

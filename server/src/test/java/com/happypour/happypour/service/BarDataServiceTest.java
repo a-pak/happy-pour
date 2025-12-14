@@ -16,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.BarDataDTO;
+import com.happypour.happypour.dto.HappyHourDTO;
+import com.happypour.happypour.dto.PriceDTO;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.model.Drink;
 import com.happypour.happypour.model.HappyHour;
@@ -37,15 +39,16 @@ class BarDataServiceTest {
     @Mock
     private PriceService priceService;
 
+    Bar barMock;
+    HappyHour hhMock;
+    Drink drinkMock;
+    Price normalPriceMock, priceForHhMock;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void getAllBars_withHappyHoursAndNormalPrices_returnsMappedData() {
         // Prepare bar
-        Bar bar = Bar.builder()
+        barMock = Bar.builder()
         .id(1L)
         .name("Test bar")
         .address("Pop")
@@ -60,147 +63,125 @@ class BarDataServiceTest {
         .openFrom(java.time.LocalTime.now())
         .openTo(java.time.LocalTime.now())
         .build();
-        List<Bar> bars = List.of(bar);
+        hhMock = HappyHour.builder()
+            .id(1L)
+            .bar(barMock)
+            .startTime(java.time.LocalTime.now())
+            .endTime(java.time.LocalTime.now())
+            .createdAt(new Timestamp(0))
+            .updatedAt(new Timestamp(0))
+            .createdBy(new User())
+            .updatedBy(new User())
+            .build();
+        drinkMock = Drink.builder().id(5L).name("Drink").type(DrinkType.BEER).build();
+        priceForHhMock = Price.builder()
+            .id(2L)
+            .happyHour(hhMock)
+            .bar(barMock)
+            .drink(drinkMock)
+            .createdBy(new User())
+            .updatedBy(new User())
+            .createdAt(new Timestamp(0))
+            .updatedAt(new Timestamp(0))
+            .build();
+        normalPriceMock = Price.builder()
+            .id(1L)
+            .happyHour(null)
+            .bar(barMock)
+            .drink(drinkMock)
+            .createdBy(new User())
+            .updatedBy(new User())
+            .createdAt(new Timestamp(0))
+            .updatedAt(new Timestamp(0))
+            .build();
+    }
 
-        // Prepare happy hour linked to bar
-        HappyHour hh = mock(HappyHour.class);
-        when(hh.getId()).thenReturn(10L);
-        when(hh.getBar()).thenReturn(bar);
-        when(hh.getStartTime()).thenReturn(java.time.LocalTime.now());
-        when(hh.getEndTime()).thenReturn(java.time.LocalTime.now());
-        when(hh.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(hh.getUpdatedAt()).thenReturn(new Timestamp(0));
-        when(hh.getCreatedBy()).thenReturn(new User());
-        when(hh.getUpdatedBy()).thenReturn(new User());
-        List<HappyHour> happyHours = List.of(hh);
+    @Test
+    void getAllBars_withHappyHoursAndNormalPrices_returnsMappedData() {
+        // Prepare return lists
+        List<Bar> bars = List.of(barMock);
+        List<HappyHour> happyHours = List.of(hhMock);
+        List<Price> prices = List.of(priceForHhMock, normalPriceMock);
 
-        // Prepare prices: one for happy hour, one normal price for the bar
-        Drink drink = Drink.builder().id(5L).name("Drink").type(DrinkType.BEER).build();
-        Price priceForHh = mock(Price.class);
-        when(priceForHh.getId()).thenReturn(100L);
-        when(priceForHh.getHappyHour()).thenReturn(hh);
-        when(priceForHh.getBar()).thenReturn(bar);
-        when(priceForHh.getDrink()).thenReturn(drink);
-        when(priceForHh.getCreatedBy()).thenReturn(new User());
-        when(priceForHh.getUpdatedBy()).thenReturn(new User());
-        when(priceForHh.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(priceForHh.getUpdatedAt()).thenReturn(new Timestamp(0));
-        
-        Price normalPrice = mock(Price.class);
-        when(normalPrice.getId()).thenReturn(200L);
-        when(normalPrice.getHappyHour()).thenReturn(null);
-        when(normalPrice.getBar()).thenReturn(bar);
-        when(normalPrice.getDrink()).thenReturn(drink);
-        when(normalPrice.getCreatedBy()).thenReturn(new User());
-        when(normalPrice.getUpdatedBy()).thenReturn(new User());
-        when(normalPrice.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(normalPrice.getUpdatedAt()).thenReturn(new Timestamp(0));
-
-        List<Price> prices = List.of(priceForHh, normalPrice);
-
-        // Mock services
+        // --- Given ---
         when(barService.getAll()).thenReturn(bars);
         when(happyHourService.getAll()).thenReturn(happyHours);
         when(priceService.getAllPrices()).thenReturn(prices);
 
-        // Execute
+        // --- When ---
         List<BarDataDTO> result = barDataService.getAllBars();
 
-        // Verify
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        // --- Then ---
+        assertNotNull(result, "Result was null.");
+        assertEquals(1, result.size(), "Result didn't contain any barDtos.");
 
         BarDataDTO dto = result.get(0);
-        assertNotNull(dto.getBar());
-        assertEquals(1, dto.getHappyHours().size(), "Happy hours should contain the associated happy hour");
-        assertEquals(1, dto.getPrices().size(), "Normal prices should contain the bar's normal price");
+        assertNotNull(dto.getBar(), "BarDataDto didn't include a bar.");
+        assertEquals(1, dto.getHappyHours().size(), "Happy hours didn't contain the associated happy hour");
+        assertEquals(1, dto.getPrices().size(), "Normal prices didn't contain the bar's normal price");
 
-        // Happy hour should contain the happy-hour-specific price
-        assertEquals(1, dto.getHappyHours().get(0).getPrices().size());
+        List<PriceDTO> pricesOfDto = dto.getHappyHours().get(0).getPrices();
+        assertEquals(
+            1, 
+            pricesOfDto.size(), 
+            "Length of hh prices did not meet expected length of 1."
+        );
 
         // Happy-hour prices should not contain the normal price
         dto.getHappyHours().get(0).getPrices().forEach(hhp -> {
-            assertFalse(hhp.getId().equals(normalPrice.getId()));
+            assertFalse(
+                hhp.getId().equals(normalPriceMock.getId()), 
+                "Happy-hour prices didn't contain the normal price."
+            );
         });
         
         // Normal prices should not contain the happy-hour price
         dto.getPrices().forEach(p -> {
-            assertFalse(p.getId().equals(priceForHh.getId()));
+            assertFalse(
+                p.getId().equals(priceForHhMock.getId()), 
+                "Normal prices contained Happy hour price."
+            );
         }); 
     }
 
     @Test
     void getDataDtoById_withExistingBar_returnsMappedData() {
-        // Prepare bar
-        Bar bar = Bar.builder()
-        .id(2L)
-        .name("Test bar")
-        .address("Pop")
-        .cloakroomFee(0)
-        .entryFee(0)
-        .coordLat(0)
-        .coordLong(0)
-        .createdAt(new Timestamp(0))
-        .updatedAt(new Timestamp(0))
-        .createdBy(new User())
-        .updatedBy(new User())
-        .openFrom(java.time.LocalTime.now())
-        .openTo(java.time.LocalTime.now())
-        .build();
-
-        // Prepare happy hour
-        HappyHour hh = mock(HappyHour.class);
-        when(hh.getId()).thenReturn(20L);
-        when(hh.getBar()).thenReturn(bar);
-        when(hh.getStartTime()).thenReturn(java.time.LocalTime.now());
-        when(hh.getEndTime()).thenReturn(java.time.LocalTime.now());
-        when(hh.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(hh.getUpdatedAt()).thenReturn(new Timestamp(0));
-        when(hh.getCreatedBy()).thenReturn(new User());
-        when(hh.getUpdatedBy()).thenReturn(new User());
-
-        // Prices: one tied to happy hour, one normal
-        Drink drink = Drink.builder().id(5L).name("Drink").type(DrinkType.BEER).build();
-        Price priceForHh = mock(Price.class);
-        when(priceForHh.getHappyHour()).thenReturn(hh);
-        when(priceForHh.getBar()).thenReturn(bar);
-        when(priceForHh.getDrink()).thenReturn(drink);
-        when(priceForHh.getCreatedBy()).thenReturn(new User());
-        when(priceForHh.getUpdatedBy()).thenReturn(new User());
-        when(priceForHh.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(priceForHh.getUpdatedAt()).thenReturn(new Timestamp(0));
-        Price normalPrice = mock(Price.class);
-        when(normalPrice.getHappyHour()).thenReturn(null);
-        when(normalPrice.getBar()).thenReturn(bar);
-        when(normalPrice.getDrink()).thenReturn(drink);
-        when(normalPrice.getCreatedBy()).thenReturn(new User());
-        when(normalPrice.getUpdatedBy()).thenReturn(new User());
-        when(normalPrice.getCreatedAt()).thenReturn(new Timestamp(0));
-        when(normalPrice.getUpdatedAt()).thenReturn(new Timestamp(0));
-
-        List<Price> prices = List.of(priceForHh, normalPrice);
-        List<HappyHour> happyHours = List.of(hh);
+        // --- Given ---
+        List<Price> prices = List.of(priceForHhMock, normalPriceMock);
+        List<HappyHour> happyHours = List.of(hhMock);
 
         // Mock services
-        when(barService.getById(2L)).thenReturn(bar);
-        when(happyHourService.findByBarId(2L)).thenReturn(happyHours);
-        when(priceService.getByBarId(2L)).thenReturn(prices);
+        when(barService.getById(1L)).thenReturn(barMock);
+        when(happyHourService.getByBarId(1L)).thenReturn(happyHours);
+        when(priceService.getByBarId(1L)).thenReturn(prices);
 
-        // Execute
-        BarDataDTO dto = barDataService.getDataDtoById(2L);
+        // --- When ---
+        BarDataDTO dto = barDataService.getDataDtoById(1L);
 
-        // Verify
+        // --- Then ---
+        List<HappyHourDTO> hhs = dto.getHappyHours();
+        List<PriceDTO> hhPrices = dto.getHappyHours().get(0).getPrices();
+        List<PriceDTO> normalPrices = dto.getPrices();
+
         assertNotNull(dto);
         assertNotNull(dto.getBar());
-        assertEquals(1, dto.getHappyHours().size(), "Should contain one happy hour");
-        assertEquals(1, dto.getHappyHours().get(0).getPrices().size(), "Happy hour should include its price");
-        assertEquals(1, dto.getPrices().size(), "Should include one normal price");
+        assertEquals(1, hhs.size(), "Should contain one happy hour");
+        assertEquals(1, hhPrices.size(), "Happy hour should include its 1 price");
+        assertEquals(1, normalPrices.size(), "Should include one normal price");
     }
 
     @Test
-    void getDataDtoById_withMissingBar_throwsNotFound() {
-        when(barService.getById(99L)).thenReturn(null);
+    void getDataDtoById_throwsNotFound() {
+        when(barService.getById(999L)).thenReturn(null);
 
-        assertThrows(ResponseStatusException.class, () -> barDataService.getDataDtoById(99L));
+        Exception exception = assertThrows(
+            ResponseStatusException.class, 
+            () -> barDataService.getDataDtoById(999L)
+        );
+        assertEquals(
+            "404 NOT_FOUND \"Bar with id 999 not found\"", 
+            exception.getMessage(), 
+            "Error message was not as expected."
+        );
     }
 }

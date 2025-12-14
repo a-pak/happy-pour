@@ -41,9 +41,9 @@ public class HappyHourController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createHappyHour(@RequestBody HappyHourDTO dto) {
-        HappyHour createdHappyHour = happyHourService.createHappyHour(dto);
-        return ResponseEntity.ok("Happy hour created with id: " + createdHappyHour.getId());
+    public ResponseEntity<HappyHourDTO> createHappyHour(@RequestBody HappyHourDTO dto) {
+        HappyHourDTO createdHappyHour = happyHourService.createHappyHour(dto);
+        return ResponseEntity.ok(createdHappyHour);
     }
     
     @PutMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.*;
+import com.happypour.happypour.mapper.BarMapper;
 import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
@@ -24,7 +25,12 @@ public class BarService {
     public List<Bar> getAll() {
         return barRepository.findAll();
     }
-
+    /**
+     * Fetches Bars with coordinates within a certain area from given coordinates.
+     * @param lat
+     * @param lon
+     * @return
+     */
     public List<Bar> getByLocation(double lat, double lon) {
         System.out.println("3. BARSERVICE: Fetching bars near lat: " + lat + ", lon: " + lon);
         List<Bar> bars = barRepository.findByLocation(lat, lon);
@@ -41,57 +47,41 @@ public class BarService {
     }
 
     public BarDTO createBar(BarDTO barDTO) {
+        if(barDTO.getCreatorId() == null) 
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+
         User user = userService.getById(barDTO.getCreatorId());
         if(user == null) throw new ResponseStatusException(
             HttpStatus.NOT_FOUND, 
             "No user with id " + barDTO.getCreatorId() + " found."
         );
 
-        Bar bar = Bar.builder()
-            .id(null)
-            .name(barDTO.getName())
-            .address(barDTO.getAddress())
-            .coordLat(barDTO.getCoordLat())
-            .coordLong(barDTO.getCoordLong())
-            .openFrom(java.time.LocalTime.parse(barDTO.getOpenFrom()))
-            .openTo(java.time.LocalTime.parse(barDTO.getOpenTo()))
-            .cloakroomFee(0)
-            .entryFee(0)
-            .createdBy(user)
-            .updatedBy(user)
-            .build();
+        Bar bar = BarMapper.toEntity(barDTO, user);
         Bar createdBar = barRepository.save(bar);
-        return new BarDTO(createdBar);
+
+        // Return DTO of created bar to client
+        return BarMapper.toDTO(createdBar);
     }
 
     public BarDTO updateBar(Long barId, BarDTO barDTO) {
-        User user = userService.getById(barDTO.getCreatorId());
-        if(user == null) throw new ResponseStatusException(
-            HttpStatus.NOT_FOUND, 
-            "No user with id " + barDTO.getCreatorId() + " found."
-        );
-        Bar newBar = Bar.builder()
-            .id(null)
-            .name(barDTO.getName())
-            .address(barDTO.getAddress())
-            .coordLat(barDTO.getCoordLat())
-            .coordLong(barDTO.getCoordLong())
-            .openFrom(java.time.LocalTime.parse(barDTO.getOpenFrom()))
-            .openTo(java.time.LocalTime.parse(barDTO.getOpenTo()))
-            .cloakroomFee(0)
-            .entryFee(0)
-            .createdBy(user)
-            .updatedBy(user)
-            .build();
+        if(barDTO.getCreatorId() == null) 
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
 
+        User user = userService.getById(barDTO.getCreatorId());
+        if(user == null) 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with id " +barDTO.getCreatorId()+ " found.");
+
+        Bar newBar = BarMapper.toEntity(barDTO, user);
         Optional<Bar> existingBar = barRepository.findById(barId);
+
         if (existingBar.isPresent()) {
             BeanUtils.copyProperties(newBar, existingBar.get(), "id", "createdBy", "createdAt");
             Bar updatedBar = barRepository.save(existingBar.get());
-            return new BarDTO(updatedBar);
+            return BarMapper.toDTO(newBar);
         
-        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+barId+" not found.");
-        
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+barId+" not found.");
+        }
     }
 
     public void removeBar(Long id) {

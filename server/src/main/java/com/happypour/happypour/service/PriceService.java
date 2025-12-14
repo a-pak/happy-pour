@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.PriceDTO;
+import com.happypour.happypour.mapper.PriceMapper;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.model.Price;
 import com.happypour.happypour.model.User;
@@ -40,13 +41,28 @@ public class PriceService {
         if(prices.isEmpty()) return null;
 
         List<PriceDTO> priceDTOs = new ArrayList<>();
-        prices.forEach(price -> priceDTOs.add(new PriceDTO(price)));
+        prices.forEach(price -> priceDTOs.add(PriceMapper.toDTO(price)));
         return priceDTOs;
     }
+    /**
+     * Fetches happy hours with given bar id. 
+     * @param barId
+     * @return
+     */
     public List<Price> getByBarId(Long barId) {
         return priceRepository.findByBar(barId);
     }
-
+    /**
+     * Fetches happy hour entities with given Happy Hour id.
+     * @param barId
+     * @return
+     */
+    public List<Price> getByHappyHourId(Long barId) {
+        return priceRepository.findByHappyHourId(barId);
+    }
+    /**
+     * Fetches happy hour DTOs with given Happy Hour id.
+     */
     public List<PriceDTO> getDTOsByBarId(Long barId) {
         List<Price> prices = priceRepository.findByBar(barId);
         if(prices.isEmpty()) throw new ResponseStatusException(
@@ -54,10 +70,14 @@ public class PriceService {
             "No prices found for bar id " + barId);
 
         List<PriceDTO> priceDTOs = new ArrayList<>();
-        prices.forEach(price -> priceDTOs.add(new PriceDTO(price)));
+        prices.forEach(price -> priceDTOs.add(PriceMapper.toDTO(price)));
         return priceDTOs;
     }
-
+    /**
+     * Fetches happy hour DTOs with given Happy Hour id.
+     * @param happyHourId
+     * @return
+     */
     public List<PriceDTO> getDtoByHappyHourId(Long happyHourId) {
         List<Price> prices = priceRepository.findByHappyHourId(happyHourId);
         if(prices.isEmpty()) throw new ResponseStatusException(
@@ -65,10 +85,14 @@ public class PriceService {
             "No prices found for happy hour id " + happyHourId);
 
         List<PriceDTO> priceDTOs = new ArrayList<>();
-        prices.forEach(price -> priceDTOs.add(new PriceDTO(price)));
+        prices.forEach(price -> priceDTOs.add(PriceMapper.toDTO(price)));
         return priceDTOs;
     }
-
+    /**
+     * Saves new entites of given PriceDTOs to database.
+     * Updates existing Prices with matching id. 
+     * @param priceDtos List of PricesDTOs
+     */
     public void createPrice(List<PriceDTO> priceDtos) {
         User user = userService.getById(priceDtos.get(0).getCreatorId());
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
@@ -79,7 +103,7 @@ public class PriceService {
         for(PriceDTO dto : priceDtos) {
             Optional<Price> existing = priceRepository.findExistingPrice(bar.getId(), dto.getDrinkId(), dto.getHappyHourId());
             if (existing.isPresent()) {
-                updatePrice(dto);
+                updatePrice(dto.getId(), dto);
                 continue;
             }
 
@@ -101,16 +125,19 @@ public class PriceService {
             priceRepository.save(price);
         }
     }
-    
-    public void updatePrice(PriceDTO priceDTO) {
-        Optional<Price> existingPrice = priceRepository.findById(priceDTO.getId());
+    /**
+     * Updates existing Prices with matching id.
+     * @param id
+     * @param priceDTO
+     */
+    public void updatePrice(Long id, PriceDTO priceDTO) {
+        Optional<Price> existingPrice = priceRepository.findById(id);
         if (existingPrice.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Price not found");
 
-        existingPrice.get().setPrice(priceDTO.getPrice().setScale(2, RoundingMode.UNNECESSARY));
-        
         User user = userService.getById(priceDTO.getCreatorId());
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        
+
+        existingPrice.get().setPrice(priceDTO.getPrice().setScale(2, RoundingMode.UNNECESSARY));
         existingPrice.get().setUpdatedBy(user);
 
         try {
@@ -120,7 +147,10 @@ public class PriceService {
             throw e;
         }
     }
-
+    /**
+     * Deletes price with matching id from database.
+     * @param id
+     */
     public void deleteById(Long id) {
         priceRepository.deleteById(id);
     }
