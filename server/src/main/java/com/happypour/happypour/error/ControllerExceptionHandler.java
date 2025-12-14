@@ -39,7 +39,7 @@ public class ControllerExceptionHandler {
         errorBody.put("timestamp", LocalDateTime.now());
         errorBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorBody.put("error", "Internal Server Error");
-        errorBody.put("message", ex.getMessage());
+        errorBody.put("message", "An unexpected error occurred!");
 
         return new ResponseEntity<>(errorBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
