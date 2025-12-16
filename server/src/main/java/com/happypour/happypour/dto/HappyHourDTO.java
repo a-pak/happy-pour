@@ -14,7 +14,7 @@ import com.happypour.happypour.model.enums.WeekDay;
 
 /**
  * Data Transfer Object for HappyHour entity. 
- * Includes happy hour details and a list of happy hour <b>prices</b>. 
+ * Includes happy hour details and a list of happy hour prices. 
  */
 @Getter
 @NoArgsConstructor

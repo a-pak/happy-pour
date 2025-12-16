@@ -25,11 +25,12 @@ public class BarService {
     public List<Bar> getAll() {
         return barRepository.findAll();
     }
+
     /**
      * Fetches Bars with coordinates within a certain area from given coordinates.
-     * @param lat
-     * @param lon
-     * @return
+     * @param lat latitude degrees
+     * @param lon longitude degrees
+     * @return List of Bar entities.
      */
     public List<Bar> getByLocation(double lat, double lon) {
         System.out.println("3. BARSERVICE: Fetching bars near lat: " + lat + ", lon: " + lon);
@@ -77,7 +78,7 @@ public class BarService {
         if (existingBar.isPresent()) {
             BeanUtils.copyProperties(newBar, existingBar.get(), "id", "createdBy", "createdAt");
             Bar updatedBar = barRepository.save(existingBar.get());
-            return BarMapper.toDTO(newBar);
+            return BarMapper.toDTO(updatedBar);
         
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+barId+" not found.");

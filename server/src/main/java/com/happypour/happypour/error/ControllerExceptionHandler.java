@@ -32,7 +32,9 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(errorBody, ex.getStatusCode());
     }
 
-    // Catch-all for other unexpected exceptions
+    /** 
+     * Catch-all for other generic, unexpected exceptions.
+     */ 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> errorBody = new HashMap<>();

@@ -33,7 +33,14 @@ public class AuthController {
         this.userService = us;
         this.jwtUtil = jt;
     }
-    
+
+    /**
+     * User login endpoint. 
+     * Validates given credentials and applies JWT cookies (access and refresh) if successful.
+     * @param loginRequest
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<UserDetailsDTO> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
@@ -60,6 +67,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * User registration endpoint.
+     * Validates given user details, checks for overlapping users and registers a new user if valid.
+     * @param registerRequest
+     * @return
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         String email = registerRequest.getEmail();
@@ -84,9 +97,10 @@ public class AuthController {
 
         }
     }
+
     /**
-     * (EMAIL) Endpoint hit when user clicks the link in the verification email
-     * Redirects to the frontend with a message indicating success or failure
+     * (EMAIL) Endpoint hit when user clicks the link in a verification email.
+     * Redirects to the frontend with a message indicating success or failure.
      */
     @GetMapping("/verify/{token}")
     public RedirectView verifyEmail(@PathVariable String token) {
@@ -100,8 +114,10 @@ public class AuthController {
             return new RedirectView(HAPPYPOUR_APP_ADDRESS + "/error");
         }
     }
+
     /**
-     * Refreshes the access token if the refresh token is valid
+     * Refreshes the access token for a valid refresh token.
+     * Checks if given refresh token is valid and not expired, then applies new access and refresh tokens as cookies.
      * @param refreshToken
      * @param response
      * @return 401 if the refresh token is invalid or missing, 200 with success message otherwise
@@ -127,6 +143,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .body("Token refreshed successfully!");
     }
+    
     // Helper methods to apply cookies
     private HttpServletResponse applyRefreshCookie(HttpServletResponse response, User user) {
         ResponseCookie cookie = ResponseCookie.from("ref-token", jwtUtil.generateToken(user.getUsername(), 48 * 60))

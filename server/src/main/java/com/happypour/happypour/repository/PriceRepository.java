@@ -15,7 +15,14 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
 
     @Query("SELECT p FROM Price p WHERE p.happyHour.id=?1")
     List<Price> findByHappyHourId(Long happyHourId);
-
+    
+    /**
+     * Fetch existing price with given bar id, drink id and happy hour id.
+     * @param barId
+     * @param drinkId
+     * @param happyHourId
+     * @return Optional Price
+     */
     @Query("""
     SELECT p FROM Price p
     WHERE p.bar.id = :barId
