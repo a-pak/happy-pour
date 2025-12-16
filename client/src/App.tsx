@@ -23,10 +23,24 @@ import BarDetailsDrawer from './components/BarDetailsDrawer.tsx'
 import DrinkPage from './pages/DrinkPage.tsx'
 import HappyHourSubmitPage from './pages/HappyHourSubmitPage.tsx'
 import { useDrinkStore } from './store/drinkStore.ts'
-
+import { useEffect } from 'react'
+import { refreshAPI } from './services/auth.ts'
+import { useUserStore } from './store/userStore.ts'
+import { useErrorStore } from './store/errorStore.ts'
 
 function App() {
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
+  const { setUser } = useUserStore();
+  const { showNotification } = useErrorStore.getState();
+  useEffect(() => {
+    // Refresh token on app load.
+    refreshAPI()
+      .catch((error) => {
+        console.error('Error during token refresh on app load:', error);
+        setUser(null);
+        showNotification("Session expired. Please log in again.", "warning");
+      })
+  }, [])
   return (
     <>
       <ThemeProvider theme={theme}>
