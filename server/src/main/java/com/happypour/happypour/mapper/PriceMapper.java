@@ -1,5 +1,6 @@
 package com.happypour.happypour.mapper;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.happypour.happypour.dto.PriceDTO;
 import com.happypour.happypour.model.Bar;
@@ -12,7 +13,7 @@ public class PriceMapper {
 
     public static Price toEntity(PriceDTO dto, Bar bar, Drink drink, User createdBy, User updatedBy) {
         return Price.builder()
-            .price(dto.getPrice())
+            .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
             .bar(bar)
             .drink(drink)
             .createdBy(createdBy)

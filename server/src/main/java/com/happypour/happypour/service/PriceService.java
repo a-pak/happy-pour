@@ -113,14 +113,7 @@ public class PriceService {
             HappyHour happyHour = dto.getHappyHourId() != null ? 
                     happyHourService.getById(dto.getHappyHourId()) : null;
 
-            Price price = Price.builder()
-                .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
-                .bar(bar)
-                .drink(drink)
-                .happyHour(happyHour)
-                .createdBy(user)
-                .updatedBy(user)
-                .build();
+            Price price = PriceMapper.toEntity(dto, bar, drink, user, user);
 
             priceRepository.save(price);
         }
