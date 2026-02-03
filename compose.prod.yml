@@ -11,7 +11,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d happypour_dev -U spring"]
+      test: ["CMD-SHELL", "pg_isready -d happypour_db -U acerpsqladmin"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,12 +24,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_dev  # Default to the Docker network address if not set
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/happypour_db
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}          
       REACT_APP_ADDRESS: ${REACT_APP_ADDRESS:-http://localhost:8080/api}  # Default to localhost if not set
       SPRING_DDL_AUTO: ${SPRING_DDL_AUTO:-update}  # Default to 'update' if not set
-      SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}  # Use environment variable for JWT secret
+      SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}
     depends_on:
       - database
     networks:
@@ -46,19 +46,6 @@ services:
       - backend
     networks:
       - app-network
-
-  # nginx:
-  #   image: nginx:alpine
-  #   container_name: nginx-proxy
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-  #   depends_on:
-  #     - frontend
-  #     - backend
-  #   networks:
-  #     - app-network
 
 volumes:
   postgres_data:
