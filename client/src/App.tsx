@@ -35,10 +35,16 @@ function App() {
   useEffect(() => {
     // Refresh token on app load.
     refreshAPI()
+      
       .catch((error) => {
         console.error('Error during token refresh on app load:', error);
         setUser(null);
-        showNotification("Session expired. Please log in again.", "warning");
+        
+        // Show notification only if error code is 401 (Unauthorized), which could indicate an expired session.
+        if(error.response.status === 401) {
+          showNotification("Session expired. Please log in again.", "info");
+        }
+      
       })
   }, [])
   return (

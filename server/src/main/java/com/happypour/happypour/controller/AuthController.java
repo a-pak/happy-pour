@@ -87,7 +87,11 @@ public class AuthController {
     public ResponseEntity<String> refreshToken(@CookieValue(value = "ref-token", defaultValue = "") String refreshToken, HttpServletResponse response) {
 
         // Validate refresh token structure and expiration
-        if(refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken)) {
+        if(refreshToken.isEmpty()) {
+            return ResponseEntity.status(400).body("No valid authentication provided");
+        }
+
+        if(jwtUtil.validateToken(refreshToken)) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
