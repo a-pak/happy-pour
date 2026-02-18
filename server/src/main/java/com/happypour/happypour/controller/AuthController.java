@@ -91,7 +91,7 @@ public class AuthController {
             return ResponseEntity.status(400).body("No valid authentication provided");
         }
 
-        if(jwtUtil.validateToken(refreshToken)) {
+        if(!jwtUtil.validateToken(refreshToken)) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
