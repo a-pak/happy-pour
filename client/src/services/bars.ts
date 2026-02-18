@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Bar, { BarData } from '../model/IbarInterface';
-import api from '../utils/axiosInstance';
+import api from './axios/axiosInstance';
 
 const BARS_URL : string = "/bars";
 

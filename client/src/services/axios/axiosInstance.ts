@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL || '/api',
+  baseURL: '/api',
   withCredentials: true, // This ensures cookies are sent with requests
 });
 
@@ -32,7 +32,7 @@ api.interceptors.response.use(
 
         try {
           await axios.post(
-            (import.meta.env.VITE_BASE_API_URL || '/api') + '/auth/refresh',
+            '/api/auth/refresh',
             {},
             { withCredentials: true }
           );

@@ -1,6 +1,6 @@
 import {HappyHourDTO} from '../model/IHappyHourInterface'
 import axios, { AxiosError } from 'axios';
-import api from '../utils/axiosInstance';
+import api from './axios/axiosInstance';
 
 const HAPPY_HOUR_URL : string = "/happyhours";
 

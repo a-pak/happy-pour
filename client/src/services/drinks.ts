@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { DrinkDTO } from '../model/IdrinkInterface';
-import api from '../utils/axiosInstance';
+import api from './axios/axiosInstance';
 
 const DRINKS_URL : string = "/drinks";
 
