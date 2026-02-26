@@ -5,17 +5,19 @@ import java.math.RoundingMode;
 import com.happypour.happypour.dto.PriceDTO;
 import com.happypour.happypour.model.Bar;
 import com.happypour.happypour.model.Drink;
+import com.happypour.happypour.model.HappyHour;
 import com.happypour.happypour.model.Price;
 import com.happypour.happypour.model.User;
 import com.happypour.happypour.model.enums.DrinkType;
 
 public class PriceMapper {
 
-    public static Price toEntity(PriceDTO dto, Bar bar, Drink drink, User createdBy, User updatedBy) {
+    public static Price toEntity(PriceDTO dto, Bar bar, Drink drink, HappyHour happyHour, User createdBy, User updatedBy) {
         return Price.builder()
             .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
             .bar(bar)
             .drink(drink)
+            .happyHour(happyHour)
             .createdBy(createdBy)
             .updatedBy(updatedBy)
             .build();

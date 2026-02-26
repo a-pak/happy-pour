@@ -101,6 +101,9 @@ public class PriceService {
         if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
 
         for(PriceDTO dto : priceDtos) {
+            /* 
+                Check if price with the same bar, drink and happy hour exist and send to update.
+             */
             Optional<Price> existing = priceRepository.findExistingPrice(bar.getId(), dto.getDrinkId(), dto.getHappyHourId());
             if (existing.isPresent()) {
                 updatePrice(dto.getId(), dto);
@@ -113,7 +116,7 @@ public class PriceService {
             HappyHour happyHour = dto.getHappyHourId() != null ? 
                     happyHourService.getById(dto.getHappyHourId()) : null;
 
-            Price price = PriceMapper.toEntity(dto, bar, drink, user, user);
+            Price price = PriceMapper.toEntity(dto, bar, drink, happyHour, user, user);
 
             priceRepository.save(price);
         }
