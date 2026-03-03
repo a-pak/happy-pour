@@ -109,8 +109,8 @@ const HappyHourSubmitPage: React.FC = () => {
           position: "relative",
         }}
       >
-        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2, mt: 1 }} startIcon={<ArrowBack />}>
-          Back to Map
+        <Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2, mt: 1 }} startIcon={<ArrowBack />}>
+          BACK TO BAR
         </Button>
         <Typography variant="h5" gutterBottom>
           {hhId ? 'Edit Happy Hour' : 'When is the Happy Hour?'}
