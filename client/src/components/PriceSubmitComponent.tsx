@@ -9,6 +9,11 @@ import {
   FormControl,
   Container,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Divider,
 } from '@mui/material';
 import { DrinkDTO } from '../model/IdrinkInterface.ts';
 import { PriceDTO } from '../model/IPriceInterface.ts';
@@ -19,10 +24,16 @@ import { getByBarId, createPrice } from '../services/prices.ts';
 import { getHappyHoursByBar } from '../services/happyhours.ts';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { HappyHourDTO } from '../model/IHappyHourInterface.ts';
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, Add, Delete } from '@mui/icons-material';
 
 // ...existing code...
 interface PriceSubmitComponentProps { barId: number; priceDrinkId?: number; happyHourId?: number;}
+
+interface PriceInput {
+  drinkId: number;
+  happyHourId?: number;
+  price: number;
+}
 
 const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, priceDrinkId, happyHourId}) => {
   const [searchParams] = useSearchParams();
@@ -31,12 +42,13 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
   const { showNotification } = useErrorStore.getState();
   const navigate = useNavigate();
   // ---------- State ----------
-  const [selectedDrinkId, setSelectedDrinkId] = useState<number | ''>(priceDrinkId ?? '');
-  const [selectedHappyHourId, setSelectedHappyHourId] = useState<number | ''>(happyHourId ?? '');
-  const [amount, setAmount] = useState<string>('');
+  const [currentDrinkId, setCurrentDrinkId] = useState<number | ''>(priceDrinkId ?? '');
+  const [currentHappyHourId, setCurrentHappyHourId] = useState<number | ''>(happyHourId ?? '');
+  const [currentAmount, setCurrentAmount] = useState<string>('');
   const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
   const [existingPrices, setExistingPrices] = useState<PriceDTO[]>([]);
   const [happyhours, setHappyhours] = useState<HappyHourDTO[]>([]);
+  const [priceList, setPriceList] = useState<PriceInput[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
 
@@ -56,70 +68,93 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
     fetchPrices();
     fetchDrinks();
     fetchHappyHours();
-    if(happyHourParam) setSelectedHappyHourId(Number(happyHourParam));
+    if(happyHourParam) setCurrentHappyHourId(Number(happyHourParam));
   }, [barId])
 
   // ---------- Selected Drink / HappyHour ----------
-  const selectedDrink = selectedDrinkId !== '' ? drinks.find(d => d.id === Number(selectedDrinkId)) : null;
-  const selectedHappyHour = selectedHappyHourId !== '' ? happyhours.find(h => h.id === Number(selectedHappyHourId)) : null;
+  const currentDrink = currentDrinkId !== '' ? drinks.find(d => d.id === Number(currentDrinkId)) : null;
+  const currentHappyHour = currentHappyHourId !== '' ? happyhours.find(h => h.id === Number(currentHappyHourId)) : null;
 
   // ---------- Update price input when selection changes ----------
   useEffect(() => {
-    if (!selectedDrinkId) {
-      setAmount('');
+    if (!currentDrinkId) {
+      setCurrentAmount('');
       return;
     }
 
-    const drinkIdNumber = Number(selectedDrinkId);
-    const happyHourIdNumber = selectedHappyHourId === '' ? undefined : Number(selectedHappyHourId);
+    const drinkIdNumber = Number(currentDrinkId);
+    const happyHourIdNumber = currentHappyHourId === '' ? undefined : Number(currentHappyHourId);
 
     const existingPrice = existingPrices.find(
       p => p.drinkId === drinkIdNumber && (p.happyHourId ?? undefined) === happyHourIdNumber
     );
 
-    setAmount(existingPrice ? String(existingPrice.price) : '');
-  }, [selectedDrinkId, selectedHappyHourId, existingPrices]);
+    setCurrentAmount(existingPrice ? String(existingPrice.price) : '');
+  }, [currentDrinkId, currentHappyHourId, existingPrices]);
+
+  // ---------- Add to list Handler ----------
+  const handleAddToList = () => {
+    if (!currentDrink || currentAmount === '') {
+      showNotification("Please select a drink and enter a price", "warning");
+      return;
+    }
+    const finalAmount = Number(currentAmount);
+    if (Number.isNaN(finalAmount)) {
+      showNotification("Please insert a valid number", "warning");
+      return;
+    }
+    const newItem: PriceInput = {
+      drinkId: Number(currentDrinkId),
+      happyHourId: currentHappyHourId === '' ? undefined : Number(currentHappyHourId),
+      price: finalAmount,
+    };
+    setPriceList([...priceList, newItem]);
+    // Clear form
+    setCurrentDrinkId('');
+    setCurrentHappyHourId('');
+    setCurrentAmount('');
+  };
+
+  // ---------- Remove from list ----------
+  const handleRemoveFromList = (index: number) => {
+    setPriceList(priceList.filter((_, i) => i !== index));
+  };
 
   // ---------- Submit Handler ----------
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  if (!selectedDrink || amount === '') return;
-  
-  const finalAmount : number = Number(amount);
-  if(Number.isNaN(finalAmount)) {
-    showNotification("Please insert a valid number", "warning");
-    return;
-  } 
+    e.preventDefault();
+    if (priceList.length === 0) {
+      showNotification("Please add at least one price to the list", "warning");
+      return;
+    }
+    setIsSubmitting(true);
 
-  const drinkIdNumber = Number(selectedDrinkId);
-  const happyHourIdNumber = selectedHappyHourId === '' ? undefined : Number(selectedHappyHourId);
+    const priceDtos: PriceDTO[] = priceList.map(item => {
+      const drink = drinks.find(d => d.id === item.drinkId)!;
+      return {
+        id: -1,
+        price: item.price,
+        barId,
+        happyHourId: item.happyHourId,
+        drinkId: item.drinkId,
+        drinkName: drink.name,
+        drinkType: drink.type,
+        drinkSize: drink.size,
+        creatorId: user?.id
+      };
+    });
 
-  const existingPrice = existingPrices.find(
-    p => p.drinkId === drinkIdNumber && (p.happyHourId ?? undefined) === happyHourIdNumber
-  );
-
-  const priceDto: PriceDTO = {
-    id: existingPrice ? existingPrice.id : -1,
-    price: finalAmount,
-    barId,
-    happyHourId: happyHourIdNumber,
-    drinkId: drinkIdNumber,
-    drinkName: selectedDrink.name,
-    drinkType: selectedDrink.type,
-    drinkSize: selectedDrink.size,
-    creatorId: user?.id
+    try {
+      await createPrice(priceDtos);
+      navigate(`/bars/${barId}/details`);
+      showNotification("Prices submitted successfully!", "success");
+    } catch (error) {
+      console.error("Error submitting prices:", error);
+      showNotification("Error submitting prices", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  try {
-    await createPrice([priceDto]);
-    navigate("/");
-    showNotification("Price submitted successfully!", "success");
-  } catch (error) {
-    console.error("Error submitting price:", error);
-    showNotification("Error submitting price", "error");
-  }
-}
 
   return (
     <Container
@@ -130,21 +165,20 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
         position: "relative"
       }}
     ><Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Bar </Button>
-    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
+    <Box component="form" onSubmit={(e) => e.preventDefault()} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Submit Price
+        Compose Price List
       </Typography>
       {/* Drink picker */}
       <FormControl fullWidth margin="normal">
         <Select
           labelId="drink-select-label"
-          value={selectedDrinkId}
+          value={currentDrinkId}
           onChange={(e) => {
             const newDrinkId = Number(e.target.value);
-            setSelectedDrinkId(newDrinkId);
-            // setExistingPrice(newDrinkId, selectedHappyHourId);
+            setCurrentDrinkId(newDrinkId);
           }}
-          displayEmpty // <-- Key to show placeholder
+          displayEmpty
           renderValue={(selected) => {
             if (!selected) {
               return <em>Select a drink</em>;
@@ -173,11 +207,10 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
       <FormControl fullWidth margin="normal">
         <Select
           labelId="happyhour-select-label"
-          value={selectedHappyHourId}
+          value={currentHappyHourId}
           onChange={(e) => {
             const newHhId = Number(e.target.value) === 0 ? 0 : Number(e.target.value);
-            setSelectedHappyHourId(newHhId === 0 ? 0 : newHhId);
-            // setExistingPrice(selectedDrinkId, newHhId === 0 ? 0 : newHhId);
+            setCurrentHappyHourId(newHhId === 0 ? 0 : newHhId);
           }}
           displayEmpty
           renderValue={(selected) => {
@@ -204,15 +237,15 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
         </Select>
       </FormControl>
 
-      {selectedDrink && (
+      {currentDrink && (
         <>
           <Box mt={2}>
-            <Typography variant="body1"><strong>Drink Name:</strong> {selectedDrink.name}</Typography>
-            <Typography variant="body1"><strong>Type:</strong> {selectedDrink.type}</Typography>
-            <Typography variant="body1"><strong>Size:</strong> {selectedDrink.size} l</Typography>
-            {selectedHappyHour && (
+            <Typography variant="body1"><strong>Drink Name:</strong> {currentDrink.name}</Typography>
+            <Typography variant="body1"><strong>Type:</strong> {currentDrink.type}</Typography>
+            <Typography variant="body1"><strong>Size:</strong> {currentDrink.size} l</Typography>
+            {currentHappyHour && (
               <Typography variant="body2" sx={{ mt: 1 }}>
-                <strong>Happy Hour:</strong> {selectedHappyHour.weekDays.join(', ')} {selectedHappyHour.startTime}-{selectedHappyHour.endTime}
+                <strong>Happy Hour:</strong> {currentHappyHour.weekDays.join(', ')} {currentHappyHour.startTime}-{currentHappyHour.endTime}
               </Typography>
             )}
           </Box>
@@ -223,26 +256,64 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
             label="Price"
             type='number'
             inputProps={{ min: 0, step: 0.01 }}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={currentAmount}
+            onChange={(e) => setCurrentAmount(e.target.value)}
             required
           />
           
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
-            type="submit"
+            onClick={handleAddToList}
             fullWidth
-            disabled={isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+            startIcon={<Add />}
             sx={{ mt: 2 }}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Price'}
+            Add to List
           </Button>
 
         </>
       )}
     </Box>
+
+    {/* Price List */}
+    {priceList.length > 0 && (
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Prices to Submit
+        </Typography>
+        <List>
+          {priceList.map((item, index) => {
+            const drink = drinks.find(d => d.id === item.drinkId)!;
+            const hh = item.happyHourId ? happyhours.find(h => h.id === item.happyHourId) : null;
+            return (
+              <ListItem key={index} secondaryAction={
+                <IconButton edge="end" onClick={() => handleRemoveFromList(index)}>
+                  <Delete />
+                </IconButton>
+              }>
+                <ListItemText
+                  primary={`${drink.name} (${drink.type}, ${drink.size}ml) - ${item.price}€`}
+                  secondary={hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'No Happy Hour'}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+        <Divider sx={{ my: 2 }} />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          fullWidth
+          disabled={isSubmitting}
+          startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+          sx={{ mt: 2 }}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit All Prices'}
+        </Button>
+      </Box>
+    )}
     </Container>
   );
 };

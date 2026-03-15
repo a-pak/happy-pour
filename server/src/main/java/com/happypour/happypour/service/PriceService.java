@@ -101,12 +101,11 @@ public class PriceService {
         if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
 
         for(PriceDTO dto : priceDtos) {
-            /* 
-                Check if price with the same bar, drink and happy hour exist and send to update.
-             */
+           
+            // Check if price with the same bar, drink and happy hour exist and send to update.
             Optional<Price> existing = priceRepository.findExistingPrice(bar.getId(), dto.getDrinkId(), dto.getHappyHourId());
             if (existing.isPresent()) {
-                updatePrice(dto.getId(), dto);
+                updatePrice(existing.get().getId(), dto);
                 continue;
             }
 
