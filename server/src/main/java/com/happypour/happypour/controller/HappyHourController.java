@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.happypour.happypour.dto.HappyHourDTO;
-import com.happypour.happypour.model.HappyHour;
 import com.happypour.happypour.service.HappyHourService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
