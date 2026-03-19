@@ -12,9 +12,9 @@ export default interface Bar {
   //entryFee: number;
   //cloakRoomFee: number;
   createdBy: string;
-  createdAt: string;
+  createdAt: number;
   updatedBy: string;
-  updatedAt: string;
+  updatedAt: number;
   creatorId?: number;
 }
 

@@ -14,6 +14,7 @@ import { useDrinkStore } from '../store/drinkStore.ts';
 import theme from '../Theme.tsx';
 import { PriceDTO } from '../model/IPriceInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
+import { formatTimestamp } from '../utils/timeUtils.ts';
 
 const BarDetailsDrawer = () => {
   const { id } = useParams<{ id: string }>();
@@ -187,10 +188,10 @@ const BarDetailsDrawer = () => {
 
         {/* Meta Info */}
         <Typography variant="caption" display="block">
-          Created by {bar.createdBy ? bar.createdBy : "Unknown user"} at {new Date(bar.createdAt).toLocaleString()}
+          Created by {bar.createdBy ? bar.createdBy : "Unknown user"} at {formatTimestamp(bar.createdAt)}
         </Typography>
         <Typography variant="caption" display="block">
-          Last updated by {bar.updatedBy ? bar.updatedBy : "Unknown user"} at {new Date(bar.updatedAt).toLocaleString()}
+          Last updated by {bar.updatedBy ? bar.updatedBy : "Unknown user"} at {formatTimestamp(bar.updatedAt)}
         </Typography>
       </Box>
 

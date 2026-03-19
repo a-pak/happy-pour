@@ -41,6 +41,8 @@ public class BarMapper {
     public static BarDTO toDTO(Bar bar) {
         String createdByUsername = bar.getCreatedBy() != null ? bar.getCreatedBy().getUsername() : null;
         String updatedByUsername = bar.getUpdatedBy() != null ? bar.getUpdatedBy().getUsername() : null;
+        Long createdAt = bar.getCreatedAt() != null ? bar.getCreatedAt().getTime() : null;
+        Long updatedAt = bar.getUpdatedAt() != null ? bar.getUpdatedAt().getTime() : null;
         String openFrom = bar.getOpenFrom() != null ? bar.getOpenFrom().toString() : null;
         String openTo = bar.getOpenTo() != null ? bar.getOpenTo().toString() : null;
         Long creatorId = bar.getCreatedBy() != null ? bar.getCreatedBy().getId() : null;
@@ -54,7 +56,9 @@ public class BarMapper {
             .openFrom(openFrom)
             .openTo(openTo)
             .createdBy(createdByUsername)
+            .createdAt(createdAt)
             .updatedBy(updatedByUsername)
+            .updatedAt(updatedAt)
             .creatorId(creatorId)
             .build();
     }

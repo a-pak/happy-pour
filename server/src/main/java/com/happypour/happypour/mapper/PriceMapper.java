@@ -36,6 +36,9 @@ public class PriceMapper {
         String updatedByUsername = price.getUpdatedBy() != null ? price.getUpdatedBy().getUsername() : null;
         Long creatorId = price.getCreatedBy() != null ? price.getCreatedBy().getId() : null;
 
+        Long createdAt = price.getCreatedAt() != null ? price.getCreatedAt().getTime() : null;
+        Long updatedAt = price.getUpdatedAt() != null ? price.getUpdatedAt().getTime() : null;
+
         return PriceDTO.builder()
             .id(price.getId())
             .price(price.getPrice())
@@ -47,8 +50,8 @@ public class PriceMapper {
             .drinkSize(drinkSize)
             .createdBy(createdByUsername)
             .updatedBy(updatedByUsername)
-            .updatedAt(price.getUpdatedAt().toString())
-            .createdAt(price.getCreatedAt().toString())
+            .createdAt(createdAt)
+            .updatedAt(updatedAt)
             .creatorId(creatorId)
             .build();
     }

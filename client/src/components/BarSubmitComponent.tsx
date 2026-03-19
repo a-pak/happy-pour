@@ -98,7 +98,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       return;
     }
 
-    const now = new Date().toISOString();
+    const now = Date.now();
 
     const bar: Bar = {
       id: barId ?? 0,

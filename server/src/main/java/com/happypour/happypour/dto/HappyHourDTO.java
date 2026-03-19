@@ -27,9 +27,9 @@ public class HappyHourDTO {
     private LocalTime endTime;
     private Long barId;
     private String createdBy;
-    private String createdAt;
+    private Long createdAt;
     private String updatedBy;
-    private String updatedAt;
+    private Long updatedAt;
     
     /** List of happy hour prices associated with this happy hour */  
     private List<PriceDTO> prices;

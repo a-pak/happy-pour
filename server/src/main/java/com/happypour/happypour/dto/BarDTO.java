@@ -27,9 +27,9 @@ public class BarDTO {
     //private BigDecimal entryFee;
     //private BigDecimal cloakRoomFee;
     private String createdBy;
-    private String createdAt;
+    private Long createdAt;
     private String updatedBy;
-    private String updatedAt;
+    private Long updatedAt;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long creatorId;
 }

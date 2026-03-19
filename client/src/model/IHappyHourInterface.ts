@@ -7,9 +7,9 @@ export interface HappyHourDTO {
   barId: number;
   prices: PriceDTO[]; 
   createdBy?: string;
-  createdAt?: string;
+  createdAt?: number;
   updatedBy?: string;
-  updatedAt?: string;
+  updatedAt?: number;
   creatorId?: number;
 }
 

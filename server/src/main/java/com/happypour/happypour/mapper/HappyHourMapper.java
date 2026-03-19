@@ -31,8 +31,11 @@ public class HappyHourMapper {
     public static HappyHourDTO toDTO(HappyHour happyHour, List<Price> associatedPrices) {
         String createdByUsername = happyHour.getCreatedBy() != null ? happyHour.getCreatedBy().getUsername() : null;
         String updatedByUsername = happyHour.getUpdatedBy() != null ? happyHour.getUpdatedBy().getUsername() : null;
-        Long creatorId = happyHour.getUpdatedBy() != null ? happyHour.getUpdatedBy().getId() : null;
+        Long creatorId = happyHour.getCreatedBy() != null ? happyHour.getCreatedBy().getId() : null;
         Long barId = happyHour.getBar() != null ? happyHour.getBar().getId() : null;
+
+        Long createdAt = happyHour.getCreatedAt() != null ? happyHour.getCreatedAt().getTime() : null;
+        Long updatedAt = happyHour.getUpdatedAt() != null ? happyHour.getUpdatedAt().getTime() : null;
 
         return new HappyHourDTO(
             happyHour.getId(),
@@ -41,9 +44,9 @@ public class HappyHourMapper {
             happyHour.getEndTime(),
             barId,
             createdByUsername,
-            happyHour.getCreatedAt().toString(),
+            createdAt,
             updatedByUsername,
-            happyHour.getUpdatedAt().toString(),
+            updatedAt,
             mapPrices(associatedPrices),
             creatorId
         );

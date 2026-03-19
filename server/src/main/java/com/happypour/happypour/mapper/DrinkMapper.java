@@ -19,6 +19,8 @@ public class DrinkMapper {
         String createdByUsername = drink.getCreatedBy() != null ? drink.getCreatedBy().getUsername() : null;
         String updatedByUsername = drink.getUpdatedBy() != null ? drink.getUpdatedBy().getUsername() : null;
         Long creatorId = drink.getCreatedBy() != null ? drink.getCreatedBy().getId() : null;
+        Long createdAt = drink.getCreatedAt() != null ? drink.getCreatedAt().getTime() : null;
+        Long updatedAt = drink.getUpdatedAt() != null ? drink.getUpdatedAt().getTime() : null;
 
         return new DrinkDTO(
             drink.getId(),
@@ -26,9 +28,9 @@ public class DrinkMapper {
             drink.getType(),
             drink.getSize(),
             createdByUsername,
-            drink.getCreatedAt().toString(),
+            createdAt,
             updatedByUsername,
-            drink.getUpdatedBy().getUsername(),
+            updatedAt,
             creatorId
         );
     }

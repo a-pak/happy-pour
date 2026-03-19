@@ -4,9 +4,9 @@ export interface DrinkDTO {
   type: DrinkType;
   size: number;
   createdBy?: string;
-  createdAt?: string;
+  createdAt?: number;
   updatedBy?: string;
-  updatedAt?: string;
+  updatedAt?: number;
   creatorId?: number;
 }
 

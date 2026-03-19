@@ -9,7 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -103,9 +105,9 @@ public class HappyHourServiceTest {
             LocalTime.of(23, 59), 
             1L,
              "user1", 
-             "2025-10-14 17:08:11.703684", 
+             LocalTime.now().toEpochSecond(LocalDate.now(), ZoneOffset.ofHours(2)),
              "user1", 
-             "2025-12-14 17:08:11.703684", 
+             LocalTime.now().toEpochSecond(LocalDate.now(), ZoneOffset.ofHours(2)), 
              null, 
              1L
             );

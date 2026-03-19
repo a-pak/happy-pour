@@ -8,8 +8,8 @@ export interface PriceDTO {
   drinkType?: string;
   drinkSize?: number;
   createdBy?: string;
-  createdAt?: string;
+  createdAt?: number;
   updatedBy?: string;
-  updatedAt?: string;
+  updatedAt?: number;
   creatorId?: number;
 }

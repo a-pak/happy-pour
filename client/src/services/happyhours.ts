@@ -37,3 +37,7 @@ export const updateHappyHour = async ( happyHour: HappyHourDTO) => {
     const response = await api.put(`${HAPPY_HOUR_URL}/${happyHour.id}`, happyHour);
     return response.data;
 }
+
+export const deleteHappyHour = async (id: number) => {
+    await api.delete(`${HAPPY_HOUR_URL}/${id}`);
+}
