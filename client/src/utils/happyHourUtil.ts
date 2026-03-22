@@ -1,5 +1,5 @@
-import { BarData } from "../model/IbarInterface";
-import { HappyHourDTO, WeekDay } from "../model/IHappyHourInterface";
+import { BarData } from "../types/IbarInterface";
+import { HappyHourDTO, WeekDay } from "../types/IHappyHourInterface";
 
 /**
  * Function checks if there is a currently active Happy Hour in the given Bar (BarData). 

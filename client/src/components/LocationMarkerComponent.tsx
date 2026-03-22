@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import theme from '../Theme';
-import { BarData } from '../model/IbarInterface.ts';
+import { BarData } from '../types/IbarInterface.ts';
 import { Marker, Tooltip } from 'react-leaflet';
 import { ThemeProvider } from '@emotion/react';
 import L from 'leaflet';
@@ -8,7 +8,7 @@ import { useDrinkStore } from "../store/drinkStore";
 import barsService from '../services/bars.ts';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
-import { PriceDTO } from '../model/IPriceInterface.ts';
+import { PriceDTO } from '../types/IPriceInterface.ts';
 import { getCheapestPrice, getPriceRank, PriceRank } from '../utils/priceUtil.ts';
 import '../App.css';
 /* Icon tempalte with a png */

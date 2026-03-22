@@ -15,7 +15,7 @@ import {
 import { Edit as EditIcon } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import barsService from '../services/bars.ts';
-import { BarData } from '../model/IbarInterface.ts';
+import { BarData } from '../types/IbarInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import FloatingEditMenu from '../components/FloatingEditMenu.tsx';
 import theme from '../Theme.tsx';

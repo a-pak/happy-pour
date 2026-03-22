@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import api from './axios/axiosInstance';
-import { PriceDTO } from '../model/IPriceInterface';
+import { PriceDTO } from '../types/IPriceInterface';
 
 const PRICES_URL : string = "/prices";
 

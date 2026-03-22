@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registerAPI } from "../services/auth";
-import RegisterPayload from "../model/IRegisterPayloadInterface";
+import RegisterPayload from "../types/IRegisterPayloadInterface";
 import { useNavigate } from "react-router-dom";
 import { useErrorStore } from '../store/errorStore';
 import {

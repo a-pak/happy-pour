@@ -8,11 +8,11 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import barsService from '../services/bars.ts';
-import { BarData } from '../model/IbarInterface.ts';
+import { BarData } from '../types/IbarInterface.ts';
 import { useMapStore } from '../store/mapStore.ts';
 import { useDrinkStore } from '../store/drinkStore.ts';
 import theme from '../Theme.tsx';
-import { PriceDTO } from '../model/IPriceInterface.ts';
+import { PriceDTO } from '../types/IPriceInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import { formatTimestamp } from '../utils/timeUtils.ts';
 

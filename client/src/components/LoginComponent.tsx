@@ -8,7 +8,7 @@ import {
   Container,
 } from '@mui/material';
 import { loginAPI } from "../services/auth.ts";
-import LoginPayload from "../model/ILoginPayloadInterface.ts";
+import LoginPayload from "../types/ILoginPayloadInterface.ts";
 import { useUserStore, User } from "../store/userStore.ts";
 import { useErrorStore } from '../store/errorStore.ts';
 

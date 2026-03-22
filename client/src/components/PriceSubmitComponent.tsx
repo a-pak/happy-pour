@@ -15,15 +15,15 @@ import {
   IconButton,
   Divider,
 } from '@mui/material';
-import { DrinkDTO } from '../model/IdrinkInterface.ts';
-import { PriceDTO } from '../model/IPriceInterface.ts';
+import { DrinkDTO } from '../types/IdrinkInterface.ts';
+import { PriceDTO } from '../types/IPriceInterface.ts';
 import { useUserStore } from '../store/userStore.ts';
 import { useErrorStore } from '../store/errorStore.ts';
 import { getAllDrinks } from '../services/drinks.ts';
 import { getByBarId, createPrice } from '../services/prices.ts';
 import { getHappyHoursByBar } from '../services/happyhours.ts';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { HappyHourDTO } from '../model/IHappyHourInterface.ts';
+import { HappyHourDTO } from '../types/IHappyHourInterface.ts';
 import { ArrowBack, Add, Delete } from '@mui/icons-material';
 
 // ...existing code...

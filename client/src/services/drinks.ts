@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DrinkDTO } from '../model/IdrinkInterface';
+import { DrinkDTO } from '../types/IdrinkInterface';
 import api from './axios/axiosInstance';
 
 const DRINKS_URL : string = "/drinks";

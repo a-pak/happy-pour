@@ -1,4 +1,4 @@
-import {HappyHourDTO} from '../model/IHappyHourInterface'
+import {HappyHourDTO} from '../types/IHappyHourInterface'
 import axios, { AxiosError } from 'axios';
 import api from './axios/axiosInstance';
 

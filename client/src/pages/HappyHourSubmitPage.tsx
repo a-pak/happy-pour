@@ -10,13 +10,13 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { MobileTimePicker, DesktopTimePicker } from '@mui/x-date-pickers';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { HappyHourDTO, WeekDay } from '../model/IHappyHourInterface'
+import { HappyHourDTO, WeekDay } from '../types/IHappyHourInterface'
 import { createHappyHour, getHappyHour, updateHappyHour } from '../services/happyhours'; // added fetch/update
 import { useUserStore } from '../store/userStore';
 import { useErrorStore } from '../store/errorStore';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
-import { PriceDTO } from '../model/IPriceInterface';
+import { PriceDTO } from '../types/IPriceInterface';
 
 const weekDays: WeekDay[] = [
   'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',

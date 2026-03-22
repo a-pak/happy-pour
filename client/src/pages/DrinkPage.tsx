@@ -13,7 +13,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { createDrink } from '../services/drinks';
-import { DrinkDTO, DrinkType } from '../model/IdrinkInterface';
+import { DrinkDTO, DrinkType } from '../types/IdrinkInterface';
 import { useNavigate } from 'react-router-dom';
 import { useErrorStore } from '../store/errorStore';
 import { useUserStore } from '../store/userStore';

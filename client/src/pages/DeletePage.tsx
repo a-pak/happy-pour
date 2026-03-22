@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BarService from "../services/bars";
-import { BarData } from "../model/IbarInterface";
+import { BarData } from "../types/IbarInterface";
 import { useErrorStore } from "../store/errorStore";
 import { Typography, Box, Button, List, ListItemText, ListItem, IconButton, Paper, Grid2 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'; // 👈 Add this line
-import { PriceDTO } from "../model/IPriceInterface";
+import { PriceDTO } from "../types/IPriceInterface";
 
 
 const DeletePage : React.FC = () => {

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import LoginPayload from '../model/ILoginPayloadInterface.ts';
-import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
+import LoginPayload from '../types/ILoginPayloadInterface.ts';
+import RegisterPayload from '../types/IRegisterPayloadInterface.ts';
 import { User } from '../store/userStore.ts';
 /* auth service for login and register 
 
