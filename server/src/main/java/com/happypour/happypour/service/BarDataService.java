@@ -26,44 +26,22 @@ public class BarDataService {
     private HappyHourService happyHourService;
     @Autowired
     private PriceService priceService;
+
+
     /**
      * Fetches all bars and related entities from database and creates a list of aggregate dtos (BarDataDTO).
      * @return List of bar aggregate dtos
      */
+
     public List<BarDataDTO> getAllBars() {
         List<Bar> bars = barService.getAll();
         List<HappyHour> happyHours = happyHourService.getAll();
         List<Price> prices = priceService.getAllPrices();
 
-        List<BarDataDTO> barDataDTOs = new ArrayList<>();
-
-        for (Bar b : bars) {
-            BarDataDTO barDataDto = new BarDataDTO();
-            BarDTO barDto = BarMapper.toDTO(b);
-            barDataDto.setBar(barDto);
-            
-            // Get Happy hours associated with this bar
-            for (HappyHour hh : happyHours) {
-                if(hh.getBar().getId() == b.getId()) {
-                    // Get prices associated with happy hour
-                    List<Price> associatedPrices = getPricesAssociatedWithHappyHour(hh.getId(), prices);
-                    HappyHourDTO hhDto = HappyHourMapper.toDTO(hh, associatedPrices);
-                    barDataDto.getHappyHours().add(hhDto);
-                }
-            }
-            
-            // Get Normal prices associated with this bar
-            prices.forEach(p -> {
-                if(p.getHappyHour() == null) {
-                    
-                    if(p.getBar() == b) barDataDto.getPrices().add(PriceMapper.toDTO(p));
-                }
-            });
-            barDataDTOs.add(barDataDto);
-        }
-
-        return barDataDTOs;
+        return assembleBarData(bars, happyHours, prices);
     }
+
+
     /**
      * Fetches bars with coordinates within a certain area from given coordinates (Latitude & Longitude).
      * Creates a List of BarData aggregate DTOs of bars and all related entities.  
@@ -71,83 +49,93 @@ public class BarDataService {
      * @param lon Longitude
      * @return List of BarData aggregate DTOs.
      */
-    public List<BarDataDTO> getBarsByLocation(double lat, double lon) {
-        System.out.println("2. BARDATA: Fetching bars near location: lat=" + lat + ", lon=" + lon);
+    public List<BarDataDTO> getBarsByLocation(
+        double lat, 
+        double lon
+    ) {
         List<Bar> bars = barService.getByLocation(lat, lon);
         List<HappyHour> happyHours = happyHourService.getAll();
         List<Price> prices = priceService.getAllPrices();
 
-        List<BarDataDTO> barDataDTOs = new ArrayList<>();
-
-        for (Bar b : bars) {
-            BarDataDTO barDataDto = new BarDataDTO();
-            BarDTO barDto = BarMapper.toDTO(b);
-            barDataDto.setBar(barDto);
-            
-            // Get Happy hours associated with this bar
-            for (HappyHour hh : happyHours) {
-                if(hh.getBar().getId() == b.getId()) {
-                    List<Price> associatedPrices = getPricesAssociatedWithHappyHour(hh.getId(), prices);
-                    HappyHourDTO hhDto = HappyHourMapper.toDTO(hh, associatedPrices);
-                    barDataDto.getHappyHours().add(hhDto);
-                }
-            }
-            
-            // Get Normal prices associated with this bar
-            prices.forEach(p -> {
-                if(p.getHappyHour() == null) {
-                    
-                    if(p.getBar() == b) barDataDto.getPrices().add(PriceMapper.toDTO(p));
-                }
-            });
-            barDataDTOs.add(barDataDto);
-        }
-
-        return barDataDTOs;
+        return assembleBarData(bars, happyHours, prices);
     }
+
+
     /**
      * Fetches bar with given id with its related entities and returns an aggregate BarDataDTO.
      * @return BarData aggregate dto
      */
     public BarDataDTO getDataDtoById(Long id) {
         Bar bar = barService.getById(id);
-        if (bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar with id "+id+" not found");
+        if (bar == null) { 
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Bar with id "+id+" not found"
+            );
+        }
 
-        BarDataDTO barDataDto = new BarDataDTO();
-        BarDTO barDto = BarMapper.toDTO(bar);
-        barDataDto.setBar(barDto);
+        List<HappyHour> happyHours = happyHourService.getByBarId(bar.getId());
         List<Price> prices = priceService.getByBarId(bar.getId());
 
-        // Set Happy hours associated with this bar
-        List <HappyHour> happyHours = happyHourService.getByBarId(bar.getId());
-        if(!happyHours.isEmpty()) {
-            for (HappyHour hh : happyHours) {
-                List<Price> associatedPrices = getPricesAssociatedWithHappyHour(hh.getId(), prices);
-                HappyHourDTO hhDto = HappyHourMapper.toDTO(hh, associatedPrices);
-                
-                barDataDto.getHappyHours().add(hhDto);
-            }
-        }
+        List<BarDataDTO> barList = assembleBarData(List.of(bar), happyHours, prices);
         
-        // Set Normal prices associated with this bar
-        prices.forEach(p -> {
-            if(p.getHappyHour() == null) {
-                barDataDto.getPrices().add(PriceMapper.toDTO(p));
-            }
-        });
-        return barDataDto;
+        // If the list is empty, return null, otherwise return the first BarDataDTO
+        return barList.isEmpty() ? null : barList.get(0);
     }
+    
+
+    /**
+     * Helper method for assembling BarDataDTOs from given lists of entities.
+     * @param bars List of Bar entities
+     * @param happyHours List of HappyHour entities
+     * @param prices List of Price entities
+     * @return List of BarDataDTOs with related entities mapped to DTOs.
+     */
+    private List<BarDataDTO> assembleBarData(
+        List<Bar> bars, 
+        List<HappyHour> happyHours, 
+        List<Price> prices
+    ) {
+        List<BarDataDTO> barDataDTOs = new ArrayList<>();
+
+        for (Bar b : bars) {
+            BarDataDTO barDataDto = new BarDataDTO();
+            BarDTO barDto = BarMapper.toDTO(b);
+            barDataDto.setBar(barDto);
+
+            for (HappyHour hh : happyHours) {
+                if (hh.getBar().getId() == b.getId()) {
+                    List<Price> associatedPrices = getPricesAssociatedWithHappyHour(hh.getId(), prices);
+                    HappyHourDTO hhDto = HappyHourMapper.toDTO(hh, associatedPrices);
+                    barDataDto.getHappyHours().add(hhDto);
+                }
+            }
+
+            prices.forEach(p -> {
+                if (p.getHappyHour() == null && p.getBar() == b) {
+                    barDataDto.getPrices().add(PriceMapper.toDTO(p));
+                }
+            });
+
+            barDataDTOs.add(barDataDto);
+        }
+
+        return barDataDTOs;
+    }
+
+
     /**
      * Helper method for filtering prices associated with happy hour
      * @param hhId Id of happy hour
      * @param prices List of Price entity
      * @return List of Price entitys with matching happy hour id.
      */
-    private List<Price> getPricesAssociatedWithHappyHour(Long hhId, List<Price> prices) {
+    private List<Price> getPricesAssociatedWithHappyHour(
+        Long hhId, 
+        List<Price> prices
+    ) {
         List<Price> associatedPrices = new ArrayList<Price>();
-        // Get Happy hour prices associated with this happy hour
         for (Price price : prices) {
-            if(price.getHappyHour() == null) continue; // Skip price if no happy hour
+            if(price.getHappyHour() == null) continue;
 
             if(price.getHappyHour().getId() == hhId) {
                 associatedPrices.add(price);
