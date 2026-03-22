@@ -34,7 +34,7 @@ public class Drink {
     @Enumerated(EnumType.STRING)
     private DrinkType type;
 
-    @Column(name = "size", nullable = false, precision = 2, scale = 2)
+    @Column(name = "size", nullable = false, precision = 4, scale = 2)
     @Check(constraints = "size >= 0")
     private BigDecimal size;
 
