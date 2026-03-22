@@ -1,8 +1,8 @@
 package com.happypour.happypour.mapper;
 
 import com.happypour.happypour.dto.DrinkDTO;
-import com.happypour.happypour.model.Drink;
-import com.happypour.happypour.model.User;
+import com.happypour.happypour.entity.Drink;
+import com.happypour.happypour.entity.User;
 
 public class DrinkMapper {
     public static Drink toEntity(DrinkDTO dto, User user) {

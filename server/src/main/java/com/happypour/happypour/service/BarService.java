@@ -1,8 +1,8 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.*;
+import com.happypour.happypour.entity.*;
 import com.happypour.happypour.mapper.BarMapper;
-import com.happypour.happypour.model.*;
 import com.happypour.happypour.repository.BarRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -29,11 +29,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.HappyHourDTO;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.HappyHour;
+import com.happypour.happypour.entity.User;
+import com.happypour.happypour.entity.enums.WeekDay;
 import com.happypour.happypour.mapper.HappyHourMapper;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.HappyHour;
-import com.happypour.happypour.model.User;
-import com.happypour.happypour.model.enums.WeekDay;
 import com.happypour.happypour.repository.HappyHourRepository;
 
 @SpringBootTest

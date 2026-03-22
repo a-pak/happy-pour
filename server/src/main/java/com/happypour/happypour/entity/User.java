@@ -1,4 +1,4 @@
-package com.happypour.happypour.model;
+package com.happypour.happypour.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

@@ -2,10 +2,11 @@ package com.happypour.happypour.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.happypour.happypour.model.Bar;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.happypour.happypour.entity.Bar;
 
 import java.util.List;
 

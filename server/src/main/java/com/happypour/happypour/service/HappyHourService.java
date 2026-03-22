@@ -1,9 +1,8 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.HappyHourDTO;
+import com.happypour.happypour.entity.*;
 import com.happypour.happypour.mapper.HappyHourMapper;
-import com.happypour.happypour.model.*;
-
 import com.happypour.happypour.repository.HappyHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

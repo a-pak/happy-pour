@@ -1,4 +1,4 @@
-package com.happypour.happypour.model;
+package com.happypour.happypour.entity;
 
 import lombok.Getter;
 import lombok.Setter;

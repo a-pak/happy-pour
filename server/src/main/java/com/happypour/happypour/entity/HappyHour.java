@@ -1,6 +1,4 @@
-package com.happypour.happypour.model;
-
-import com.happypour.happypour.model.enums.WeekDay;
+package com.happypour.happypour.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.happypour.happypour.entity.enums.WeekDay;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;

@@ -3,7 +3,7 @@ package com.happypour.happypour.dto;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.happypour.happypour.model.enums.DrinkType;
+import com.happypour.happypour.entity.enums.DrinkType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

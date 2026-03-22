@@ -11,12 +11,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.happypour.happypour.dto.BarDTO;
 import com.happypour.happypour.dto.BarDataDTO;
 import com.happypour.happypour.dto.HappyHourDTO;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.HappyHour;
+import com.happypour.happypour.entity.Price;
 import com.happypour.happypour.mapper.BarMapper;
 import com.happypour.happypour.mapper.HappyHourMapper;
 import com.happypour.happypour.mapper.PriceMapper;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.HappyHour;
-import com.happypour.happypour.model.Price;
 
 @Service
 public class BarDataService {

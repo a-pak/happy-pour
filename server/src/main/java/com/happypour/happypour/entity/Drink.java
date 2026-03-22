@@ -1,6 +1,4 @@
-package com.happypour.happypour.model;
-
-import com.happypour.happypour.model.enums.DrinkType;
+package com.happypour.happypour.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.happypour.happypour.entity.enums.DrinkType;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

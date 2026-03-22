@@ -3,8 +3,8 @@ package com.happypour.happypour.mapper;
 import java.time.LocalTime;
 
 import com.happypour.happypour.dto.BarDTO;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.User;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.User;
 /**
  * Mapper for Bars. Includes functions for mapping database entity to http-layer DTO and DTO to database entity.
  */

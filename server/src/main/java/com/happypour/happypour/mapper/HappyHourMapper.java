@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.happypour.happypour.dto.HappyHourDTO;
 import com.happypour.happypour.dto.PriceDTO;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.HappyHour;
-import com.happypour.happypour.model.Price;
-import com.happypour.happypour.model.User;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.HappyHour;
+import com.happypour.happypour.entity.Price;
+import com.happypour.happypour.entity.User;
 /**
  * Mapper for Happy Hours. Includes functions for mapping database entity to http-layer DTO and DTO to database entity.
  */

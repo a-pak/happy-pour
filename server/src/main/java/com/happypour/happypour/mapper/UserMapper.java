@@ -2,7 +2,7 @@ package com.happypour.happypour.mapper;
 
 import com.happypour.happypour.dto.RegisterRequest;
 import com.happypour.happypour.dto.UserDetailsDTO;
-import com.happypour.happypour.model.User;
+import com.happypour.happypour.entity.User;
 
 public class UserMapper {
     public static User toEntity(RegisterRequest request, boolean verified) {

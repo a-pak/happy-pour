@@ -15,8 +15,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import com.happypour.happypour.dto.PriceDTO;
-import com.happypour.happypour.model.*;
-import com.happypour.happypour.model.enums.DrinkType;
+import com.happypour.happypour.entity.*;
+import com.happypour.happypour.entity.enums.DrinkType;
 import com.happypour.happypour.repository.PriceRepository;
 
 import org.junit.jupiter.api.BeforeEach;

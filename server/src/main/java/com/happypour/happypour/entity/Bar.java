@@ -1,4 +1,4 @@
-package com.happypour.happypour.model;
+package com.happypour.happypour.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

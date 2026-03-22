@@ -1,4 +1,4 @@
-package com.happypour.happypour.model.enums;
+package com.happypour.happypour.entity.enums;
 
 public enum DrinkType {
     BEER,

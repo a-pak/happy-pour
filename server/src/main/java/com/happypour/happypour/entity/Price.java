@@ -1,4 +1,4 @@
-package com.happypour.happypour.model;
+package com.happypour.happypour.entity;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

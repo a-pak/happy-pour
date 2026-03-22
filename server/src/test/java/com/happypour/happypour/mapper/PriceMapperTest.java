@@ -14,12 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.happypour.happypour.dto.PriceDTO;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.Drink;
-import com.happypour.happypour.model.HappyHour;
-import com.happypour.happypour.model.Price;
-import com.happypour.happypour.model.User;
-import com.happypour.happypour.model.enums.DrinkType;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.Drink;
+import com.happypour.happypour.entity.HappyHour;
+import com.happypour.happypour.entity.Price;
+import com.happypour.happypour.entity.User;
+import com.happypour.happypour.entity.enums.DrinkType;
 
 @SpringBootTest
 @ActiveProfiles("test")

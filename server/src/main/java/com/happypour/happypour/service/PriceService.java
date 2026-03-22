@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.PriceDTO;
+import com.happypour.happypour.entity.Bar;
+import com.happypour.happypour.entity.Drink;
+import com.happypour.happypour.entity.HappyHour;
+import com.happypour.happypour.entity.Price;
+import com.happypour.happypour.entity.User;
 import com.happypour.happypour.mapper.PriceMapper;
-import com.happypour.happypour.model.Bar;
-import com.happypour.happypour.model.Price;
-import com.happypour.happypour.model.User;
-import com.happypour.happypour.model.Drink;
-import com.happypour.happypour.model.HappyHour;
 import com.happypour.happypour.repository.PriceRepository;
 
 @Service
