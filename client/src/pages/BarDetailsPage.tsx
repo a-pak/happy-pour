@@ -19,6 +19,7 @@ import { BarData } from '../types/IbarInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import FloatingEditMenu from '../components/FloatingEditMenu.tsx';
 import theme from '../Theme.tsx';
+import { formatTime } from '../utils/timeUtils.ts';
 
 const BarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -93,7 +94,7 @@ const BarDetailsPage: React.FC = () => {
               </Box>
 
               <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-                {activeHH.startTime} to {activeHH.endTime}
+                {formatTime(activeHH.startTime)} to {formatTime(activeHH.endTime)}
               </Typography>
 
               <List>
@@ -178,7 +179,7 @@ const BarDetailsPage: React.FC = () => {
                 <CardContent>
                   <Typography variant="h6">🎉 Happy Hour is active!</Typography>
                   <Typography variant="body2">
-                    {activeHH.startTime} — {activeHH.endTime}
+                    {formatTime(activeHH.startTime)} — {formatTime(activeHH.endTime)}
                   </Typography>
                 </CardContent>
               </Card>
@@ -217,7 +218,7 @@ const BarDetailsPage: React.FC = () => {
                       {Array.isArray(hh.weekDays)
                         ? hh.weekDays.join(', ')
                         : Array.from(hh.weekDays).join(', ')}{' '}
-                      — {hh.startTime} to {hh.endTime}
+                      — {formatTime(hh.startTime)} to {formatTime(hh.endTime)}
                     </Typography>
 
                     <IconButton

@@ -76,8 +76,8 @@ const HappyHourSubmitPage: React.FC = () => {
       const happyHour: HappyHourDTO = {
         id: isEditing ? Number(hhId) : -1, // backend will set id when creating
         weekDays: selectedDays,
-        startTime: startTime.format('HH:mm:ss'),
-        endTime: endTime.format('HH:mm:ss'),
+        startTime: startTime.format('HH:mm'),
+        endTime: endTime.format('HH:mm'),
         barId: Number(barId),
         prices: prices,
         creatorId: user?.id,
