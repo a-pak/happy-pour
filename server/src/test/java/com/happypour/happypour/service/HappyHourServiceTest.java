@@ -95,6 +95,9 @@ public class HappyHourServiceTest {
             .bar(bar1)
             .createdBy(user)
             .updatedBy(user)
+            .weekDays(EnumSet.of(WeekDay.MONDAY))
+            .startTime(LocalTime.of(12, 0))
+            .endTime(LocalTime.of(23, 59))
             .createdAt(new Timestamp(1200))
             .updatedAt(new Timestamp(1200))
             .build();
