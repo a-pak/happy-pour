@@ -5,7 +5,10 @@ import com.happypour.happypour.entity.Drink;
 import com.happypour.happypour.entity.User;
 
 public class DrinkMapper {
-    public static Drink toEntity(DrinkDTO dto, User user) {
+    public static Drink toEntity(
+        DrinkDTO dto, 
+        User user
+    ) {
         return Drink.builder()
             .name(dto.getName())
             .size(dto.getSize())

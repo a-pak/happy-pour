@@ -12,7 +12,14 @@ import com.happypour.happypour.entity.enums.DrinkType;
 
 public class PriceMapper {
 
-    public static Price toEntity(PriceDTO dto, Bar bar, Drink drink, HappyHour happyHour, User createdBy, User updatedBy) {
+    public static Price toEntity(
+        PriceDTO dto, 
+        Bar bar, 
+        Drink drink, 
+        HappyHour happyHour, 
+        User createdBy, 
+        User updatedBy
+    ) {
         return Price.builder()
             .price(dto.getPrice().setScale(2, RoundingMode.UNNECESSARY))
             .bar(bar)

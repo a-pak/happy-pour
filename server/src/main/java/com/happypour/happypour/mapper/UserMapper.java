@@ -5,7 +5,11 @@ import com.happypour.happypour.dto.UserDetailsDTO;
 import com.happypour.happypour.entity.User;
 
 public class UserMapper {
-    public static User toEntity(RegisterRequest request, boolean verified) {
+    
+    public static User toEntity(
+        RegisterRequest request, 
+        boolean verified
+    ) {
         return User.builder()
             .id(null)
             .email(request.getEmail())
@@ -14,6 +18,7 @@ public class UserMapper {
             .verified(verified)
             .build();
     }
+
     public static UserDetailsDTO toDTO(User user) {
         return new UserDetailsDTO(
             user.getId(),

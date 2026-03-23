@@ -41,8 +41,10 @@ public class HappyHourService {
      */
     public HappyHourDTO getHappyHourDTOById(Long id) {
         Optional<HappyHour> happyHour = happyHourRepository.findById(id);
-        if(happyHour.isEmpty()) 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+id+" not found");
+        if(happyHour.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Happy hour with id "+id+" not found"
+        );
         
         return HappyHourMapper.toDTO(happyHour.get(), null);
     }
@@ -53,8 +55,10 @@ public class HappyHourService {
      */
     public List<HappyHourDTO> getDTOsByBarId(Long barId) {
         List<HappyHour> happyHours = happyHourRepository.findByBarId(barId);
-        if(happyHours.isEmpty()) 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hours for bar id "+ barId +" not found");
+        if(happyHours.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Happy hours for bar id "+ barId +" not found"
+        );
 
         List<HappyHourDTO> happyHourDTOs = new ArrayList<>();
         happyHours.forEach(hh -> happyHourDTOs.add(HappyHourMapper.toDTO(hh, null)));
@@ -68,14 +72,22 @@ public class HappyHourService {
      * @return DTO of saved HappyHour entity
      */
     public HappyHourDTO createHappyHour(HappyHourDTO dto) {
-        if (dto.getCreatorId() == null) 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        if (dto.getCreatorId() == null) throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, 
+            "Creator id not provided"
+        );
         
         Bar bar = barService.getById(dto.getBarId());
-        if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
+        if(bar == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Bar not found"
+        );
         
         User user = userService.getById(dto.getCreatorId());
-        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User with id "+dto.getCreatorId()+" not found");
+        if(user == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "User with id "+dto.getCreatorId()+" not found"
+        );
         
         HappyHour happyHour = HappyHourMapper.toEntity(dto, bar, user);
         HappyHour created = happyHourRepository.save(happyHour);
@@ -89,12 +101,16 @@ public class HappyHourService {
      * @return DTO of updated Happy Hour
      */
     public HappyHourDTO updateHappyHour(Long id, HappyHourDTO dto) {
-        if(dto.getCreatorId() == null) 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        if(dto.getCreatorId() == null) throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, 
+            "Creator id not provided"
+        );
         
         Optional<HappyHour> existingHappyHour = happyHourRepository.findById(id);
-        if(existingHappyHour.isEmpty()) 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+ id +" not found");
+        if(existingHappyHour.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Happy hour with id "+ id +" not found"
+        );
 
         HappyHour existing = existingHappyHour.get();
         
@@ -108,8 +124,12 @@ public class HappyHourService {
         if (dto.getWeekDays() != null) {
             existing.setWeekDays(dto.getWeekDays());
         }
+        
         User updater = userService.getById(dto.getCreatorId());
-        if (updater == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        if (updater == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "User not found"
+        );
         
         existing.setUpdatedBy(updater);
         HappyHour updated = happyHourRepository.save(existing);
@@ -121,8 +141,10 @@ public class HappyHourService {
      * @param id
      */
     public void deleteHappyHour(Long id) {
-        if(!happyHourRepository.existsById(id)) 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Happy hour with id "+id+" not found");
+        if(!happyHourRepository.existsById(id)) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Happy hour with id "+id+" not found"
+        );
         happyHourRepository.deleteById(id);
     }
 }

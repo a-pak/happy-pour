@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.happypour.happypour.dto.PriceDTO;
@@ -93,29 +94,50 @@ public class PriceService {
      * Updates existing Prices with matching id. 
      * @param priceDtos List of PricesDTOs
      */
+    @Transactional
     public void createPrice(List<PriceDTO> priceDtos) {
         User user = userService.getById(priceDtos.get(0).getCreatorId());
-        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        if(user == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "User not found"
+        );
 
         Bar bar = barService.getById(priceDtos.get(0).getBarId());
-        if(bar == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bar not found");
+        if(bar == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Bar not found"
+        );
 
         for(PriceDTO dto : priceDtos) {
            
             // Check if price with the same bar, drink and happy hour exist and send to update.
-            Optional<Price> existing = priceRepository.findExistingPrice(bar.getId(), dto.getDrinkId(), dto.getHappyHourId());
+            Optional<Price> existing = priceRepository.findExistingPrice(
+                bar.getId(), 
+                dto.getDrinkId(), 
+                dto.getHappyHourId()
+            );
             if (existing.isPresent()) {
                 updatePrice(existing.get().getId(), dto);
                 continue;
             }
 
             Drink drink = drinkService.getById(dto.getDrinkId());
-            if(drink == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink not found");
+            if(drink == null) throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, 
+                "Drink not found"
+            );
             
             HappyHour happyHour = dto.getHappyHourId() != null ? 
                     happyHourService.getById(dto.getHappyHourId()) : null;
 
-            Price price = PriceMapper.toEntity(dto, bar, drink, happyHour, user, user);
+            Price price = PriceMapper.toEntity(
+                dto, 
+                bar, 
+                drink, 
+                happyHour, 
+                user, 
+                user
+            );
 
             priceRepository.save(price);
         }
@@ -127,12 +149,22 @@ public class PriceService {
      */
     public void updatePrice(Long id, PriceDTO priceDTO) {
         Optional<Price> existingPrice = priceRepository.findById(id);
-        if (existingPrice.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Price not found");
+        if (existingPrice.isEmpty()) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "Price not found"
+        );
 
         User user = userService.getById(priceDTO.getCreatorId());
-        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        if(user == null) throw new ResponseStatusException(
+            HttpStatus.NOT_FOUND, 
+            "User not found"
+        );
 
-        existingPrice.get().setPrice(priceDTO.getPrice().setScale(2, RoundingMode.UNNECESSARY));
+        existingPrice.get().setPrice(
+            priceDTO
+                .getPrice()
+                .setScale(2, RoundingMode.UNNECESSARY)
+        );
         existingPrice.get().setUpdatedBy(user);
 
         try {
