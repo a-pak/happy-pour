@@ -27,7 +27,7 @@ import { HappyHourDTO } from '../types/IHappyHourInterface.ts';
 import { ArrowBack, Add, Delete } from '@mui/icons-material';
 
 // ...existing code...
-interface PriceSubmitComponentProps { barId: number; priceDrinkId?: number; happyHourId?: number;}
+interface PriceSubmitComponentProps { barId: number; priceDrinkId?: number; happyHourId?: number; }
 
 interface PriceInput {
   drinkId: number;
@@ -35,7 +35,7 @@ interface PriceInput {
   price: number;
 }
 
-const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, priceDrinkId, happyHourId}) => {
+const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({ barId, priceDrinkId, happyHourId }) => {
   const [searchParams] = useSearchParams();
   const happyHourParam = searchParams.get("hhId")
   const { user } = useUserStore();
@@ -54,21 +54,44 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
 
   useEffect(() => {
     const fetchDrinks = async () => {
-      const data = await getAllDrinks();
-      setDrinks(data);
+      await getAllDrinks()
+        .then((data) => setDrinks(data))
+        .catch((err) => {
+
+          if (err.status != 404) {
+            console.error("Error fetching drinks", err);
+            showNotification("Error fetching drinks", "error");
+          }
+        })
     };
+    
     const fetchPrices = async () => {
-      const data = await getByBarId(barId);
-      setExistingPrices(data);
+      await getByBarId(barId)
+      .then((data) => setExistingPrices(data))
+      .catch((err) => {
+        
+        if (err.status != 404) {
+          console.error("Error fetching prices", err);
+          showNotification("Error fetching existing prices", "error");
+        }
+      })
     };
+    
     const fetchHappyHours = async () => {
-      const data = await getHappyHoursByBar(barId);
-      setHappyhours(data);
+      await getHappyHoursByBar(barId)
+        .then((data) => setHappyhours(data))
+        .catch((err) => {
+          
+          if (err.status != 404) {
+            console.error("Error fetching happy hours", err);
+            showNotification("Error fetching happy hours", "error");
+          }
+        });
     }
     fetchPrices();
     fetchDrinks();
     fetchHappyHours();
-    if(happyHourParam) setCurrentHappyHourId(Number(happyHourParam));
+    if (happyHourParam) setCurrentHappyHourId(Number(happyHourParam));
   }, [barId])
 
   // ---------- Selected Drink / HappyHour ----------
@@ -164,156 +187,156 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({barId, price
         padding: 4,
         position: "relative"
       }}
-    ><Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Bar </Button>
-    <Box component="form" onSubmit={(e) => e.preventDefault()} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Compose Price List
-      </Typography>
-      {/* Drink picker */}
-      <FormControl fullWidth margin="normal">
-        <Select
-          labelId="drink-select-label"
-          value={currentDrinkId}
-          onChange={(e) => {
-            const newDrinkId = Number(e.target.value);
-            setCurrentDrinkId(newDrinkId);
-          }}
-          displayEmpty
-          renderValue={(selected) => {
-            if (!selected) {
-              return <em>Select a drink</em>;
-            }
-            const drink = drinks?.find((d) => d.id === selected);
-            return `${drink?.name} (${drink?.type}, ${drink?.size}ml)`;
-          }}
-        >
-          <MenuItem disabled value="">
-            <em>Select a drink</em>
-          </MenuItem>
-          {drinks?.map((drink) => (
-            <MenuItem key={drink.id} value={drink.id}>
-              {drink.name} ({drink.type}, {drink.size}ml)
+    ><Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack />} >Back to Bar </Button>
+      <Box component="form" onSubmit={(e) => e.preventDefault()} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Compose Price List
+        </Typography>
+        {/* Drink picker */}
+        <FormControl fullWidth margin="normal">
+          <Select
+            labelId="drink-select-label"
+            value={currentDrinkId}
+            onChange={(e) => {
+              const newDrinkId = Number(e.target.value);
+              setCurrentDrinkId(newDrinkId);
+            }}
+            displayEmpty
+            renderValue={(selected) => {
+              if (!selected) {
+                return <em>Select a drink</em>;
+              }
+              const drink = drinks?.find((d) => d.id === selected);
+              return `${drink?.name} (${drink?.type}, ${drink?.size}ml)`;
+            }}
+          >
+            <MenuItem disabled value="">
+              <em>Select a drink</em>
             </MenuItem>
-          ))}
-          <MenuItem value={0}>
-            <Link to={"/drinks/update"}>
-              Add a new drink!
-            </Link>
-          </MenuItem>
-        </Select>
-      </FormControl>
-      
-      {/* Happy Hour picker */}
-      <FormControl fullWidth margin="normal">
-        <Select
-          labelId="happyhour-select-label"
-          value={currentHappyHourId}
-          onChange={(e) => {
-            const newHhId = Number(e.target.value) === 0 ? 0 : Number(e.target.value);
-            setCurrentHappyHourId(newHhId === 0 ? 0 : newHhId);
-          }}
-          displayEmpty
-          renderValue={(selected) => {
-            if (!selected) {
-              return <em>Select a happy hour (optional)</em>;
-            }
-            const hh = happyhours?.find((h) => h.id === selected);
-            return hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'Select a happy hour (optional)';
-          }}
-        >
-          <MenuItem disabled value="">
-            <em>Select a happy hour (optional)</em>
-          </MenuItem>
-          {happyhours?.map((hh) => (
-            <MenuItem key={hh.id} value={hh.id}>
-              {hh.weekDays.join(', ')} {hh.startTime}-{hh.endTime}
+            {drinks?.map((drink) => (
+              <MenuItem key={drink.id} value={drink.id}>
+                {drink.name} ({drink.type}, {drink.size}ml)
+              </MenuItem>
+            ))}
+            <MenuItem value={0}>
+              <Link to={"/drinks/update"}>
+                Add a new drink!
+              </Link>
             </MenuItem>
-          ))}
-          <MenuItem value={0}>
-            <Link to={`/bars/${barId}/happy-hours/create`}>
-              Add a new happy hour!
-            </Link>
-          </MenuItem>
-        </Select>
-      </FormControl>
+          </Select>
+        </FormControl>
 
-      {currentDrink && (
-        <>
-          <Box mt={2}>
-            <Typography variant="body1"><strong>Drink Name:</strong> {currentDrink.name}</Typography>
-            <Typography variant="body1"><strong>Type:</strong> {currentDrink.type}</Typography>
-            <Typography variant="body1"><strong>Size:</strong> {currentDrink.size} l</Typography>
-            {currentHappyHour && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                <strong>Happy Hour:</strong> {currentHappyHour.weekDays.join(', ')} {currentHappyHour.startTime}-{currentHappyHour.endTime}
-              </Typography>
-            )}
-          </Box>
+        {/* Happy Hour picker */}
+        <FormControl fullWidth margin="normal">
+          <Select
+            labelId="happyhour-select-label"
+            value={currentHappyHourId}
+            onChange={(e) => {
+              const newHhId = Number(e.target.value) === 0 ? 0 : Number(e.target.value);
+              setCurrentHappyHourId(newHhId === 0 ? 0 : newHhId);
+            }}
+            displayEmpty
+            renderValue={(selected) => {
+              if (!selected) {
+                return <em>Select a happy hour (optional)</em>;
+              }
+              const hh = happyhours?.find((h) => h.id === selected);
+              return hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'Select a happy hour (optional)';
+            }}
+          >
+            <MenuItem disabled value="">
+              <em>Select a happy hour (optional)</em>
+            </MenuItem>
+            {happyhours?.map((hh) => (
+              <MenuItem key={hh.id} value={hh.id}>
+                {hh.weekDays.join(', ')} {hh.startTime}-{hh.endTime}
+              </MenuItem>
+            ))}
+            <MenuItem value={0}>
+              <Link to={`/bars/${barId}/happy-hours/create`}>
+                Add a new happy hour!
+              </Link>
+            </MenuItem>
+          </Select>
+        </FormControl>
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Price"
-            type='number'
-            inputProps={{ min: 0, step: 0.01 }}
-            value={currentAmount}
-            onChange={(e) => setCurrentAmount(e.target.value)}
-            required
-          />
-          
+        {currentDrink && (
+          <>
+            <Box mt={2}>
+              <Typography variant="body1"><strong>Drink Name:</strong> {currentDrink.name}</Typography>
+              <Typography variant="body1"><strong>Type:</strong> {currentDrink.type}</Typography>
+              <Typography variant="body1"><strong>Size:</strong> {currentDrink.size} l</Typography>
+              {currentHappyHour && (
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  <strong>Happy Hour:</strong> {currentHappyHour.weekDays.join(', ')} {currentHappyHour.startTime}-{currentHappyHour.endTime}
+                </Typography>
+              )}
+            </Box>
+
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Price"
+              type='number'
+              inputProps={{ min: 0, step: 0.01 }}
+              value={currentAmount}
+              onChange={(e) => setCurrentAmount(e.target.value)}
+              required
+            />
+
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleAddToList}
+              fullWidth
+              startIcon={<Add />}
+              sx={{ mt: 2 }}
+            >
+              Add to List
+            </Button>
+
+          </>
+        )}
+      </Box>
+
+      {/* Price List */}
+      {priceList.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Prices to Submit
+          </Typography>
+          <List>
+            {priceList.map((item, index) => {
+              const drink = drinks.find(d => d.id === item.drinkId)!;
+              const hh = item.happyHourId ? happyhours.find(h => h.id === item.happyHourId) : null;
+              return (
+                <ListItem key={index} secondaryAction={
+                  <IconButton edge="end" onClick={() => handleRemoveFromList(index)}>
+                    <Delete />
+                  </IconButton>
+                }>
+                  <ListItemText
+                    primary={`${drink.name} (${drink.type}, ${drink.size}ml) - ${item.price}€`}
+                    secondary={hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'No Happy Hour'}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
+          <Divider sx={{ my: 2 }} />
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
-            onClick={handleAddToList}
+            onClick={handleSubmit}
             fullWidth
-            startIcon={<Add />}
+            disabled={isSubmitting}
+            startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
             sx={{ mt: 2 }}
           >
-            Add to List
+            {isSubmitting ? 'Submitting...' : 'Submit All Prices'}
           </Button>
-
-        </>
+        </Box>
       )}
-    </Box>
-
-    {/* Price List */}
-    {priceList.length > 0 && (
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Prices to Submit
-        </Typography>
-        <List>
-          {priceList.map((item, index) => {
-            const drink = drinks.find(d => d.id === item.drinkId)!;
-            const hh = item.happyHourId ? happyhours.find(h => h.id === item.happyHourId) : null;
-            return (
-              <ListItem key={index} secondaryAction={
-                <IconButton edge="end" onClick={() => handleRemoveFromList(index)}>
-                  <Delete />
-                </IconButton>
-              }>
-                <ListItemText
-                  primary={`${drink.name} (${drink.type}, ${drink.size}ml) - ${item.price}€`}
-                  secondary={hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'No Happy Hour'}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-        <Divider sx={{ my: 2 }} />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          fullWidth
-          disabled={isSubmitting}
-          startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-          sx={{ mt: 2 }}
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit All Prices'}
-        </Button>
-      </Box>
-    )}
     </Container>
   );
 };
