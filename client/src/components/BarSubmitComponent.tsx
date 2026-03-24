@@ -17,6 +17,7 @@ import { useErrorStore } from '../store/errorStore.ts';
 import theme from "../Theme";
 import { getAddress } from "../services/geocode.ts";
 import { ArrowBack } from "@mui/icons-material";
+import { AxiosError } from "axios";
 
 type Props = {
   barId?: number | null;
@@ -40,37 +41,43 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
 
   useEffect(() => {
     const fetchAddress = async () => {
-        try {
-          await getAddress(lat, lng).then((res) => {
-            if(res) {
-
-            if (res.status != 200 || !res.data) {
-              console.error('Request failed:', res.status);
-              throw new Error('Reverse geocoding failed');
-            }
-            const data = res.data
-    
-            if (data && data.address) {
-              const addr = data.address;
-    
-              const road = addr.road || "";
-              const houseNumber = addr.house_number || "";
-              const postcode = addr.postcode || "";
-              const city = addr.city || addr.town || addr.village || "";
-    
-              const formattedAddress = [road, houseNumber, postcode, city]
-                .filter(Boolean)
-                .join(" ");
-    
-              setAddress(formattedAddress);
-            } else {
-              console.warn("Address not found from Nominatimista.");
-            }
+      await getAddress(lat, lng).then((res) => {
+        
+        if (res) {
+          
+          if (res.status != 200 || !res.data) {
+            console.error('Request failed:', res.status);
+            throw new Error('Reverse geocoding failed');
           }
-         });    
-      } catch (error) {
-        console.error("Error fetching address:", error);
-      }
+          const data = res.data
+
+          if (data && data.address) {
+            const addr = data.address;
+
+            const road = addr.road || "";
+            const houseNumber = addr.house_number || "";
+            const postcode = addr.postcode || "";
+            const city = addr.city || addr.town || addr.village || "";
+
+            const formattedAddress = [road, houseNumber, postcode, city]
+              .filter(Boolean)
+              .join(" ");
+
+            setAddress(formattedAddress);
+          } else {
+            console.warn("Address not found from Nominatimista.");
+          }
+        }
+      })
+        .catch((err: AxiosError) => {
+          if (err.status === 502 && import.meta.env.DEV) {
+            console.error("502. Nominatim service unavalaible in dev mode.");
+          } else {
+            // TODO : show warning on address field.
+            console.error(`Error fetching address. Status ${err.status}`);
+            console.error(err.message);
+          }
+        });
     }
     if (barId) {
       barService.getById(barId).then((bar) => {
@@ -92,7 +99,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
       return;
     }
 
-    if(!user) {
+    if (!user) {
       showNotification("You must be logged in to submit a bar.", "warning");
       navigate("/login");
       return;
@@ -158,7 +165,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack/>} >Back to Map </Button>
+        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack />} >Back to Map </Button>
 
         <Typography variant="h5" fontWeight={600} gutterBottom>
           {barId ? "Update Bar" : "Add Bar"}
@@ -172,7 +179,7 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
             fullWidth
           />
 
-          <TextField
+          <TextField // TODO : show warning on address field on Nominatim error.
             label="Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
