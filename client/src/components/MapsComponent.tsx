@@ -15,7 +15,6 @@ import { useErrorStore } from '../store/errorStore';
 
 interface MapEventsHandlerProps {
   handleMapClick: (event: L.LeafletMouseEvent) => void;
-  handleMapMoveEnd: (center: [lat : number, lng: number], zoom:number) => void;
 }
 
 const MapsComponent: React.FC = () => {
@@ -48,18 +47,9 @@ const MapsComponent: React.FC = () => {
     const { lat, lng } = e.latlng;
     setPopupPosition([lat, lng]);
   };
-  const handleMapMoveEnd = (center: [number, number], zoom:number) => {
-    setMapPosition({latitude: center[0], longitude: center[1]}, zoom);
-  };
   const MapEventsHandler: React.FC<MapEventsHandlerProps> = ({ handleMapClick }) => {
     useMapEvents({
       dblclick: (e) => handleMapClick(e),
-      moveend: (e) => {
-        const map = e.target;
-        const center = map.getCenter();
-        const zoom = map.getZoom();
-        handleMapMoveEnd([center.lat, center.lng], zoom);   
-    },
     });
     return null;
   };
@@ -136,7 +126,7 @@ const MapsComponent: React.FC = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MapEventsHandler handleMapClick={handleMapClick} handleMapMoveEnd={handleMapMoveEnd}/>
+        <MapEventsHandler handleMapClick={handleMapClick}/>
 
         {userLocation && (
           <Marker zIndexOffset={1000} position={[userLocation?.latitude, userLocation?.longitude]} icon={L.icon({
