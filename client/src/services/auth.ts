@@ -8,7 +8,7 @@ import { User } from '../store/userStore.ts';
   NOTE:  uses axios directly instead of axiosInstance to avoid interceptor issues
   *******************************************************************************
 */
-const BASE_URL = '/api/auth';
+const BASE_URL = import.meta.env.DEV ? `${import.meta.env.VITE_API_URL}/auth` : '/api/auth';
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
@@ -43,6 +43,7 @@ export const registerAPI = async (registerPayload: RegisterPayload) => {
 };
 
 export const refreshAPI = async () => {
+    console.log("BASE URL: " + BASE_URL);
     return await axios.post(
       BASE_URL + "/refresh",
       {},{

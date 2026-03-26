@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-
+import { refreshAPI } from '../auth';
+const BASE_URL = import.meta.env.DEV ? import.meta.env.VITE_API_URL : '/api'; 
 const api: AxiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: BASE_URL,
   withCredentials: true, // This ensures cookies are sent with requests
 });
 
@@ -31,11 +32,7 @@ api.interceptors.response.use(
         isRefreshing = true;
 
         try {
-          await axios.post(
-            '/api/auth/refresh',
-            {},
-            { withCredentials: true }
-          );
+          await refreshAPI();
           isRefreshing = false;
           onRefreshed();
         } catch (refreshError) {
