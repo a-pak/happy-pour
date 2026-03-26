@@ -82,21 +82,17 @@ public class UserService {
             User user = optionalUser.get();
             if(user.isVerified() == false) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "User account with email "+user.getEmail()+"  is not verified.");
+                    "User account with email "+user.getEmail()+"  is not verified."
+                );
             }
 
             if (passwordEncoder.matches(rawPassword, user.getPassword())) {
                 return UserMapper.toDTO(user);
-            
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Invalid credentials provided.");
             }
-
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
-                "Invalid credentials provided.");
         }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
+                "Invalid credentials provided."
+        );
     }
 
     /** Creates a new user from received RegisterRequest and saves it into the repository.
