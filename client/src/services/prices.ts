@@ -6,17 +6,8 @@ import { PriceDTO } from '../types/IPriceInterface';
 const PRICES_URL : string = "/prices";
 
 const getByBarId = async (barId: number): Promise<PriceDTO[]> => {
-    try {
     const response = await api.get(`${PRICES_URL}/by-bar/${barId}`);
     return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error fetching prices:', error.response?.data);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-        throw error;
-    }
 }
 
 const createPrice = async (priceData: PriceDTO[]): Promise<void> => {
