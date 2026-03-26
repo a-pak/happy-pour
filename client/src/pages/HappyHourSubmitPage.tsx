@@ -27,8 +27,8 @@ const HappyHourSubmitPage: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { barId, hhId } = useParams<{ barId: string; hhId?: string }>();
   const [selectedDays, setSelectedDays] = useState<WeekDay[]>([]);
-  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(dayjs());
-  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs());
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(dayjs("10:00", "HH:mm"));
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs("17:00", "HH:mm"));
   const [prices, setPrices] = useState<PriceDTO[]>([]);
   const { user } = useUserStore();
   const { showNotification } = useErrorStore();
