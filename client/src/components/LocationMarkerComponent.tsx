@@ -11,6 +11,7 @@ import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
 import { PriceDTO } from '../types/IPriceInterface.ts';
 import { getCheapestPrice, getPriceRank, PriceRank } from '../utils/priceUtil.ts';
 import '../App.css';
+import { useLocation } from 'react-router-dom';
 /* Icon tempalte with a png */
 // const customIcon = L.icon({
 //     iconUrl: '/beer-icon.png',
@@ -37,6 +38,7 @@ export const LocationMarkerComponent: React.FC = () => {
     const {defaultDrink} = useDrinkStore();
     const navigate = useNavigate();
     const showAll = defaultDrink === "View all";
+    const currentRoute = useLocation().pathname;
 
     useEffect(() => {
         barsService
@@ -65,7 +67,7 @@ export const LocationMarkerComponent: React.FC = () => {
                         if (activeHappyHour.prices.find((p : PriceDTO) => (p.drinkType === defaultDrink))) hasDrink = true;
                     }
 
-                    if (!hasDrink && !showAll) return null;
+                    if (!hasDrink && !showAll && currentRoute != `/bars/${barEntity.bar.id}`) return null;
                     /* Set color of marker tooltip to indicate affordability of price
                      compared to average */
                     let colorClass = [];
