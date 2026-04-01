@@ -165,7 +165,13 @@ const BarSubmitComponent: React.FC<Props> = ({ barId, lat, lng }) => {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2 }} startIcon={<ArrowBack />} >Back to Map </Button>
+        <Button 
+          component={Link} 
+          to={barId ? `/bars/${barId}/details` : "/"} 
+          variant="outlined" sx={{ mb: 2 }} 
+          startIcon={<ArrowBack />} 
+          >Back to {barId ? "Details" : "Map"}
+        </Button>
 
         <Typography variant="h5" fontWeight={600} gutterBottom>
           {barId ? "Update Bar" : "Add Bar"}
