@@ -64,24 +64,24 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({ barId, pric
           }
         })
     };
-    
+
     const fetchPrices = async () => {
       await getByBarId(barId)
-      .then((data) => setExistingPrices(data))
-      .catch((err) => {
-        
-        if (err.status != 404) {
-          console.error("Error fetching prices", err);
-          showNotification("Error fetching existing prices", "error");
-        }
-      })
+        .then((data) => setExistingPrices(data))
+        .catch((err) => {
+
+          if (err.status != 404) {
+            console.error("Error fetching prices", err);
+            showNotification("Error fetching existing prices", "error");
+          }
+        })
     };
-    
+
     const fetchHappyHours = async () => {
       await getHappyHoursByBar(barId)
         .then((data) => setHappyhours(data))
         .catch((err) => {
-          
+
           if (err.status != 404) {
             console.error("Error fetching happy hours", err);
             showNotification("Error fetching happy hours", "error");
@@ -124,6 +124,10 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({ barId, pric
     const finalAmount = Number(currentAmount);
     if (Number.isNaN(finalAmount)) {
       showNotification("Please insert a valid number", "warning");
+      return;
+    }
+    if (priceList.some(p => p.drinkId === currentDrink.id && (p.happyHourId ?? undefined) === (currentHappyHourId === '' ? undefined : Number(currentHappyHourId)))) {
+      showNotification("This drink with the selected happy hour is already in the list", "warning");
       return;
     }
     const newItem: PriceInput = {
@@ -246,6 +250,9 @@ const PriceSubmitComponent: React.FC<PriceSubmitComponentProps> = ({ barId, pric
           >
             <MenuItem disabled value="">
               <em>Select a happy hour (optional)</em>
+            </MenuItem>
+            <MenuItem key={0} value={""}>
+              <i>No happy hour</i>
             </MenuItem>
             {happyhours?.map((hh) => (
               <MenuItem key={hh.id} value={hh.id}>
