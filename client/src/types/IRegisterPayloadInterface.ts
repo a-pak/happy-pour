@@ -1,5 +1,5 @@
 export default interface RegisterPayload {
-    username: string;
-    email: string;
-    password: string;
-  }
+  username: string;
+  email: string;
+  password: string;
+}
