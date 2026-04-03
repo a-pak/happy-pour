@@ -122,7 +122,7 @@ const BarDetailsPage: React.FC = () => {
                     />
                           <IconButton
                             component={Link}
-                            to={`/bars/${bar.id}/prices/update/${price.id}`}
+                            to={`/bars/${bar.id}/happy-hours/${activeHH.id}/prices/update/${price.drinkId}`}
                             sx={{ color: 'white' }}
                             size="small"
                           >
@@ -256,7 +256,7 @@ const BarDetailsPage: React.FC = () => {
                         />
                         <IconButton
                           component={Link}
-                          to={`/bars/${bar.id}/prices/update/${price.id}`}
+                          to={`/bars/${bar.id}/happy-hours/${hh.id}/prices/update/${price.drinkId}`}
                           sx={{ color: 'white' }}
                           size="small"
                         >
