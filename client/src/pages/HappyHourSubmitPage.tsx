@@ -82,17 +82,27 @@ const HappyHourSubmitPage: React.FC = () => {
         prices: prices,
         creatorId: user?.id,
       };
-      try {
-        if (isEditing) {
-          await updateHappyHour(happyHour);
-          showNotification('Happy hour updated successfully', 'success');
-        } else {
-          await createHappyHour(happyHour);
-          showNotification('Happy hour submitted successfully', 'success');
-        }
-        navigate(-1);
-      } catch (error) {
-        showNotification(isEditing ? 'Failed to update happy hour' : 'Failed to create happy hour', 'error');
+      if (isEditing) {
+        await updateHappyHour(happyHour)
+          .then(() => {
+            showNotification('Happy hour updated successfully', 'success');
+            navigate(-1);
+          })
+          .catch(error => {
+            showNotification('Failed to update happy hour', 'error');
+            console.error(error);
+          })
+
+      } else {
+        await createHappyHour(happyHour)
+          .then(() => {
+            showNotification('Happy hour submitted successfully', 'success');
+            navigate(-1);
+          })
+          .catch(error => {
+            showNotification('Failed to submit happy hour', 'error');
+            console.error(error);
+          });
       }
     } else {
       showNotification('Please fill all fields correctly', 'warning');
@@ -117,7 +127,7 @@ const HappyHourSubmitPage: React.FC = () => {
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid2 container spacing={2}>
-            <Typography gutterBottom sx={{mt:'15px', mb:'-15px'}}>
+            <Typography gutterBottom sx={{ mt: '15px', mb: '-15px' }}>
               Select days when the Happy Hour takes place:
             </Typography>
             <Grid2 container spacing={0} sx={{ overflowX: 'auto', flexWrap: 'nowrap', py: 1, mb: 2 }}>
@@ -188,7 +198,7 @@ const HappyHourSubmitPage: React.FC = () => {
                 </Box>
               ))}
             </Grid2>
-              <Typography gutterBottom sx={{mt:'-5px'}}>
+            <Typography gutterBottom sx={{ mt: '-5px' }}>
               Enter the start and end times for the Happy Hour:
             </Typography>
             <Grid2 container spacing={1} alignItems="center">
