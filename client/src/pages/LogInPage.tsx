@@ -5,8 +5,7 @@ import {
   TextField,
   Button,
   Typography,
-  Container,
-  Paper,
+  Container
 } from '@mui/material';
 import { loginAPI } from "../services/auth.ts";
 import LoginPayload from "../types/ILoginPayloadInterface.ts";

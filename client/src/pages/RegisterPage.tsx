@@ -8,8 +8,7 @@ import {
     Button,
     Container,
     TextField,
-    Typography,
-    Paper
+    Typography
 } from '@mui/material';
 
 const RegisterPage: React.FC = () => {
