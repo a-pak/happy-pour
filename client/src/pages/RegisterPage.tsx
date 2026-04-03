@@ -77,85 +77,74 @@ const RegisterPage: React.FC = () => {
                     alignItems: 'center',
                 }}
             >
-                <Paper
-                    elevation={3}
-                    sx={{
-                        p: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        width: '100%',
-                    }}
-                >
-                    <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-                        Create a new account
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="confirmPassword"
-                            label="Confirm Password"
-                            type="password"
-                            id="confirmPassword"
-                            autoComplete="new-password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            sx={{ mb: 3 }}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{
-                                mt: 2,
-                                mb: 2,
-                                height: '45px'
-                            }}
-                        >
-                            Register
-                        </Button>
-                    </Box>
-                </Paper>
+                <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                    Create a new account
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
+                        autoFocus
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="new-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        sx={{ mb: 3 }}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{
+                            mt: 2,
+                            mb: 2,
+                            height: '45px'
+                        }}
+                    >
+                        Register
+                    </Button>
+                </Box>
             </Box>
             <Link to="/login" style={{ textDecoration: 'none' }}>
                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>

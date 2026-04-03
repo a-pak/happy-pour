@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   Container,
+  Paper,
 } from '@mui/material';
 import { loginAPI } from "../services/auth.ts";
 import LoginPayload from "../types/ILoginPayloadInterface.ts";
@@ -83,54 +84,58 @@ export const LogInPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
-          Log in
-        </Typography>
-        <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{
-              mt: 2,
-              bgcolor: 'primary.main',
-              '&:hover': {
-                bgcolor: 'primary.dark',
-              },
-              height: '45px'
-            }}
-          >
-            Login
-          </Button>
-        </Box>
+          <Typography component="h2" variant="h5" sx={{ mb: 3 }}>
+            Log in
+          </Typography>
+          <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 2,
+                bgcolor: 'primary.main',
+                '&:hover': {
+                  bgcolor: 'primary.dark',
+                },
+                height: '45px'
+              }}
+            >
+              Login
+            </Button>
+          </Box>
       </Box>
-      <p className="margin-bottom"> Don't have an account? Register <Link to="/register">here</Link></p>
+      <Link to="/register" style={{ textDecoration: 'none' }}>
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+          Don't have an account? Register one <u>here</u>
+        </Typography>
+      </Link>
     </Container>
   );
 };
