@@ -344,7 +344,7 @@ const PriceSubmitPage: React.FC = () => {
                 }>
                   <ListItemText
                     primary={`${drink.name} (${drink.type}, ${drink.size}ml) - ${item.price}€`}
-                    secondary={hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'No Happy Hour'}
+                    secondary={hh ? `${hh.weekDays.join(', ')} ${hh.startTime}-${hh.endTime}` : 'Normal price'}
                   />
                 </ListItem>
               );
