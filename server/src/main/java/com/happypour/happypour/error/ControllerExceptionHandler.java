@@ -22,7 +22,10 @@ public class ControllerExceptionHandler {
      * @return ResponseEntity with error details
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> handleResponseStatusException(
+        ResponseStatusException ex, 
+        HttpServletRequest request
+    ) {
         Map<String, Object> errorBody = new HashMap<>();
         errorBody.put("timestamp", LocalDateTime.now());
         errorBody.put("status", ex.getStatusCode().value());
