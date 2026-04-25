@@ -4,6 +4,8 @@ import com.happypour.happypour.dto.DrinkDTO;
 import com.happypour.happypour.entity.*;
 import com.happypour.happypour.mapper.DrinkMapper;
 import com.happypour.happypour.repository.DrinkRepository;
+import com.happypour.happypour.util.SecurityUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,9 @@ public class DrinkService {
     private DrinkRepository drinkRepository;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    SecurityUtil securityUtil;
+    
     protected List<Drink> getAllDrinks() {
         return drinkRepository.findAll();
     }
@@ -63,6 +67,8 @@ public class DrinkService {
         User user = userService.getById(updaterId);
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
+
         drinkDtos.forEach(dto -> {
             Drink drink = DrinkMapper.toEntity(dto, user);
             drinkRepository.save(drink);
@@ -70,8 +76,15 @@ public class DrinkService {
     }
 
     public DrinkDTO updateDrink(Long drinkId, DrinkDTO drinkDto) {
-        if(drinkDto.getCreatorId() == null) 
+        if(drinkDto.getCreatorId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        
+        }
+        User user = userService.getById(drinkDto.getCreatorId());
+        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
+
         Optional<Drink> existingDrink = drinkRepository.findById(drinkId);
         if (existingDrink.isPresent()) {
             BeanUtils.copyProperties(drinkDto, existingDrink.get(), "id", "createdBy", "createdAt");

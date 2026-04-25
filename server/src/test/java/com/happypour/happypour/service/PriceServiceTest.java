@@ -18,6 +18,7 @@ import com.happypour.happypour.dto.PriceDTO;
 import com.happypour.happypour.entity.*;
 import com.happypour.happypour.entity.enums.DrinkType;
 import com.happypour.happypour.repository.PriceRepository;
+import com.happypour.happypour.util.SecurityUtil;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +43,8 @@ class PriceServiceTest {
     DrinkService drinkService;
     @Mock
     HappyHourService happyHourService;
+    @Mock
+    SecurityUtil securityUtilMock;
 
     PriceDTO dto;
     Price price;
@@ -129,6 +132,7 @@ class PriceServiceTest {
         when(barService.getById(1L)).thenReturn(bar);
         when(priceRepository.findExistingPrice(1L, 1L, null)).thenReturn(Optional.empty());
         when(drinkService.getById(1L)).thenReturn(drink);
+        doNothing().when(securityUtilMock).checkUserIdMatchesPrincipal(1L);
         
         // --- Execute ---
         priceService.createPrice(List.of(dto));
@@ -161,6 +165,7 @@ class PriceServiceTest {
         when(userService.getById(1L)).thenReturn(user);
         when(barService.getById(1L)).thenReturn(bar);
         when(drinkService.getById(1L)).thenReturn(drink);
+        doNothing().when(securityUtilMock).checkUserIdMatchesPrincipal(1L);
 
         // findExistingPrice returns existingPrice for duplicates
         when(priceRepository.findExistingPrice(1L, 1L, null))
@@ -192,6 +197,7 @@ class PriceServiceTest {
         when(userService.getById(1L)).thenReturn(user);
         when(barService.getById(1L)).thenReturn(bar);
         when(drinkService.getById(1L)).thenReturn(drink);
+        doNothing().when(securityUtilMock).checkUserIdMatchesPrincipal(1L);
 
         // Return existing price for duplicates
         when(priceRepository.findExistingPrice(1L, 1L, null))

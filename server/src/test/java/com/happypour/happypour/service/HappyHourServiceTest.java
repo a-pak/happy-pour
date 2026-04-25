@@ -35,6 +35,7 @@ import com.happypour.happypour.entity.User;
 import com.happypour.happypour.entity.enums.WeekDay;
 import com.happypour.happypour.mapper.HappyHourMapper;
 import com.happypour.happypour.repository.HappyHourRepository;
+import com.happypour.happypour.util.SecurityUtil;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -59,8 +60,8 @@ public class HappyHourServiceTest {
     @Mock
     UserService userServiceMock;
 
-    // @Mock
-    // HappyHour hhMock;
+    @Mock
+    SecurityUtil securityUtilMock;
 
     @BeforeEach
     void setup() {
@@ -195,6 +196,7 @@ public class HappyHourServiceTest {
         // --- Given ---
         when(barServiceMock.getById(1L)).thenReturn(bar1);
         when(userServiceMock.getById(1L)).thenReturn(user);
+        when(securityUtilMock.getCurrentUserId()).thenReturn(1L);
         when(repositoryMock.save(any(HappyHour.class))).thenAnswer(invocation -> {
             // Capture repository.save parameter value
             HappyHour saved = invocation.getArgument(0);
@@ -269,6 +271,7 @@ public class HappyHourServiceTest {
         // --- Given ---
         when(repositoryMock.findById(1L)).thenReturn(Optional.of(hh1));
         when(userServiceMock.getById(1L)).thenReturn(user);
+        when(securityUtilMock.getCurrentUserId()).thenReturn(1L);
         when(repositoryMock.save(any(HappyHour.class))).thenAnswer(invocation -> {
             // Capture repository.save parameter value
             HappyHour saved = invocation.getArgument(0);

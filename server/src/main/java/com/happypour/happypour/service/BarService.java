@@ -4,6 +4,7 @@ import com.happypour.happypour.dto.*;
 import com.happypour.happypour.entity.*;
 import com.happypour.happypour.mapper.BarMapper;
 import com.happypour.happypour.repository.BarRepository;
+import com.happypour.happypour.util.SecurityUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ public class BarService {
     private BarRepository barRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    SecurityUtil securityUtil;
 
     public List<Bar> getAll() {
         return barRepository.findAll();
@@ -48,14 +51,20 @@ public class BarService {
     }
 
     public BarDTO createBar(BarDTO barDTO) {
-        if(barDTO.getCreatorId() == null) 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        if(barDTO.getCreatorId() == null) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Creator id not provided"
+            );
+        }
 
         User user = userService.getById(barDTO.getCreatorId());
         if(user == null) throw new ResponseStatusException(
             HttpStatus.NOT_FOUND, 
             "No user with id " + barDTO.getCreatorId() + " found."
         );
+
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
 
         Bar bar = BarMapper.toEntity(barDTO, user);
         Bar createdBar = barRepository.save(bar);
@@ -65,12 +74,22 @@ public class BarService {
     }
 
     public BarDTO updateBar(Long barId, BarDTO barDTO) {
-        if(barDTO.getCreatorId() == null) 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        if(barDTO.getCreatorId() == null) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Creator id not provided"
+            );
+        }
 
         User user = userService.getById(barDTO.getCreatorId());
-        if(user == null) 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with id " +barDTO.getCreatorId()+ " found.");
+        if(user == null) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, 
+                "No user with id " +barDTO.getCreatorId()+ " found."
+            );
+        }
+
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
 
         Bar newBar = BarMapper.toEntity(barDTO, user);
         Optional<Bar> existingBar = barRepository.findById(barId);

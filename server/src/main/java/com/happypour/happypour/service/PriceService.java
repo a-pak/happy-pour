@@ -19,6 +19,7 @@ import com.happypour.happypour.entity.Price;
 import com.happypour.happypour.entity.User;
 import com.happypour.happypour.mapper.PriceMapper;
 import com.happypour.happypour.repository.PriceRepository;
+import com.happypour.happypour.util.SecurityUtil;
 
 @Service
 public class PriceService {
@@ -33,6 +34,8 @@ public class PriceService {
     private DrinkService drinkService;
     @Autowired
     private HappyHourService happyHourService;
+    @Autowired
+    SecurityUtil securityUtil;
 
     public List<Price> getAllPrices() {
         return priceRepository.findAll();
@@ -102,6 +105,8 @@ public class PriceService {
             "User not found"
         );
 
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
+        
         Bar bar = barService.getById(priceDtos.get(0).getBarId());
         if(bar == null) throw new ResponseStatusException(
             HttpStatus.NOT_FOUND, 
@@ -159,6 +164,8 @@ public class PriceService {
             HttpStatus.NOT_FOUND, 
             "User not found"
         );
+
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
 
         existingPrice.get().setPrice(
             priceDTO

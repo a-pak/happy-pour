@@ -4,6 +4,8 @@ import com.happypour.happypour.dto.HappyHourDTO;
 import com.happypour.happypour.entity.*;
 import com.happypour.happypour.mapper.HappyHourMapper;
 import com.happypour.happypour.repository.HappyHourRepository;
+import com.happypour.happypour.util.SecurityUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class HappyHourService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SecurityUtil securityUtil;
 
     public List<HappyHour> getAll() {
         return happyHourRepository.findAll();
@@ -89,6 +94,8 @@ public class HappyHourService {
             "User with id "+dto.getCreatorId()+" not found"
         );
         
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
+
         HappyHour happyHour = HappyHourMapper.toEntity(dto, bar, user);
         HappyHour created = happyHourRepository.save(happyHour);
         return HappyHourMapper.toDTO(created, null);
@@ -131,6 +138,8 @@ public class HappyHourService {
             "User not found"
         );
         
+        securityUtil.checkUserIdMatchesPrincipal(updater.getId());
+
         existing.setUpdatedBy(updater);
         HappyHour updated = happyHourRepository.save(existing);
         return HappyHourMapper.toDTO(updated, null);
