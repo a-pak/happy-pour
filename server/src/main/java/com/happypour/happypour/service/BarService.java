@@ -36,13 +36,12 @@ public class BarService {
      * @return List of Bar entities.
      */
     public List<Bar> getByLocation(double lat, double lon) {
-        System.out.println("3. BARSERVICE: Fetching bars near lat: " + lat + ", lon: " + lon);
         List<Bar> bars = barRepository.findByLocation(lat, lon);
         if(bars.isEmpty()) throw new ResponseStatusException(
             HttpStatus.NOT_FOUND, 
             "No bars found near the provided location."
         );
-        System.out.println("After!!");
+
         return bars;
     }
 
@@ -51,12 +50,10 @@ public class BarService {
     }
 
     public BarDTO createBar(BarDTO barDTO) {
-        if(barDTO.getCreatorId() == null) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, 
-                "Creator id not provided"
-            );
-        }
+        if(barDTO.getCreatorId() == null) throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, 
+            "Creator id not provided"
+        );
 
         User user = userService.getById(barDTO.getCreatorId());
         if(user == null) throw new ResponseStatusException(
