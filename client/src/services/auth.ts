@@ -20,7 +20,6 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
 
     if (response.status === 200) {
       const newUser : User = response.data;
-      console.log(newUser);
       return newUser;
     } else {
       // Handle error (invalid credentials)
@@ -43,7 +42,6 @@ export const registerAPI = async (registerPayload: RegisterPayload) => {
 };
 
 export const refreshAPI = async () => {
-    console.log("BASE URL: " + BASE_URL);
     return await axios.post(
       BASE_URL + "/refresh",
       {},{

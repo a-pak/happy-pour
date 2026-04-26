@@ -20,8 +20,8 @@ import { getAddress } from "../services/geocode.ts";
 import { ArrowBack } from "@mui/icons-material";
 import { AxiosError } from "axios";
 
-export const BarSubmitPage : React.FC = () => {
-  const {barId} = useParams();
+export const BarSubmitPage: React.FC = () => {
+  const { barId } = useParams();
   const [searchParams] = useSearchParams();
   const latParam = searchParams.get('lat');
   const lngParam = searchParams.get('lng');
@@ -45,43 +45,44 @@ export const BarSubmitPage : React.FC = () => {
 
   useEffect(() => {
     const fetchAddress = async () => {
-      await getAddress(lat, long).then((res) => {
-        
-        if (res) {
-          
-          if (res.status != 200 || !res.data) {
-            console.error('Request failed:', res.status);
-            throw new Error('Reverse geocoding failed');
+        await getAddress(lat, long).then((res) => {
+
+          if (res) {
+
+            if (res.status != 200 || !res.data) {
+              console.error('Request failed:', res.status);
+              throw new Error('Reverse geocoding failed');
+            }
+            const data = res.data
+
+            if (data && data.address) {
+              const addr = data.address;
+
+              const road = addr.road || "";
+              const houseNumber = addr.house_number || "";
+              const postcode = addr.postcode || "";
+              const city = addr.city || addr.town || addr.village || "";
+
+              const formattedAddress = [road, houseNumber, postcode, city]
+                .filter(Boolean)
+                .join(" ");
+
+              setAddress(formattedAddress);
+            } else {
+              console.warn("Address not found from Nominatim.");
+            }
           }
-          const data = res.data
-
-          if (data && data.address) {
-            const addr = data.address;
-
-            const road = addr.road || "";
-            const houseNumber = addr.house_number || "";
-            const postcode = addr.postcode || "";
-            const city = addr.city || addr.town || addr.village || "";
-
-            const formattedAddress = [road, houseNumber, postcode, city]
-              .filter(Boolean)
-              .join(" ");
-
-            setAddress(formattedAddress);
-          } else {
-            console.warn("Address not found from Nominatimista.");
-          }
-        }
-      })
-        .catch((err: AxiosError) => {
-          if (err.status === 502 && import.meta.env.DEV) {
-            console.error("502. Nominatim service unavalaible in dev mode.");
-          } else {
-            // TODO : show warning on address field.
-            console.error(`Error fetching address. Status ${err.status}`);
-            console.error(err.message);
-          }
-        });
+        })
+          .catch((err: AxiosError) => {
+            if (err.status === 502 && import.meta.env.DEV) {
+              console.error("502. Nominatim service unavalaible in dev mode.");
+            } else {
+              // TODO : show warning on address field.
+              console.error(`Error fetching address. Status ${err.status}`);
+              console.error(err.message);
+            }
+          });
+      
     }
     if (barIdNum) {
       barService.getById(barIdNum).then((bar) => {
@@ -127,15 +128,12 @@ export const BarSubmitPage : React.FC = () => {
       updatedAt: now,
       creatorId: user.id
     };
-    console.log("Submitting bar:", bar);
     try {
       if (barIdNum) {
-        console.log("UPDATE");
         await barService.update(barIdNum, bar);
         navigate("/bars/" + barIdNum);
         showNotification("Bar updated successfully!", "success");
       } else {
-        console.log("CREATE");
         const response = await barService.create(bar);
         if (response) {
           navigate("/bars/" + response.id);
@@ -169,12 +167,12 @@ export const BarSubmitPage : React.FC = () => {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <Button 
-          component={Link} 
-          to={barId ? `/bars/${barId}/details` : "/"} 
-          variant="outlined" sx={{ mb: 2 }} 
-          startIcon={<ArrowBack />} 
-          >Back to {barId ? "Details" : "Map"}
+        <Button
+          component={Link}
+          to={barId ? `/bars/${barId}/details` : "/"}
+          variant="outlined" sx={{ mb: 2 }}
+          startIcon={<ArrowBack />}
+        >Back to {barId ? "Details" : "Map"}
         </Button>
 
         <Typography variant="h5" fontWeight={600} gutterBottom>
