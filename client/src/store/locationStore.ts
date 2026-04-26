@@ -3,13 +3,15 @@ import {Location} from '../utils/locationUtil';
 
 interface LocationStore {
     userLocation: Location | null;
-    setUserLocation: (location: Location) => void;
+    hasInitialized: boolean;
+    storeUserLocation: (location: Location) => void;
     clearLocation: () => void;
 }
 
 export const useLocationStore = create<LocationStore>((set) => ({
     userLocation: null,
-    setUserLocation: (newLocation: Location) => {
+    hasInitialized: false,
+    storeUserLocation: (newLocation: Location) => {
         set({ userLocation: newLocation });
     },
     clearLocation: () => set({ userLocation: null }),

@@ -9,24 +9,41 @@ type MapStore = {
   map: Map | null;
   mapCenter: Location;
   mapZoom: number;
+  hasInitialized: boolean;
 
   setMap: (map: Map) => void;
-  setMapPosition: (location: Location, zoom: number) => void;
+  storeMapPosition: (location: Location, zoom: number) => void;
   flyTo: (lat: number, lng: number, zoom?: number) => void;
+  setView: (lat: number, lng: number, zoom?: number) => void;
+  initialize: () => void;
 };
+
+export const defaultLocation: Location = { 
+  latitude: 60.1707485, 
+  longitude: 24.9416647 
+}; // (Helsinki Center)
 
 export const useMapStore = create<MapStore>((set, get) => ({
   map: null,
-  mapCenter: {latitude: 60.1707485, longitude: 24.9416647},
+  mapCenter: defaultLocation,
   mapZoom: 15,
+  hasInitialized: false,
+  
+  initialize: () => set({ hasInitialized: true}),
   setMap: (mapInstance) => set({ map: mapInstance }),
-  setMapPosition(newLocation, zoom) {
+  storeMapPosition(newLocation, zoom) {
       set({mapCenter: newLocation, mapZoom: zoom})
   },
   flyTo: (lat, lng, zoom = 16) => {
     const map = get().map;
     if (map) {
       map.flyTo([lat, lng], zoom);
+    }
+  },
+  setView: (lat, lng, zoom = 16) => {
+    const map = get().map;
+    if (map) {
+      map.setView([lat, lng], zoom);
     }
   },
 }));
