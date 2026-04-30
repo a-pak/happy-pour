@@ -33,7 +33,7 @@ const MapsComponent: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const { defaultDrink } = useDrinkStore();
-  const isInitialRenderRef = useRef(true);
+  const [isComponentReady, setIsComponentReady] = useState(false);
   const currentMapPositionRef = useRef({ center: mapCenter, zoom: mapZoom });
 
   // Track current map position in real-time
@@ -60,24 +60,29 @@ const MapsComponent: React.FC = () => {
     };
   }, [map]);
 
-  // Initialize map position on first load and store position on unmount
+  // Initialize map position on first load
   useEffect(() => {
     if (!hasInitialized) {
       initialize();
       centerMapToUser();
     }
+    setIsComponentReady(true);
+  }, [hasInitialized, initialize]);
 
+  // Store map position on unmount
+  useEffect(() => {
     return () => {
-      if (!isInitialRenderRef.current) {
+      if (isComponentReady) {
+        console.log("UNMOUNT - Storing map position:", currentMapPositionRef.current);
         storeMapPosition(
           currentMapPositionRef.current.center,
           currentMapPositionRef.current.zoom
         );
       }
-
-      isInitialRenderRef.current = false;
     }
-  }, [storeMapPosition]);
+  }, [isComponentReady, storeMapPosition]);
+
+
 
   /* --- Map Event Handlers --- */
   const handleMapClick = (e: L.LeafletMouseEvent) => {
@@ -98,7 +103,7 @@ const MapsComponent: React.FC = () => {
           storeUserLocation({ latitude: location[0], longitude: location[1] });
           setView(location[0], location[1], 16);
         })
-        
+
         .catch((err: string) => {
           showNotification('Unable to retrieve your location. Please allow location access and try again.', 'error');
           console.error(`Error retrieving user location: ${err}`);
