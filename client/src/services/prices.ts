@@ -13,11 +13,6 @@ const createPrice = async (priceData: PriceDTO[]): Promise<void> => {
     return response.data;
 }
 
-const deletePrice = async(id: number): Promise<void> => {
-    const response = await api.delete(`${PRICES_URL}/${id}`);
-    return response.data;
-}
-
 export {
     getByBarId,
     createPrice
