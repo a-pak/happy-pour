@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   Typography, IconButton,
   Box, Button, Drawer,
@@ -20,9 +20,12 @@ const BarDetailsDrawer = () => {
   const { id } = useParams<{ id: string }>();
   const [barData, setBarData] = useState<BarData | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const flyTo = useMapStore((state) => state.flyTo);
+  const setView = useMapStore((state) => state.setView);
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const fromMarkerClick = (location.state as any)?.fromMarkerClick || false;
 
   useEffect(() => {
     if (id) {
@@ -32,6 +35,18 @@ const BarDetailsDrawer = () => {
         .catch((err) => console.error('Failed to fetch bar:', err));
     }
   }, [id]);
+
+  useEffect(() => {
+    if(barData) {
+      if (fromMarkerClick) {
+        // Animate fly to for marker clicks
+        flyTo(barData.bar.coordLat, barData.bar.coordLong);
+      } else {
+        // Direct navigation for URL access
+        setView(barData.bar.coordLat, barData.bar.coordLong, 16);
+      }
+    }
+  }, [barData, flyTo, setView, fromMarkerClick])
 
   function renderDrawerContent() {
     if (!barData) {
@@ -43,7 +58,6 @@ const BarDetailsDrawer = () => {
     }
 
     const { bar, prices } = barData;
-    flyTo(bar.coordLat, bar.coordLong);
 
     const activeHappyHour = getCurrentHappyHour(barData);
 

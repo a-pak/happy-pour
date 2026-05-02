@@ -107,7 +107,7 @@ export const LocationMarkerComponent: React.FC = () => {
                             position={[barEntity.bar.coordLat, barEntity.bar.coordLong]} 
                             icon={invisibleIcon}
                             eventHandlers={{
-                                click: () => navigate(`/bars/${barEntity.bar.id}`)
+                                click: () => navigate(`/bars/${barEntity.bar.id}`, { state: { fromMarkerClick: true } })
                             }}>
                                 <Tooltip
                                     className={`${colorClass.join(" ")} marker-tooltip`}

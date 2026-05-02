@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import theme from '../Theme';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import locationService from '../services/location';
 import { LocationMarkerComponent } from './LocationMarkerComponent';
 import MapEffect from './MapEffect';
@@ -18,6 +18,7 @@ interface MapEventsHandlerProps {
 }
 
 const MapsComponent: React.FC = () => {
+  const { id: barId } = useParams<{ id: string }>();
   const {
     map,
     mapCenter,
@@ -64,10 +65,13 @@ const MapsComponent: React.FC = () => {
   useEffect(() => {
     if (!hasInitialized) {
       initialize();
-      centerMapToUser();
+      // Don't center to user if viewing a specific bar - let BarDetailsDrawer handle it
+      if (!barId) {
+        centerMapToUser();
+      }
     }
     setIsComponentReady(true);
-  }, [hasInitialized, initialize]);
+  }, [hasInitialized, initialize, barId]);
 
   // Store map position on unmount
   useEffect(() => {
