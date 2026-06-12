@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import com.happypour.happypour.service.UserService;
 import com.happypour.happypour.repository.*;
 import com.happypour.happypour.dto.RegisterRequest;
-import com.happypour.happypour.model.*;
-import com.happypour.happypour.model.enums.DrinkType;
-import com.happypour.happypour.model.enums.WeekDay;
+import com.happypour.happypour.entity.*;
+import com.happypour.happypour.entity.enums.DrinkType;
+import com.happypour.happypour.entity.enums.WeekDay;
 
 /**
  * This component runs a debug script after the application starts, if debug mode vmArgument is passed.

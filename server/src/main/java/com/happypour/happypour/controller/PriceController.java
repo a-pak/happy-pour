@@ -49,9 +49,9 @@ public class PriceController {
         return ResponseEntity.ok("Prices created succefully");
     }
     
-    @PutMapping
-    public ResponseEntity<String> updatePrice(@RequestBody PriceDTO priceDto) {
-        priceService.updatePrice(priceDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updatePrice(@PathVariable Long id, @RequestBody PriceDTO priceDto) {
+        priceService.updatePrice(id, priceDto);
         return ResponseEntity.ok("Price updated with id: " + priceDto.getId());
     }
 

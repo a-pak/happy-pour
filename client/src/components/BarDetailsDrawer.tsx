@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   Typography, IconButton,
   Box, Button, Drawer,
@@ -8,20 +8,24 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import barsService from '../services/bars.ts';
-import { BarData } from '../model/IbarInterface.ts';
+import { BarData } from '../types/IbarInterface.ts';
 import { useMapStore } from '../store/mapStore.ts';
 import { useDrinkStore } from '../store/drinkStore.ts';
 import theme from '../Theme.tsx';
-import { PriceDTO } from '../model/IPriceInterface.ts';
+import { PriceDTO } from '../types/IPriceInterface.ts';
 import { getCurrentHappyHour } from '../utils/happyHourUtil.ts';
+import { formatTimestamp } from '../utils/timeUtils.ts';
 
 const BarDetailsDrawer = () => {
   const { id } = useParams<{ id: string }>();
   const [barData, setBarData] = useState<BarData | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const flyTo = useMapStore((state) => state.flyTo);
+  const setView = useMapStore((state) => state.setView);
   const defaultDrink = useDrinkStore((state) => state.defaultDrink);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const fromMarkerClick = (location.state as any)?.fromMarkerClick || false;
 
   useEffect(() => {
     if (id) {
@@ -31,6 +35,18 @@ const BarDetailsDrawer = () => {
         .catch((err) => console.error('Failed to fetch bar:', err));
     }
   }, [id]);
+
+  useEffect(() => {
+    if(barData) {
+      if (fromMarkerClick) {
+        // Animate fly to for marker clicks
+        flyTo(barData.bar.coordLat, barData.bar.coordLong);
+      } else {
+        // Direct navigation for URL access
+        setView(barData.bar.coordLat, barData.bar.coordLong, 16);
+      }
+    }
+  }, [barData, flyTo, setView, fromMarkerClick])
 
   function renderDrawerContent() {
     if (!barData) {
@@ -42,7 +58,6 @@ const BarDetailsDrawer = () => {
     }
 
     const { bar, prices } = barData;
-    flyTo(bar.coordLat, bar.coordLong);
 
     const activeHappyHour = getCurrentHappyHour(barData);
 
@@ -187,10 +202,10 @@ const BarDetailsDrawer = () => {
 
         {/* Meta Info */}
         <Typography variant="caption" display="block">
-          Created by {bar.createdBy ? bar.createdBy : "Unknown user"} at {new Date(bar.createdAt).toLocaleString()}
+          Created by {bar.createdBy ? bar.createdBy : "Unknown user"} at {formatTimestamp(bar.createdAt)}
         </Typography>
         <Typography variant="caption" display="block">
-          Last updated by {bar.updatedBy ? bar.updatedBy : "Unknown user"} at {new Date(bar.updatedAt).toLocaleString()}
+          Last updated by {bar.updatedBy ? bar.updatedBy : "Unknown user"} at {formatTimestamp(bar.updatedAt)}
         </Typography>
       </Box>
 

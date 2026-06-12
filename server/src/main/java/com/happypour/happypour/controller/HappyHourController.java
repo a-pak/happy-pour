@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.happypour.happypour.dto.HappyHourDTO;
-import com.happypour.happypour.model.HappyHour;
 import com.happypour.happypour.service.HappyHourService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,9 +40,9 @@ public class HappyHourController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createHappyHour(@RequestBody HappyHourDTO dto) {
-        HappyHour createdHappyHour = happyHourService.createHappyHour(dto);
-        return ResponseEntity.ok("Happy hour created with id: " + createdHappyHour.getId());
+    public ResponseEntity<HappyHourDTO> createHappyHour(@RequestBody HappyHourDTO dto) {
+        HappyHourDTO createdHappyHour = happyHourService.createHappyHour(dto);
+        return ResponseEntity.ok(createdHappyHour);
     }
     
     @PutMapping("/{id}")

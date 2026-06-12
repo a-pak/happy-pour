@@ -1,6 +1,6 @@
 package com.happypour.happypour.controller;
 
-import com.happypour.happypour.model.User;
+import com.happypour.happypour.entity.User;
 import com.happypour.happypour.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,10 @@
 package com.happypour.happypour.security.filter;
 
+import com.happypour.happypour.mapper.UserMapper;
 import com.happypour.happypour.security.JWTUtil;
+import com.happypour.happypour.security.principal.UserDetailsPrincipal;
+import com.happypour.happypour.service.UserService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -19,6 +23,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtil jwtUtil;
+    @Autowired
+    private UserService userService;
+    
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) 
     throws ServletException, IOException {
@@ -40,8 +47,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtUtil.validateToken(token)) {
+                var user = userService.getByUsername(username);
+
+                if(user == null) {
+                    return;
+                }
+                System.out.println("Creating principal for user " + user.getUsername() + "...");
+                UserDetailsPrincipal principal = UserMapper.toPrincipal(user);
+
                 UsernamePasswordAuthenticationToken authenticationToken
-                        = new UsernamePasswordAuthenticationToken(username, null, null);
+                        = new UsernamePasswordAuthenticationToken(principal, null, null);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import LoginPayload from '../model/ILoginPayloadInterface.ts';
-import RegisterPayload from '../model/IRegisterPayloadInterface.ts';
+import LoginPayload from '../types/ILoginPayloadInterface.ts';
+import RegisterPayload from '../types/IRegisterPayloadInterface.ts';
 import { User } from '../store/userStore.ts';
 /* auth service for login and register 
 
@@ -8,7 +8,7 @@ import { User } from '../store/userStore.ts';
   NOTE:  uses axios directly instead of axiosInstance to avoid interceptor issues
   *******************************************************************************
 */
-const BASE_URL = (import.meta.env.VITE_BASE_API_URL || '/api' ) + '/auth';
+const BASE_URL = import.meta.env.DEV ? `${import.meta.env.VITE_API_URL}/auth` : '/api/auth';
 
 export const loginAPI = async (loginPayload : LoginPayload) => {
   try {
@@ -20,7 +20,6 @@ export const loginAPI = async (loginPayload : LoginPayload) => {
 
     if (response.status === 200) {
       const newUser : User = response.data;
-      console.log(newUser);
       return newUser;
     } else {
       // Handle error (invalid credentials)

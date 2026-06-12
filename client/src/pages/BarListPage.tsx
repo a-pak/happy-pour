@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import barsService from '../services/bars';
 import { useTheme } from '@mui/material/styles';
 import { useDrinkStore } from '../store/drinkStore';
-import { BarData } from '../model/IbarInterface';
+import { BarData } from '../types/IbarInterface';
 import { getCheapestPrice } from '../utils/priceUtil';
 import CloseIcon from '@mui/icons-material/Close';
 import { useLocationStore } from '../store/locationStore';

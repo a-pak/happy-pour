@@ -22,7 +22,10 @@ public class ControllerExceptionHandler {
      * @return ResponseEntity with error details
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> handleResponseStatusException(
+        ResponseStatusException ex, 
+        HttpServletRequest request
+    ) {
         Map<String, Object> errorBody = new HashMap<>();
         errorBody.put("timestamp", LocalDateTime.now());
         errorBody.put("status", ex.getStatusCode().value());
@@ -32,14 +35,16 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(errorBody, ex.getStatusCode());
     }
 
-    // Catch-all for other unexpected exceptions
+    /** 
+     * Catch-all for other generic, unexpected exceptions.
+     */ 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> errorBody = new HashMap<>();
         errorBody.put("timestamp", LocalDateTime.now());
         errorBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorBody.put("error", "Internal Server Error");
-        errorBody.put("message", ex.getMessage());
+        errorBody.put("message", "An unexpected error occurred!");
 
         return new ResponseEntity<>(errorBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }

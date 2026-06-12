@@ -1,6 +1,6 @@
-import {HappyHourDTO} from '../model/IHappyHourInterface'
+import {HappyHourDTO} from '../types/IHappyHourInterface'
 import axios, { AxiosError } from 'axios';
-import api from '../utils/axiosInstance';
+import api from './axios/axiosInstance';
 
 const HAPPY_HOUR_URL : string = "/happyhours";
 
@@ -36,4 +36,8 @@ export const updateHappyHour = async ( happyHour: HappyHourDTO) => {
     console.log(happyHour);
     const response = await api.put(`${HAPPY_HOUR_URL}/${happyHour.id}`, happyHour);
     return response.data;
+}
+
+export const deleteHappyHour = async (id: number) => {
+    await api.delete(`${HAPPY_HOUR_URL}/${id}`);
 }

@@ -1,9 +1,11 @@
 package com.happypour.happypour.service;
 
 import com.happypour.happypour.dto.DrinkDTO;
-import com.happypour.happypour.model.*;
-
+import com.happypour.happypour.entity.*;
+import com.happypour.happypour.mapper.DrinkMapper;
 import com.happypour.happypour.repository.DrinkRepository;
+import com.happypour.happypour.util.SecurityUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,9 @@ public class DrinkService {
     private DrinkRepository drinkRepository;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    SecurityUtil securityUtil;
+    
     protected List<Drink> getAllDrinks() {
         return drinkRepository.findAll();
     }
@@ -36,7 +40,7 @@ public class DrinkService {
         List<Drink> drinks = drinkRepository.findAll();
         if(drinks.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no drinks found");
 
-        List<DrinkDTO> drinkDTOs = drinks.stream().map(drink -> new DrinkDTO(drink)).toList();
+        List<DrinkDTO> drinkDTOs = drinks.stream().map(drink -> DrinkMapper.toDTO(drink)).toList();
         return drinkDTOs;
     }
     
@@ -44,7 +48,7 @@ public class DrinkService {
         Optional<Drink> drink = drinkRepository.findById(id);
         if(drink.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink with id "+ id +" not found");
         
-        return new DrinkDTO(drink.get());
+        return DrinkMapper.toDTO(drink.get());
     }
 
     protected Drink getById(Long id) {
@@ -56,38 +60,42 @@ public class DrinkService {
     }
     
     public void createDrink(List<DrinkDTO> drinkDtos) {
-        User user = userService.getById(drinkDtos.get(0).getCreatorId());
+        Long updaterId = drinkDtos.get(0).getCreatorId(); 
+        if(updaterId == null) 
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+
+        User user = userService.getById(updaterId);
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         
-        drinkDtos.forEach(dto -> {
-            Drink drink = Drink.builder()
-                .id(null)
-                .name(dto.getName())
-                .type(dto.getType())
-                .size(dto.getSize())
-                .createdBy(user)
-                .updatedBy(user)
-                .build();
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
 
+        drinkDtos.forEach(dto -> {
+            Drink drink = DrinkMapper.toEntity(dto, user);
             drinkRepository.save(drink);
         });
     }
 
     public DrinkDTO updateDrink(Long drinkId, DrinkDTO drinkDto) {
+        if(drinkDto.getCreatorId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creator id not provided");
+        
+        }
+        User user = userService.getById(drinkDto.getCreatorId());
+        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+
+        securityUtil.checkUserIdMatchesPrincipal(user.getId());
+
         Optional<Drink> existingDrink = drinkRepository.findById(drinkId);
         if (existingDrink.isPresent()) {
             BeanUtils.copyProperties(drinkDto, existingDrink.get(), "id", "createdBy", "createdAt");
             Drink updatedDrink = drinkRepository.save(existingDrink.get());
-            return new DrinkDTO(updatedDrink);
+            return DrinkMapper.toDTO(updatedDrink);
+        
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drink with id "+ drinkId +" not found");
     }
     
     public void deleteDrink(Long drinkId) {
-        try {
-            getById(drinkId);
-            drinkRepository.deleteById(drinkId);
-        } catch (Exception e) {
-            throw e;
-        }
+        getById(drinkId);
+        drinkRepository.deleteById(drinkId);
     }
 }

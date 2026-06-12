@@ -10,13 +10,13 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { MobileTimePicker, DesktopTimePicker } from '@mui/x-date-pickers';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { HappyHourDTO, WeekDay } from '../model/IHappyHourInterface'
+import { HappyHourDTO, WeekDay } from '../types/IHappyHourInterface'
 import { createHappyHour, getHappyHour, updateHappyHour } from '../services/happyhours'; // added fetch/update
 import { useUserStore } from '../store/userStore';
 import { useErrorStore } from '../store/errorStore';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
-import { PriceDTO } from '../model/IPriceInterface';
+import { PriceDTO } from '../types/IPriceInterface';
 
 const weekDays: WeekDay[] = [
   'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY',
@@ -27,8 +27,8 @@ const HappyHourSubmitPage: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { barId, hhId } = useParams<{ barId: string; hhId?: string }>();
   const [selectedDays, setSelectedDays] = useState<WeekDay[]>([]);
-  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(dayjs());
-  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs());
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(dayjs("10:00", "HH:mm"));
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(dayjs("17:00", "HH:mm"));
   const [prices, setPrices] = useState<PriceDTO[]>([]);
   const { user } = useUserStore();
   const { showNotification } = useErrorStore();
@@ -76,23 +76,33 @@ const HappyHourSubmitPage: React.FC = () => {
       const happyHour: HappyHourDTO = {
         id: isEditing ? Number(hhId) : -1, // backend will set id when creating
         weekDays: selectedDays,
-        startTime: startTime.format('HH:mm:ss'),
-        endTime: endTime.format('HH:mm:ss'),
+        startTime: startTime.format('HH:mm'),
+        endTime: endTime.format('HH:mm'),
         barId: Number(barId),
         prices: prices,
         creatorId: user?.id,
       };
-      try {
-        if (isEditing) {
-          await updateHappyHour(happyHour);
-          showNotification('Happy hour updated successfully', 'success');
-        } else {
-          await createHappyHour(happyHour);
-          showNotification('Happy hour submitted successfully', 'success');
-        }
-        navigate(-1);
-      } catch (error) {
-        showNotification(isEditing ? 'Failed to update happy hour' : 'Failed to create happy hour', 'error');
+      if (isEditing) {
+        await updateHappyHour(happyHour)
+          .then(() => {
+            showNotification('Happy hour updated successfully', 'success');
+            navigate(-1);
+          })
+          .catch(error => {
+            showNotification('Failed to update happy hour', 'error');
+            console.error(error);
+          })
+
+      } else {
+        await createHappyHour(happyHour)
+          .then(() => {
+            showNotification('Happy hour submitted successfully', 'success');
+            navigate(-1);
+          })
+          .catch(error => {
+            showNotification('Failed to submit happy hour', 'error');
+            console.error(error);
+          });
       }
     } else {
       showNotification('Please fill all fields correctly', 'warning');
@@ -109,15 +119,15 @@ const HappyHourSubmitPage: React.FC = () => {
           position: "relative",
         }}
       >
-        <Button component={Link} to={`/`} variant="outlined" sx={{ mb: 2, mt: 1 }} startIcon={<ArrowBack />}>
-          Back to Map
+        <Button component={Link} to={`/bars/${barId}/details`} variant="outlined" sx={{ mb: 2, mt: 1 }} startIcon={<ArrowBack />}>
+          BACK TO BAR
         </Button>
         <Typography variant="h5" gutterBottom>
           {hhId ? 'Edit Happy Hour' : 'When is the Happy Hour?'}
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid2 container spacing={2}>
-            <Typography gutterBottom sx={{mt:'15px', mb:'-15px'}}>
+            <Typography gutterBottom sx={{ mt: '15px', mb: '-15px' }}>
               Select days when the Happy Hour takes place:
             </Typography>
             <Grid2 container spacing={0} sx={{ overflowX: 'auto', flexWrap: 'nowrap', py: 1, mb: 2 }}>
@@ -188,7 +198,7 @@ const HappyHourSubmitPage: React.FC = () => {
                 </Box>
               ))}
             </Grid2>
-              <Typography gutterBottom sx={{mt:'-5px'}}>
+            <Typography gutterBottom sx={{ mt: '-5px' }}>
               Enter the start and end times for the Happy Hour:
             </Typography>
             <Grid2 container spacing={1} alignItems="center">

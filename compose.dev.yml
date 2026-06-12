@@ -1,0 +1,60 @@
+# --------------- DEV ENVIRONMENT -------------------
+services:
+  database:
+    image: postgres:16
+    container_name: postgres-database
+    environment:
+      POSTGRES_DB: ${SPRING_DATASOURCE_DATABASE}
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${SPRING_DATASOURCE_DATABASE} -U ${SPRING_DATASOURCE_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: happy-pour-app
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_DOCKER}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}       
+      REACT_APP_ADDRESS: ${REACT_APP_ADDRESS:-http://localhost:8080/api}
+      SPRING_DDL_AUTO: ${SPRING_DDL_AUTO:-update}  # Default to 'update'
+      SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}
+      # ! Do not use next line in production:
+      JAVA_OPTS: -Ddebug.mode=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 # Uses debug.mode to create test data.
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  frontend:
+    container_name: react-frontend
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "80:80"   # host:container
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
+

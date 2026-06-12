@@ -1,4 +1,4 @@
-import { BarData } from "../model/IbarInterface";
+import { BarData } from "../types/IbarInterface";
 import { getCurrentHappyHour } from "./happyHourUtil";
 
 // NOTE: Hooks cannot be called at module scope. This util accepts the
